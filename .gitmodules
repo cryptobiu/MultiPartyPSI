@@ -1,0 +1,4 @@
+[submodule "libscapi"]
+	path = libscapi
+	url = https://github.com/cryptobiu/libscapi.git
+	branch = MPSI
