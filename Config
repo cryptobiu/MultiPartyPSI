@@ -1,0 +1,7 @@
+no_section_arg=text_for_no_section_arg
+[General]
+numOfParties=2
+[1]
+port = 3000
+[2]
+port = 4000

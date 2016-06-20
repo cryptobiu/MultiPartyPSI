@@ -1,0 +1,2 @@
+./MultiPartyPSI.exe 1 &
+./MultiPartyPSI.exe                                                                                                                                                                                                                                                                                                                                                                                  2 &
