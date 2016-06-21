@@ -18,16 +18,18 @@ class MultiPartyPlayer {
 public:
     MultiPartyPlayer(uint partyId, ConfigFile config, boost::asio::io_service &ioService);
     virtual ~MultiPartyPlayer() {};
+
+protected:
+    std::map<uint, boost::shared_ptr<CommPartyTCPSynced>> m_otherParties;
+
+    uint m_partyId;
+    ConfigFile m_config;
 private:
     COPY_CTR(MultiPartyPlayer);
     ASSIGN_OP(MultiPartyPlayer);
 
     void connectToAllParties();
 
-    std::map<uint, boost::shared_ptr<CommPartyTCPSynced>> m_otherParties;
-
-    uint m_partyId;
-    ConfigFile m_config;
     boost::asio::io_service &m_ioService;
 };
 
