@@ -13,7 +13,7 @@ SET(SCAPI_ROOT /home/naor/libscapi/lib/)
 INCLUDE_DIRECTORIES(/usr/include/openssl ${SCAPI_ROOT} ${BOOST_INCLUDEDIR})
 link_directories(/usr/ssl/lib/ ${BOOST_LIBRARYDIR})
 
-set(SOURCE_FILES main.cpp PsiParty.cpp common/defs.cpp common/MultiPartyPlayer.cpp common/statistics.h)
+set(SOURCE_FILES main.cpp PsiParty.cpp common/defs.cpp common/MultiPartyPlayer.cpp common/statistics.h PsiServer.cpp)
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI

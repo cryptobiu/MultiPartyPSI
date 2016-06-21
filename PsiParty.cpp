@@ -19,8 +19,16 @@ PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioS
     uint *elementsBytes = new uint[m_setSize];
     m_serverProxy.read(reinterpret_cast<byte *>(elementsBytes), m_setSize*sizeof(uint));
 
-    m_elements.insert(m_elements.end(), &elementsBytes[0], &dataArray[elementsBytes]);
+    m_elements.insert(m_elements.end(), &elementsBytes[0], &elementsBytes[m_setSize]);
     m_statistics.partyId = partyId;
+
+    syncronize();
+}
+
+void PsiParty::syncronize() {
+    char c;
+    m_serverProxy.write("1",1);
+    m_serverProxy.read(&c,1);
 }
 
 void PsiParty::run() {
