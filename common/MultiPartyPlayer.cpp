@@ -15,21 +15,24 @@ MultiPartyPlayer::MultiPartyPlayer(uint partyId, ConfigFile config,
                              boost::asio::io_service &ioService) :
     m_config(config), m_partyId(partyId), m_ioService(ioService) {
     connectToAllParties();
+    connectToServer();
 }
 
 void MultiPartyPlayer::connectToAllParties() {
     uint numOfParties = stoi(m_config.Value("General", "numOfParties"));
 
+    string ipAddress = m_config.Value(std::to_string(m_partyId).c_str(), "ip");
     uint portNumber = stoi(m_config.Value(std::to_string(m_partyId).c_str(), "port"));
 
-    SocketPartyData me(IpAdress::from_string(LOOPBACK_ADDRESS), portNumber);
+    SocketPartyData me(IpAdress::from_string(ipAddress), portNumber);
 
     for (uint i = 1; i <= numOfParties; i++) {
         if (i == m_partyId) {
             continue;
         }
+        string ipAddress = m_config.Value(std::to_string(i), "ip");
         uint portNumber = stoi(m_config.Value(std::to_string(i), "port"));
-        SocketPartyData other(IpAdress::from_string(LOOPBACK_ADDRESS), portNumber);
+        SocketPartyData other(IpAdress::from_string(ipAddress), portNumber);
         m_otherParties[i] = boost::make_shared<CommPartyTCPSynced>(m_ioService, me, other);
     }
 
@@ -43,4 +46,19 @@ void MultiPartyPlayer::connectToAllParties() {
     }
 
     threadpool.join_all();
+}
+
+void MultiPartyPlayer::connectToServer() {
+    string ipAddress = m_config.Value(std::to_string(m_partyId).c_str(), "ip");
+    uint portNumber = stoi(m_config.Value(std::to_string(m_partyId).c_str(), "port"));
+
+    SocketPartyData me(IpAdress::from_string(ipAddress), portNumber);
+
+    auto serverIp = m_config.Value("server", "ip");
+    auto serverPort = stoi(m_config.Value("server", "port"));
+
+    SocketPartyData server(IpAdress::from_string(serverIp), serverPort);
+
+    m_serverProxy = new CommPartyTCPSynced(m_ioService, me, server);
+    m_serverProxy.join();
 }

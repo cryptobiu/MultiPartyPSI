@@ -6,13 +6,13 @@
 #define LIBSCAPI_PSIPARTY_H
 
 #include "common/MultiPartyPlayer.h"
+#include "common/statistics.h"
 
 typedef __m128i block;
 
 class PsiParty : public MultiPartyPlayer {
 public:
-    PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioService) :
-        MultiPartyPlayer(partyId, config, ioService), m_secretShare(NULL) {};
+    PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioService);
     virtual ~PsiParty() {};
 
     void run();
@@ -26,6 +26,11 @@ private:
      */
     void additiveSecretShare();
 
+    void runAsLeader();
+    void runLeaderAgainstFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader);
+    void runAsFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader);
+    void finishAndReportStatsToServer();
+
     uint getElementSize() {
         return 16;
     }
@@ -33,7 +38,13 @@ private:
     COPY_CTR(PsiParty);
     ASSIGN_OP(PsiParty);
 
-    block *m_secretShare;
+    const uint SIZE_OF_BLOCK = 16;
+    uint m_setSize;
+    uint m_elementSizeInBits;
+    uint m_blockSizeInBits;
+    std::vector<boost::shared_ptr<block>> m_secretShares;
+    std::vector<uint32> m_elements;
+    struct statistics m_statistics;
 };
 
 #endif //LIBSCAPI_PSIPARTY_H

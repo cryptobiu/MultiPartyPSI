@@ -24,11 +24,13 @@ protected:
 
     uint m_partyId;
     ConfigFile m_config;
+    boost::shared_ptr<CommPartyTCPSynced> m_serverProxy;
 private:
     COPY_CTR(MultiPartyPlayer);
     ASSIGN_OP(MultiPartyPlayer);
 
     void connectToAllParties();
+    void connectToServer();
 
     boost::asio::io_service &m_ioService;
 };

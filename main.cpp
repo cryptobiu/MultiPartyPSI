@@ -20,5 +20,7 @@ int main(int argc, char *argv[])
 
     std::cout << "Party " << partyId << " is connected" << std::endl;
 
+    vector<uint> intersection =
+
     return 0;
 }

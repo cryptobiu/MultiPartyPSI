@@ -6,7 +6,6 @@
 #define MULTIPARTYPSI_DEFS_H
 
 typedef unsigned int uint;
-extern const char LOOPBACK_ADDRESS[12];
 
 #define COPY_CTR(A) A(const A&)
 #define ASSIGN_OP(A) A &operator=(const A&)
