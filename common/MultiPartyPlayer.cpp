@@ -18,7 +18,6 @@ MultiPartyPlayer::MultiPartyPlayer(uint partyId, ConfigFile config,
 }
 
 void MultiPartyPlayer::connectToAllParties() {
-    std::string nosec = m_config.Value("", "no_section_arg");
     uint numOfParties = stoi(m_config.Value("General", "numOfParties"));
 
     uint portNumber = stoi(m_config.Value(std::to_string(m_partyId).c_str(), "port"));

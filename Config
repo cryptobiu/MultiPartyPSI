@@ -3,6 +3,8 @@ no_section_arg=text_for_no_section_arg
 numOfParties=2
 setSize=3
 securityParameter=128
+elementSizeInBits=32
+blockSizeInBits=1
 [1]
 port = 3000
 [2]
