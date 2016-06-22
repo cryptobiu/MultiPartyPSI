@@ -8,8 +8,6 @@
 #include "common/MultiPartyPlayer.h"
 #include "common/statistics.h"
 
-typedef __m128i block;
-
 class PsiParty : public MultiPartyPlayer {
 public:
     PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioService);
@@ -30,6 +28,8 @@ private:
     void runLeaderAgainstFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader);
     void runAsFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader);
     void finishAndReportStatsToServer();
+    void syncronize();
+    bool isElementInAllSets(uint element);
 
     uint getElementSize() {
         return 16;
@@ -43,7 +43,7 @@ private:
     uint m_elementSizeInBits;
     uint m_blockSizeInBits;
     std::vector<boost::shared_ptr<block>> m_secretShares;
-    std::vector<uint32> m_elements;
+    std::vector<uint> m_elements;
     struct statistics m_statistics;
 };
 

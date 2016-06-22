@@ -5,8 +5,14 @@
 #ifndef MULTIPARTYPSI_DEFS_H
 #define MULTIPARTYPSI_DEFS_H
 
+#include <openssl/rand.h>
+#include <emmintrin.h>
+
 typedef unsigned int uint;
+typedef __m128i block;
 
 #define COPY_CTR(A) A(const A&)
 #define ASSIGN_OP(A) A &operator=(const A&)
 #endif //MULTIPARTYPSI_DEFS_H
+
+

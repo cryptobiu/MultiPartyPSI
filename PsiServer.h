@@ -5,6 +5,9 @@
 #ifndef MULTIPARTYPSI_PSISERVER_H
 #define MULTIPARTYPSI_PSISERVER_H
 
+#include <boost/asio/io_service.hpp>
+#include "../include/infra/ConfigFile.hpp"
+
 class PsiServer {
 public:
     PsiServer(ConfigFile config,

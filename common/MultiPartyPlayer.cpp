@@ -59,6 +59,6 @@ void MultiPartyPlayer::connectToServer() {
 
     SocketPartyData server(IpAdress::from_string(serverIp), serverPort);
 
-    m_serverProxy = new CommPartyTCPSynced(m_ioService, me, server);
-    m_serverProxy.join();
+    m_serverProxy.reset(new CommPartyTCPSynced(m_ioService, me, server));
+    m_serverProxy->join();
 }

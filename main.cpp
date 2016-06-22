@@ -6,6 +6,7 @@
 #include <boost/thread/thread.hpp>
 #include "../include/infra/ConfigFile.hpp"
 #include "common/MultiPartyPlayer.h"
+#include "PsiParty.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,11 +17,11 @@ int main(int argc, char *argv[])
     // read the file as config file
     ConfigFile cf("Config");
 
-    MultiPartyPlayer party(partyId, cf, io_service);
+    PsiParty party(partyId, cf, io_service);
 
     std::cout << "Party " << partyId << " is connected" << std::endl;
 
-    vector<uint> intersection =
+    party.run();
 
     return 0;
 }

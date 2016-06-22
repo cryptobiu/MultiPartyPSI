@@ -2,6 +2,8 @@
 // Created by Naor on 21/06/2016.
 //
 
+#include "PsiServer.h"
+
 PsiServer::PsiServer(ConfigFile config,
     boost::asio::io_service &ioService) :
     m_config(config), m_ioService(ioService) {}

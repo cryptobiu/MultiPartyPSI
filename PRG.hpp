@@ -45,8 +45,9 @@ private:
 
 class PRG
 {
-
-private:
+// TODO: it can't be private !!
+// private:
+public:
     PRG(int cahchedSize=DEFAULT_CACHE_SIZE);
     PRG(byte *key,int cahchedSize=DEFAULT_CACHE_SIZE);
     PRG(byte *key, byte *iv,int cahchedSize=DEFAULT_CACHE_SIZE);
