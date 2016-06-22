@@ -18,5 +18,6 @@ add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI
         /home/naor/libscapi/scapi.a
+        /usr/ssl/lib/libcrypto.a
         /home/naor/libscapi/install/lib/libOTExtension.so /home/naor/libscapi/install/lib/libmiracl.a
         boost_system boost_thread miracl pthread crypto dl ssl gmpxx gmp z)
