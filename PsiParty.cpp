@@ -4,7 +4,7 @@
 
 #include "PsiParty.h"
 #include <boost/thread/thread.hpp>
-#include "PRG.hpp"
+#include "PRG/PRG.hpp"
 #include "common/defs.h"
 #include <immintrin.h>
 
