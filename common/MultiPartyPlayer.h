@@ -20,6 +20,8 @@ public:
     virtual ~MultiPartyPlayer() {};
 
 protected:
+    boost::shared_ptr<SocketPartyData> m_myAddress;
+    std::map<uint, boost::shared_ptr<SocketPartyData>> m_otherAddresses;
     std::map<uint, boost::shared_ptr<CommPartyTCPSynced>> m_otherParties;
 
     uint m_partyId;

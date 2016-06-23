@@ -17,7 +17,6 @@ PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioS
     m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
     m_blockSizeInBits = stoi(m_config.Value("General", "blockSizeInBits"));
 
-
     uint *elementsBytes = new uint[m_setSize];
     m_serverProxy->read(reinterpret_cast<byte *>(elementsBytes), m_setSize*sizeof(uint));
 
