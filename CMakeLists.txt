@@ -13,7 +13,9 @@ SET(SCAPI_ROOT /home/naor/libscapi/lib/)
 INCLUDE_DIRECTORIES(/usr/include/openssl ${SCAPI_ROOT} ${BOOST_INCLUDEDIR})
 link_directories(/usr/local/ssl/lib/ ${BOOST_LIBRARYDIR})
 
-set(SOURCE_FILES main.cpp PsiParty.cpp common/defs.cpp common/MultiPartyPlayer.cpp PsiServer.cpp PRG/PRG.cpp)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY /home/naor/libscapi/MultiPartyPSI/bin)
+
+set(SOURCE_FILES main.cpp PsiParty.cpp common/defs.cpp common/MultiPartyPlayer.cpp PsiServer.cpp PRG/PRG.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/util/connection.cpp)
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI

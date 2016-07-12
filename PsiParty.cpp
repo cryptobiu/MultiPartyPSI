@@ -18,7 +18,7 @@ PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioS
     m_blockSizeInBits = stoi(m_config.Value("General", "blockSizeInBits"));
 
     uint *elementsBytes = new uint[m_setSize];
-    m_serverProxy->read(reinterpret_cast<byte *>(elementsBytes), m_setSize*sizeof(uint));
+    m_serverSocket.Receive(reinterpret_cast<byte *>(elementsBytes), m_setSize*sizeof(uint));
 
     m_elements.insert(m_elements.end(), &elementsBytes[0], &elementsBytes[m_setSize]);
     m_statistics.partyId = partyId;
@@ -28,8 +28,8 @@ PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioS
 
 void PsiParty::syncronize() {
     char c;
-    m_serverProxy->write(reinterpret_cast<const byte*>("1"),1);
-    m_serverProxy->read(reinterpret_cast<byte*>(&c),1);
+    m_serverSocket.Send(reinterpret_cast<const byte*>("1"),1);
+    m_serverSocket.Receive(reinterpret_cast<byte*>(&c),1);
 }
 
 void PsiParty::run() {
@@ -56,7 +56,7 @@ void PsiParty::runLeaderAgainstFollower(const boost::shared_ptr<CommPartyTCPSync
 }
 
 void PsiParty::finishAndReportStatsToServer() {
-    m_serverProxy->write(reinterpret_cast<byte *>(&m_statistics), sizeof(struct statistics));
+    m_serverSocket.Send(reinterpret_cast<byte *>(&m_statistics), sizeof(struct statistics));
 }
 
 void PsiParty::runAsLeader() {

@@ -10,6 +10,7 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/shared_ptr.hpp>
 #include "../../include/comm/Comm.hpp"
+#include "../PSI/src/util/socket.h"
 
 using boost::asio::io_service;
 using boost::shared_ptr;
@@ -20,13 +21,17 @@ public:
     virtual ~MultiPartyPlayer() {};
 
 protected:
-    boost::shared_ptr<SocketPartyData> m_myAddress;
+    std::map<uint, boost::shared_ptr<SocketPartyData>> m_myAddresses;
     std::map<uint, boost::shared_ptr<SocketPartyData>> m_otherAddresses;
     std::map<uint, boost::shared_ptr<CommPartyTCPSynced>> m_otherParties;
 
+    string m_ipAddress;
+    uint m_basePortNumber;
+    uint m_numOfParties;
+
     uint m_partyId;
     ConfigFile m_config;
-    boost::shared_ptr<CommPartyTCPSynced> m_serverProxy;
+    CSocket m_serverSocket;
 private:
     COPY_CTR(MultiPartyPlayer);
     ASSIGN_OP(MultiPartyPlayer);

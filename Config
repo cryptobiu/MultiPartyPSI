@@ -1,7 +1,6 @@
-no_section_arg=text_for_no_section_arg
 [General]
 numOfParties=2
-setSize=3
+setSize=50
 securityParameter=128
 elementSizeInBits=32
 blockSizeInBits=1
@@ -11,7 +10,7 @@ ip=127.0.0.1
 port=5000
 [1]
 ip=127.0.0.1
-port = 3000
+port=3000
 [2]
 ip=127.0.0.1
-port = 4000
+port=7000

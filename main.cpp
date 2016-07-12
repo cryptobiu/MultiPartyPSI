@@ -11,6 +11,7 @@
 int main(int argc, char *argv[])
 {
     uint partyId = atoi(argv[1]);
+
     boost::asio::io_service io_service;
     boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service));
 
