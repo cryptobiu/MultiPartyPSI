@@ -35,15 +35,21 @@ void PsiParty::syncronize() {
 void PsiParty::run() {
     m_statistics.beginTime = clock();
 
-    additiveSecretShare();
+    //std::cout << "additive secret share" << std::endl;
+    //additiveSecretShare();
 
     m_statistics.afterSharing = clock();
+
+    std::cout << m_statistics.afterSharing << std::endl;
+
     uint leaderId = stoi(m_config.Value("General", "leaderId"));
 
     if (m_partyId = leaderId) {
+        std::cout << "Run as leader" << std::endl;
         runAsLeader();
     }
     else {
+        std::cout << "Run as follower" << std::endl;
         runAsFollower(m_otherParties[leaderId]);
     }
 
@@ -56,6 +62,7 @@ void PsiParty::runLeaderAgainstFollower(const boost::shared_ptr<CommPartyTCPSync
 }
 
 void PsiParty::finishAndReportStatsToServer() {
+    std::cout << "send statistics to server" << std::endl;
     m_serverSocket.Send(reinterpret_cast<byte *>(&m_statistics), sizeof(struct statistics));
 }
 
@@ -90,7 +97,7 @@ void PsiParty::runAsFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader
 }
 
 void PsiParty::additiveSecretShare() {
-    if (!(getElementSize() % SIZE_OF_BLOCK)) {
+    if (getElementSize() % SIZE_OF_BLOCK != 0) {
         throw std::system_error();
     }
 
@@ -101,18 +108,25 @@ void PsiParty::additiveSecretShare() {
     uint shareSize = SIZE_OF_BLOCK * m_setSize;
     vector<boost::shared_ptr<block>> shares;
 
-    for (uint i = m_partyId; i <= m_otherParties.size()-1; i++) {
+    std::cout << m_partyId << " here1" << std::endl;
+
+    for (uint i = m_partyId+1; i <= m_otherParties.size()-1; i++) {
         block *share = (block *)_mm_malloc(elementSize, SIZE_OF_BLOCK);
         RAND_bytes(reinterpret_cast<unsigned char *>(share), elementSize);
         m_otherParties[i]->write(reinterpret_cast<const byte *>(share), elementSize);
         shares.push_back(boost::shared_ptr<block>(share, _mm_free));
     }
 
-    for (uint i = 0; i <= m_partyId-1; i++) {
+    std::cout << m_partyId << " here2" << std::endl;
+
+    for (uint i = 1; i <= m_partyId-1; i++) {
         block *share = (block *)_mm_malloc(elementSize, SIZE_OF_BLOCK);
+        std::cout << i << std::endl;
         m_otherParties[i]->read(reinterpret_cast<byte *>(share), elementSize);
         shares.push_back(boost::shared_ptr<block>(share, _mm_free));
     }
+
+    std::cout << m_partyId << " here3" << std::endl;
 
     for (uint i = 0; i < numOfBlocks; i++) {
         block *totalShare = (block *)_mm_malloc(shareSize, SIZE_OF_BLOCK);

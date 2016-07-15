@@ -61,3 +61,16 @@ for i in xrange(numOfParties):
 
 for i in xrange(numOfParties):
     parties[i+1].send("a")
+
+for i in xrange(numOfParties):
+    partyId = struct.unpack("<i", parties[i+1].recv(4))[0]
+    beginTime = struct.unpack("<f", parties[i+1].recv(4))[0]
+    afterSharing = struct.unpack("<f", parties[i+1].recv(4))[0]
+    afterOTs = struct.unpack("<f", parties[i+1].recv(4))[0]
+    afterAll = struct.unpack("<f", parties[i+1].recv(4))[0]
+
+    print "party id: %d" % partyId
+    print "party begin time: %f" % beginTime
+    print "party after sharing: %f" % afterSharing
+    print "party after OTs: %f" % afterOTs
+    print "party after All: %f" % afterAll
