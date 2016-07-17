@@ -27,8 +27,12 @@ s.bind((serverIp, serverPort))
 s.listen(numOfParties)
 
 def startPrograms():
-    for i in xrange(1,numOfParties+1):
-        Popen(['bin/MultiPartyPSI', str(i)])
+    if config.get("server", "debug") == "True":
+        for i in xrange(2,numOfParties+1):
+            Popen(['bin/MultiPartyPSI', str(i)])
+    else:
+        for i in xrange(1,numOfParties+1):
+            Popen(['bin/MultiPartyPSI', str(i)])
 
 parties = {}
 

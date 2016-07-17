@@ -12,7 +12,7 @@
 
 using boost::asio::io_service;
 
-MultiPartyPlayer::MultiPartyPlayer(uint partyId, ConfigFile config,
+MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile config,
                              boost::asio::io_service &ioService) :
     m_config(config), m_partyId(partyId), m_ioService(ioService) {
 
@@ -35,23 +35,23 @@ MultiPartyPlayer::MultiPartyPlayer(uint partyId, ConfigFile config,
 
 void MultiPartyPlayer::connectToAllParties() {
 
-    for (uint i = 1; i <= m_numOfParties; i++) {
+    for (uint32_t i = 1; i <= m_numOfParties; i++) {
         if (i == m_partyId) {
             continue;
         }
 
-        uint myPortNumber = m_basePortNumber + i;
-
         string ipAddress = m_config.Value(std::to_string(i), "ip");
-        uint portNumber = stoi(m_config.Value(std::to_string(i), "port"));
-        m_myAddresses[i].reset(new SocketPartyData(IpAdress::from_string(m_ipAddress), myPortNumber));
+        uint32_t portNumber = stoi(m_config.Value(std::to_string(i), "port"));
+        m_myAddresses[i].reset(new SocketPartyData(IpAdress::from_string(m_ipAddress), m_basePortNumber + i));
         m_otherAddresses[i].reset(new SocketPartyData(IpAdress::from_string(ipAddress), portNumber+m_partyId));
-        m_otherParties[i] = boost::make_shared<CommPartyTCPSynced>(m_ioService, *m_myAddresses[i], *m_otherAddresses[i]);
+        //m_otherParties[i] = boost::make_shared<CommPartyTCPSynced>(m_ioService, *m_myAddresses[i], *m_otherAddresses[i]);
+        m_parties[i] = new CSocket();
     }
 
+    /*
     boost::thread_group threadpool;
 
-    for (uint i = 1; i <= m_numOfParties; i++) {
+    for (uint32_t i = 1; i <= m_numOfParties; i++) {
         if (i == m_partyId) {
             continue;
         }
@@ -59,6 +59,15 @@ void MultiPartyPlayer::connectToAllParties() {
     }
 
     threadpool.join_all();
+     */
+
+    for (uint32_t i = 1; i <= m_partyId-1; i++) {
+        listen(m_myAddresses[i]->getIpAddress().to_string().c_str(), m_myAddresses[i]->getPort(), m_parties[i], 1);
+    }
+
+    for (uint32_t i=m_partyId+1; i <= m_numOfParties; i++) {
+        connect(m_otherAddresses[i]->getIpAddress().to_string().c_str(), m_otherAddresses[i]->getPort(), *m_parties[i]);
+    }
 }
 
 void MultiPartyPlayer::connectToServer() {

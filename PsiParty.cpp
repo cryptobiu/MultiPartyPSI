@@ -7,6 +7,9 @@
 #include "PRG/PRG.hpp"
 #include "common/defs.h"
 #include <immintrin.h>
+#include "PSI/src/util/typedefs.h"
+#include "PSI/src/util/crypto/crypto.h"
+#include "PSI/src/ot-based/ot-psi.h"
 
 #define SIZE_OF_BLOCK 16
 
@@ -17,10 +20,9 @@ PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioS
     m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
     m_blockSizeInBits = stoi(m_config.Value("General", "blockSizeInBits"));
 
-    uint *elementsBytes = new uint[m_setSize];
-    m_serverSocket.Receive(reinterpret_cast<byte *>(elementsBytes), m_setSize*sizeof(uint));
+    m_elements = new uint8_t[m_setSize*sizeof(uint32_t)];
+    m_serverSocket.Receive(reinterpret_cast<byte *>(m_elements), m_setSize*sizeof(uint32_t));
 
-    m_elements.insert(m_elements.end(), &elementsBytes[0], &elementsBytes[m_setSize]);
     m_statistics.partyId = partyId;
 
     syncronize();
@@ -67,23 +69,41 @@ void PsiParty::finishAndReportStatsToServer() {
 }
 
 void PsiParty::runAsLeader() {
-    boost::thread_group threadpool;
 
-    for (auto &party : m_otherParties) {
-        threadpool.create_thread(boost::bind(&PsiParty::runLeaderAgainstFollower, this, party.second));
+    uint8_t *results;
+    uint64_t rnd;
+    uint32_t symsecbits=128;
+    uint8_t* seed = (uint8_t*) malloc(AES_BYTES);
+
+    memcpy(seed, const_seed, AES_BYTES);
+    seed[0] = SERVER;
+    crypto* crypt = new crypto(symsecbits, seed);
+
+
+    crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
+    srand((unsigned)rnd+time(0));
+
+
+
+    //boost::thread_group threadpool;
+
+    for (auto &party : m_parties) {
+
+        otpsi(SERVER, m_setSize, m_setSize, sizeof(uint32_t), m_elements, &results, crypt,party.second,1);
+        //threadpool.create_thread(boost::bind(&PsiParty::runLeaderAgainstFollower, this, party.second));
     }
-    threadpool.join_all();
+    //threadpool.join_all();
 
     m_statistics.afterOTs = clock();
 
     vector<uint> intersection;
-
+    /*
     for (auto &element : m_elements) {
         if (isElementInAllSets(element)) {
             intersection.push_back(element);
         }
     }
-
+    */
     m_statistics.specificStats.aftetComputing = clock();
 }
 
@@ -97,6 +117,7 @@ void PsiParty::runAsFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader
 }
 
 void PsiParty::additiveSecretShare() {
+    /*
     if (getElementSize() % SIZE_OF_BLOCK != 0) {
         throw std::system_error();
     }
@@ -141,4 +162,5 @@ void PsiParty::additiveSecretShare() {
 
         m_secretShares.push_back(boost::shared_ptr<block>(totalShare, _mm_free));
     }
+     */
 }

@@ -11,7 +11,7 @@ union specificStats {
 };
 
 struct statistics {
-    uint partyId;
+    uint32_t partyId;
     float beginTime;
     float afterSharing;
     float afterOTs;

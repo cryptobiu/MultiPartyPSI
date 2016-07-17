@@ -17,19 +17,21 @@ using boost::shared_ptr;
 
 class MultiPartyPlayer {
 public:
-    MultiPartyPlayer(uint partyId, ConfigFile config, boost::asio::io_service &ioService);
+    MultiPartyPlayer(uint32_t partyId, ConfigFile config, boost::asio::io_service &ioService);
     virtual ~MultiPartyPlayer() {};
 
 protected:
-    std::map<uint, boost::shared_ptr<SocketPartyData>> m_myAddresses;
-    std::map<uint, boost::shared_ptr<SocketPartyData>> m_otherAddresses;
-    std::map<uint, boost::shared_ptr<CommPartyTCPSynced>> m_otherParties;
+    std::map<uint32_t, boost::shared_ptr<SocketPartyData>> m_myAddresses;
+    std::map<uint32_t, boost::shared_ptr<SocketPartyData>> m_otherAddresses;
+    std::map<uint32_t, boost::shared_ptr<CommPartyTCPSynced>> m_otherParties;
+
+    std::map<uint32_t, CSocket*> m_parties;
 
     string m_ipAddress;
-    uint m_basePortNumber;
-    uint m_numOfParties;
+    uint32_t m_basePortNumber;
+    uint32_t m_numOfParties;
 
-    uint m_partyId;
+    uint32_t m_partyId;
     ConfigFile m_config;
     CSocket m_serverSocket;
 private:

@@ -38,12 +38,12 @@ private:
     COPY_CTR(PsiParty);
     ASSIGN_OP(PsiParty);
 
-    const uint SIZE_OF_BLOCK = 16;
-    uint m_setSize;
-    uint m_elementSizeInBits;
-    uint m_blockSizeInBits;
+    const uint32_t SIZE_OF_BLOCK = 16;
+    uint32_t m_setSize;
+    uint32_t m_elementSizeInBits;
+    uint32_t m_blockSizeInBits;
     std::vector<boost::shared_ptr<block>> m_secretShares;
-    std::vector<uint> m_elements;
+    uint8_t *m_elements;
     struct statistics m_statistics;
 };
 

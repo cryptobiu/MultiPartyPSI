@@ -8,7 +8,6 @@
 #include <openssl/rand.h>
 #include <emmintrin.h>
 
-typedef unsigned int uint;
 typedef __m128i block;
 
 #define COPY_CTR(A) A(const A&)
