@@ -33,9 +33,13 @@ private:
     bool isElementInAllSets(uint32_t index, uint8_t **partiesResults);
     void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult);
 
-    uint getElementSize() {
-        return 16;
+    uint32_t getMaskSizeInBytes() {
+        return ceil_divide(m_maskbitlen, 8);
     }
+
+    void XOR(byte *xoree1, byte *xoree2);
+
+    bool isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **partiesResults);
 
     COPY_CTR(PsiParty);
     ASSIGN_OP(PsiParty);
@@ -44,9 +48,10 @@ private:
     uint32_t m_setSize;
     uint32_t m_elementSizeInBits;
     uint32_t m_blockSizeInBits;
-    std::vector<boost::shared_ptr<block>> m_secretShares;
+    byte *m_secretShare;
     uint8_t *m_elements;
     crypto* m_crypt;
+    uint32_t m_maskbitlen;
     struct statistics m_statistics;
 };
 

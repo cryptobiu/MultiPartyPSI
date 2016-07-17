@@ -16,5 +16,6 @@ struct statistics {
     float afterSharing;
     float afterOTs;
     union specificStats specificStats;
+    uint32_t intersectionSize;
 };
 #endif //MULTIPARTYPSI_STATISTICS_H

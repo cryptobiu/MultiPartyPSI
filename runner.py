@@ -23,6 +23,9 @@ print numOfParties
 
 serverIp = config.get("server", "ip")
 serverPort = int(config.get("server", "port"))
+leaderId = int(config.get("General", "leaderId"))
+setSize = int(config.get("General", "setSize"))
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((serverIp, serverPort))
@@ -46,12 +49,17 @@ for i in xrange(numOfParties):
 
 # make elements to each party and send to them
 intersection = []
-for j in xrange(20):
+
+intersectSize = random.randint(1,setSize-1)
+
+print "Real intersection size is " + str(intersectSize)
+
+for j in xrange(intersectSize):
     intersection.append(random.randint(MIN_INT, MAX_INT))
 
 for i in xrange(numOfParties):
     s = []
-    for j in xrange(30):
+    for j in xrange(setSize-intersectSize):
         s.append(random.randint(MIN_INT, MAX_INT))
 
     s = s + intersection
@@ -68,13 +76,13 @@ for i in xrange(numOfParties):
 for i in xrange(numOfParties):
     parties[i+1].send("a")
 
-for i in xrange(numOfParties):
-    partyId = struct.unpack("<i", parties[i+1].recv(4))[0]
-    beginTime = struct.unpack("<f", parties[i+1].recv(4))[0]
-    afterSharing = struct.unpack("<f", parties[i+1].recv(4))[0]
-    afterOTs = struct.unpack("<f", parties[i+1].recv(4))[0]
-    afterAll = struct.unpack("<f", parties[i+1].recv(4))[0]
-
+for i in xrange(1,numOfParties+1):
+    partyId = struct.unpack("<i", parties[i].recv(4))[0]
+    beginTime = struct.unpack("<f", parties[i].recv(4))[0]
+    afterSharing = struct.unpack("<f", parties[i].recv(4))[0]
+    afterOTs = struct.unpack("<f", parties[i].recv(4))[0]
+    afterAll = struct.unpack("<f", parties[i].recv(4))[0]
+    intersectionSize = struct.unpack("<i", parties[i].recv(4))[0]
 
     #calculations
     timeForPhase1 = (afterSharing - beginTime)/CLOCKS_PER_SEC
@@ -85,3 +93,5 @@ for i in xrange(numOfParties):
     print "time for phase 1: %f" % timeForPhase1
     print "time for phase 2: %f" % timeForPhase2
     print "time for phase 3: %f" % timeForPhase3
+    if i == leaderId:
+        print "intersection size is: %d" % intersectionSize

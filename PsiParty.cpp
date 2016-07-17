@@ -10,7 +10,7 @@
 #include "PSI/src/ot-based/ot-psi.h"
 #include "PsiParty.h"
 
-#define SIZE_OF_BLOCK 16
+#define KEY_SIZE 16
 
 PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioService) :
     MultiPartyPlayer(partyId, config, ioService)
@@ -36,6 +36,8 @@ PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioS
 
     m_statistics.partyId = partyId;
 
+    m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
+
     syncronize();
 }
 
@@ -48,7 +50,7 @@ void PsiParty::syncronize() {
 void PsiParty::run() {
     m_statistics.beginTime = clock();
 
-    //additiveSecretShare();
+    additiveSecretShare();
 
     m_statistics.afterSharing = clock();
 
@@ -69,7 +71,7 @@ void PsiParty::run() {
 
 void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult) {
     otpsi(LEADER, m_setSize, m_setSize, sizeof(uint32_t),
-            m_elements, partyResult, m_crypt,party.second, 1);
+            m_elements, partyResult, m_crypt,party.second, 1, m_maskbitlen, m_secretShare);
 }
 
 void PsiParty::finishAndReportStatsToServer() {
@@ -92,25 +94,57 @@ void PsiParty::runAsLeader() {
 
     m_statistics.afterOTs = clock();
 
-    vector<uint> intersection;
-    for (uint32_t i = 0; i < m_setSize; i++) {
+    vector<uint32_t> intersection;
+    for (uint32_t i = 0; i < m_setSize; i = i + 4) {
         if (isElementInAllSets(i, partiesResults)) {
             intersection.push_back(*(uint32_t*)(&m_elements[i]));
         }
     }
 
+    PRINT_PARTY(m_partyId) << "found that intersection size is " << intersection.size() << std::endl;
+    m_statistics.intersectionSize = intersection.size();
+
     m_statistics.specificStats.aftetComputing = clock();
 }
 
-bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults) {
+void PsiParty::XOR(byte *xoree1, byte *xoree2) {
+    for (uint32_t i = 0; i < getMaskSizeInBytes(); i++) {
+        xoree1[i] = xoree1[i] ^ xoree2[i];
+    }
+};
+
+bool PsiParty::isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **partiesResults) {
+    if (partyNum < m_numOfParties - 1) {
+        uint8_t *partyResult = partiesResults[partyNum];
+        for (uint32_t i = 0; i < m_setSize; i++) {
+            XOR(formerShare,partyResult+i*getMaskSizeInBytes());
+            if (isZeroXOR(formerShare,partyNum+1, partiesResults)) {
+                return true;
+            }
+            XOR(formerShare,partyResult+i*getMaskSizeInBytes());
+        }
+        return false;
+    }
+
+    for (uint32_t i = 0; i < getMaskSizeInBytes(); i++) {
+        if (formerShare[i] != 0) {
+            return false;
+        }
+    }
     return true;
+};
+
+bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults) {
+    byte* secret = &m_secretShare[index*getMaskSizeInBytes()];
+
+    return isZeroXOR(secret,0, partiesResults);
 }
 
 void PsiParty::runAsFollower(CSocket *leader) {
+    otpsi(FOLLOWER, m_setSize, m_setSize, sizeof(uint32_t),
+          m_elements, NULL, m_crypt, leader, 1, m_maskbitlen, m_secretShare);
     m_statistics.afterOTs = clock();
     m_statistics.specificStats.afterSend = clock();
-    otpsi(FOLLOWER, m_setSize, m_setSize, sizeof(uint32_t),
-          m_elements, NULL, m_crypt, leader, 1);
 }
 
 void PsiParty::additiveSecretShare() {
@@ -122,42 +156,39 @@ void PsiParty::additiveSecretShare() {
     uint numOfBlocks = 2 * m_elementSizeInBits / m_blockSizeInBits;
 
     uint elementSize = SIZE_OF_BLOCK * numOfBlocks;
+    */
+    uint32_t shareSize = getMaskSizeInBytes() * m_setSize;
+    vector<boost::shared_ptr<byte>> shares;
 
-    uint shareSize = SIZE_OF_BLOCK * m_setSize;
-    vector<boost::shared_ptr<block>> shares;
-
-    std::cout << m_partyId << " here1" << std::endl;
-
-    for (uint i = m_partyId+1; i <= m_otherParties.size()-1; i++) {
-        block *share = (block *)_mm_malloc(elementSize, SIZE_OF_BLOCK);
-        RAND_bytes(reinterpret_cast<unsigned char *>(share), elementSize);
-        m_otherParties[i]->write(reinterpret_cast<const byte *>(share), elementSize);
-        shares.push_back(boost::shared_ptr<block>(share, _mm_free));
+    for (uint i = m_partyId+1; i <= m_numOfParties; i++) {
+        byte *share = new byte[KEY_SIZE];
+        RAND_bytes(share, KEY_SIZE);
+        m_parties[i]->Send(share, KEY_SIZE);
+        shares.push_back(boost::shared_ptr<byte>(share));
     }
-
-    std::cout << m_partyId << " here2" << std::endl;
 
     for (uint i = 1; i <= m_partyId-1; i++) {
-        block *share = (block *)_mm_malloc(elementSize, SIZE_OF_BLOCK);
-        std::cout << i << std::endl;
-        m_otherParties[i]->read(reinterpret_cast<byte *>(share), elementSize);
-        shares.push_back(boost::shared_ptr<block>(share, _mm_free));
+        byte *share = new byte[KEY_SIZE];
+        m_parties[i]->Receive(share, KEY_SIZE);
+        shares.push_back(boost::shared_ptr<byte>(share));
     }
 
-    std::cout << m_partyId << " here3" << std::endl;
+    m_secretShare = new byte[shareSize];
+    memset(m_secretShare, 0, shareSize);
 
-    for (uint i = 0; i < numOfBlocks; i++) {
-        block *totalShare = (block *)_mm_malloc(shareSize, SIZE_OF_BLOCK);
-        for (auto &share : shares) {
-            PRG prg(reinterpret_cast<byte*>(share.get())+i*SIZE_OF_BLOCK, shareSize);
-            byte *expShare = prg.getRandomBytes();
-            for (uint j = 0; j < shareSize; j += SIZE_OF_BLOCK) {
-                __m128i v = _mm_load_si128((__m128i*)(expShare + j));
-                _mm_xor_si128(v, *(totalShare + j / SIZE_OF_BLOCK));
-            }
+    for (auto &share : shares) {
+        PRG prg(share.get(), shareSize);
+
+        for (int i = 0; i < shareSize; i = i + 4) {
+            uint32_t expShare = prg.getRandom();
+            uint32_t* secretShare = (uint32_t*)&m_secretShare[i];
+            *secretShare = *secretShare^expShare;
         }
-
-        m_secretShares.push_back(boost::shared_ptr<block>(totalShare, _mm_free));
+        /*
+        for (uint j = 0; j < shareSize; j += SIZE_OF_BLOCK) {
+            __m128i v = _mm_load_si128((__m128i*)(expShare + j));
+            _mm_xor_si128(v, *(totalShare + j / SIZE_OF_BLOCK));
+        }
+        */
     }
-     */
 }
