@@ -17,6 +17,8 @@ config.readfp(io.BytesIO(conf))
 
 numOfParties = int(config.get("General", "numOfParties"))
 
+CLOCKS_PER_SEC = 1000000.0
+
 print numOfParties
 
 serverIp = config.get("server", "ip")
@@ -27,7 +29,7 @@ s.bind((serverIp, serverPort))
 s.listen(numOfParties)
 
 def startPrograms():
-    if config.get("server", "debug") == "True":
+    if config.get("General", "debug") == "True":
         for i in xrange(2,numOfParties+1):
             Popen(['bin/MultiPartyPSI', str(i)])
     else:
@@ -73,8 +75,13 @@ for i in xrange(numOfParties):
     afterOTs = struct.unpack("<f", parties[i+1].recv(4))[0]
     afterAll = struct.unpack("<f", parties[i+1].recv(4))[0]
 
+
+    #calculations
+    timeForPhase1 = (afterSharing - beginTime)/CLOCKS_PER_SEC
+    timeForPhase2 = (afterOTs - afterSharing)/CLOCKS_PER_SEC
+    timeForPhase3 = (afterAll - afterOTs)/CLOCKS_PER_SEC
+
     print "party id: %d" % partyId
-    print "party begin time: %f" % beginTime
-    print "party after sharing: %f" % afterSharing
-    print "party after OTs: %f" % afterOTs
-    print "party after All: %f" % afterAll
+    print "time for phase 1: %f" % timeForPhase1
+    print "time for phase 2: %f" % timeForPhase2
+    print "time for phase 3: %f" % timeForPhase3

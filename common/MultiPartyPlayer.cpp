@@ -21,16 +21,13 @@ MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile config,
     m_ipAddress = m_config.Value(std::to_string(m_partyId).c_str(), "ip");
     m_basePortNumber = stoi(m_config.Value(std::to_string(m_partyId).c_str(), "port"));
 
-    std::cout << m_ipAddress << std::endl;
-    std::cout << m_basePortNumber << std::endl;
-
     connectToAllParties();
 
-    std::cout << m_partyId << " connected to all parties" << std::endl;
+    PRINT_PARTY(m_partyId) << "connected to all parties" << std::endl;
 
     connectToServer();
 
-    std::cout << m_partyId << " connected to server" << std::endl;
+    PRINT_PARTY(m_partyId) << "connected to server" << std::endl;
 }
 
 void MultiPartyPlayer::connectToAllParties() {
@@ -75,21 +72,19 @@ void MultiPartyPlayer::connectToServer() {
     auto serverIp = m_config.Value("server", "ip");
     auto serverPort = stoi(m_config.Value("server", "port"));
 
-    std::cout << serverIp << std::endl;
-    std::cout << serverPort << std::endl;
-
     //SocketPartyData me(IpAdress::from_string(m_ipAddress), m_basePortNumber+m_numOfParties+1);
     //SocketPartyData server(IpAdress::from_string(serverIp), serverPort);
 
     if (connect(serverIp.c_str(), serverPort, m_serverSocket) == false) {
-        std::cout << "Failure" << std::endl;
+
+        PRINT_PARTY(m_partyId) << "failed to connect" << std::endl;
     }
 
     //m_serverProxy.reset(new CommPartyTCPSynced(m_ioService, me, server));
 
     //m_serverProxy->join(500, 5000);
 
-    std::cout << m_partyId << " connected to the server" << std::endl;
+    PRINT_PARTY(m_partyId) << "connected to the server" << std::endl;
 
     //int Receive(void* pBuf, int nLen, int nFlags = 0)
 

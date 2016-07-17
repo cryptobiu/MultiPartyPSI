@@ -5,7 +5,7 @@ securityParameter=128
 elementSizeInBits=32
 blockSizeInBits=1
 leaderId=1
-debug=True
+debug=False
 [server]
 ip=127.0.0.1
 port=5000

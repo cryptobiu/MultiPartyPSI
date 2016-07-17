@@ -2,20 +2,31 @@
 // Created by root on 6/20/16.
 //
 
-#include "PsiParty.h"
+
 #include <boost/thread/thread.hpp>
 #include "PRG/PRG.hpp"
 #include "common/defs.h"
 #include <immintrin.h>
-#include "PSI/src/util/typedefs.h"
-#include "PSI/src/util/crypto/crypto.h"
 #include "PSI/src/ot-based/ot-psi.h"
+#include "PsiParty.h"
 
 #define SIZE_OF_BLOCK 16
 
 PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioService) :
     MultiPartyPlayer(partyId, config, ioService)
 {
+
+    uint64_t rnd;
+    uint32_t symsecbits=128;
+    uint8_t* seed = (uint8_t*) malloc(AES_BYTES);
+
+    memcpy(seed, const_seed, AES_BYTES);
+    seed[0] = m_partyId;
+    m_crypt = new crypto(symsecbits, seed);
+
+    m_crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
+    srand((unsigned)rnd+time(0));
+
     m_setSize = stoi(m_config.Value("General", "setSize"));
     m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
     m_blockSizeInBits = stoi(m_config.Value("General", "blockSizeInBits"));
@@ -37,83 +48,69 @@ void PsiParty::syncronize() {
 void PsiParty::run() {
     m_statistics.beginTime = clock();
 
-    //std::cout << "additive secret share" << std::endl;
     //additiveSecretShare();
 
     m_statistics.afterSharing = clock();
 
-    std::cout << m_statistics.afterSharing << std::endl;
-
     uint leaderId = stoi(m_config.Value("General", "leaderId"));
 
-    if (m_partyId = leaderId) {
-        std::cout << "Run as leader" << std::endl;
+    if (m_partyId == leaderId) {
+        PRINT_PARTY(m_partyId) << "run as leader" << std::endl;
         runAsLeader();
     }
     else {
-        std::cout << "Run as follower" << std::endl;
-        runAsFollower(m_otherParties[leaderId]);
+        PRINT_PARTY(m_partyId) << "run as follower"  << std::endl;
+        runAsFollower(m_parties[leaderId]);
     }
 
     finishAndReportStatsToServer();
 }
 
 
-void PsiParty::runLeaderAgainstFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader) {
-
+void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult) {
+    otpsi(LEADER, m_setSize, m_setSize, sizeof(uint32_t),
+            m_elements, partyResult, m_crypt,party.second, 1);
 }
 
 void PsiParty::finishAndReportStatsToServer() {
-    std::cout << "send statistics to server" << std::endl;
     m_serverSocket.Send(reinterpret_cast<byte *>(&m_statistics), sizeof(struct statistics));
 }
 
 void PsiParty::runAsLeader() {
 
-    uint8_t *results;
-    uint64_t rnd;
-    uint32_t symsecbits=128;
-    uint8_t* seed = (uint8_t*) malloc(AES_BYTES);
+    uint8_t **partiesResults;
 
-    memcpy(seed, const_seed, AES_BYTES);
-    seed[0] = SERVER;
-    crypto* crypt = new crypto(symsecbits, seed);
+    partiesResults = new uint8_t*[m_numOfParties];
 
-
-    crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
-    srand((unsigned)rnd+time(0));
-
-
-
-    //boost::thread_group threadpool;
+    boost::thread_group threadpool;
 
     for (auto &party : m_parties) {
-
-        otpsi(SERVER, m_setSize, m_setSize, sizeof(uint32_t), m_elements, &results, crypt,party.second,1);
-        //threadpool.create_thread(boost::bind(&PsiParty::runLeaderAgainstFollower, this, party.second));
+        threadpool.create_thread(boost::bind(&PsiParty::runLeaderAgainstFollower, this,
+                                             party, &partiesResults[party.first]));
     }
-    //threadpool.join_all();
+    threadpool.join_all();
 
     m_statistics.afterOTs = clock();
 
     vector<uint> intersection;
-    /*
-    for (auto &element : m_elements) {
-        if (isElementInAllSets(element)) {
-            intersection.push_back(element);
+    for (uint32_t i = 0; i < m_setSize; i++) {
+        if (isElementInAllSets(i, partiesResults)) {
+            intersection.push_back(*(uint32_t*)(&m_elements[i]));
         }
     }
-    */
+
     m_statistics.specificStats.aftetComputing = clock();
 }
 
-bool PsiParty::isElementInAllSets(uint element) {
+bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults) {
     return true;
 }
 
-void PsiParty::runAsFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader) {
+void PsiParty::runAsFollower(CSocket *leader) {
     m_statistics.afterOTs = clock();
     m_statistics.specificStats.afterSend = clock();
+    otpsi(FOLLOWER, m_setSize, m_setSize, sizeof(uint32_t),
+          m_elements, NULL, m_crypt, leader, 1);
 }
 
 void PsiParty::additiveSecretShare() {

@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     PsiParty party(partyId, cf, io_service);
 
-    std::cout << "Party " << partyId << " is connected" << std::endl;
+    PRINT_PARTY(partyId) << "is connected" << std::endl;
 
     party.run();
 

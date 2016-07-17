@@ -7,6 +7,8 @@
 
 #include "common/MultiPartyPlayer.h"
 #include "common/statistics.h"
+#include "PSI/src/util/typedefs.h"
+#include "PSI/src/util/crypto/crypto.h"
 
 class PsiParty : public MultiPartyPlayer {
 public:
@@ -25,11 +27,11 @@ private:
     void additiveSecretShare();
 
     void runAsLeader();
-    void runLeaderAgainstFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader);
-    void runAsFollower(const boost::shared_ptr<CommPartyTCPSynced> &leader);
+    void runAsFollower(CSocket *leader);
     void finishAndReportStatsToServer();
     void syncronize();
-    bool isElementInAllSets(uint element);
+    bool isElementInAllSets(uint32_t index, uint8_t **partiesResults);
+    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult);
 
     uint getElementSize() {
         return 16;
@@ -44,6 +46,7 @@ private:
     uint32_t m_blockSizeInBits;
     std::vector<boost::shared_ptr<block>> m_secretShares;
     uint8_t *m_elements;
+    crypto* m_crypt;
     struct statistics m_statistics;
 };
 
