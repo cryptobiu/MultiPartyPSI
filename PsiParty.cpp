@@ -12,7 +12,7 @@
 
 #define KEY_SIZE 16
 
-PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioService) :
+PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &ioService) :
     MultiPartyPlayer(partyId, config, ioService)
 {
 
@@ -21,7 +21,7 @@ PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioS
     uint8_t* seed = (uint8_t*) malloc(AES_BYTES);
 
     memcpy(seed, const_seed, AES_BYTES);
-    seed[0] = m_partyId;
+    seed[0] = static_cast<uint8_t>(m_partyId);
     m_crypt = new crypto(symsecbits, seed);
 
     m_crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
@@ -32,6 +32,9 @@ PsiParty::PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioS
     m_blockSizeInBits = stoi(m_config.Value("General", "blockSizeInBits"));
 
     m_elements = new uint8_t[m_setSize*sizeof(uint32_t)];
+
+    PRINT_PARTY(m_partyId) << "is receiving elements" << std::endl;
+
     m_serverSocket.Receive(reinterpret_cast<byte *>(m_elements), m_setSize*sizeof(uint32_t));
 
     m_statistics.partyId = partyId;
@@ -70,11 +73,14 @@ void PsiParty::run() {
 
 
 void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult) {
+    PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
     otpsi(LEADER, m_setSize, m_setSize, sizeof(uint32_t),
             m_elements, partyResult, m_crypt,party.second, 1, m_maskbitlen, m_secretShare);
+    PRINT_PARTY(m_partyId) << "done running leader against party " << party.first << std::endl;
 }
 
 void PsiParty::finishAndReportStatsToServer() {
+    PRINT_PARTY(m_partyId) << "is reporting stats to server" << std::endl;
     m_serverSocket.Send(reinterpret_cast<byte *>(&m_statistics), sizeof(struct statistics));
 }
 
@@ -84,13 +90,21 @@ void PsiParty::runAsLeader() {
 
     partiesResults = new uint8_t*[m_numOfParties];
 
+    /*
     boost::thread_group threadpool;
 
     for (auto &party : m_parties) {
         threadpool.create_thread(boost::bind(&PsiParty::runLeaderAgainstFollower, this,
-                                             party, &partiesResults[party.first]));
+                                             party, &partiesResults[party.first-1]));
     }
     threadpool.join_all();
+    */
+
+    for (auto &party : m_parties) {
+        runLeaderAgainstFollower(party, &partiesResults[party.first - 1]);
+    }
+
+    PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
     m_statistics.afterOTs = clock();
 
@@ -143,6 +157,7 @@ bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults) {
 void PsiParty::runAsFollower(CSocket *leader) {
     otpsi(FOLLOWER, m_setSize, m_setSize, sizeof(uint32_t),
           m_elements, NULL, m_crypt, leader, 1, m_maskbitlen, m_secretShare);
+    PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
     m_statistics.afterOTs = clock();
     m_statistics.specificStats.afterSend = clock();
 }

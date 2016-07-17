@@ -17,7 +17,7 @@ using boost::shared_ptr;
 
 class MultiPartyPlayer {
 public:
-    MultiPartyPlayer(uint32_t partyId, ConfigFile config, boost::asio::io_service &ioService);
+    MultiPartyPlayer(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService);
     virtual ~MultiPartyPlayer() {};
 
 protected:
@@ -32,7 +32,7 @@ protected:
     uint32_t m_numOfParties;
 
     uint32_t m_partyId;
-    ConfigFile m_config;
+    ConfigFile &m_config;
     CSocket m_serverSocket;
 private:
     COPY_CTR(MultiPartyPlayer);

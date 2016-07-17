@@ -12,7 +12,7 @@
 
 using boost::asio::io_service;
 
-MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile config,
+MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile &config,
                              boost::asio::io_service &ioService) :
     m_config(config), m_partyId(partyId), m_ioService(ioService) {
 

@@ -16,7 +16,9 @@ int main(int argc, char *argv[])
     boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service));
 
     // read the file as config file
-    ConfigFile cf("Config");
+    ConfigFile cf("/home/naor/libscapi/MultiPartyPSI/Config");
+
+    PRINT_PARTY(partyId) << "initialize PsiParty" << std::endl;
 
     PsiParty party(partyId, cf, io_service);
 

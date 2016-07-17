@@ -12,7 +12,7 @@
 
 class PsiParty : public MultiPartyPlayer {
 public:
-    PsiParty(uint partyId, ConfigFile config, boost::asio::io_service &ioService);
+    PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &ioService);
     virtual ~PsiParty() {};
 
     void run();
