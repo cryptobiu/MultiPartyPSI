@@ -4,7 +4,7 @@
 
 
 #include <boost/thread/thread.hpp>
-#include "../include/primitives/AES_PRG.hpp"
+#include "PRG/PRG.hpp"
 #include "common/defs.h"
 #include <immintrin.h>
 #include "PSI/src/ot-based/ot-psi.h"
@@ -33,6 +33,11 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
     m_elements = new uint8_t[m_setSize*sizeof(uint32_t)];
 
+    m_serverSocket.Receive(reinterpret_cast<byte *>(&m_strategy), 1);
+
+
+    PRINT_PARTY(m_partyId) << "is executing strategy " << (m_strategy == Strategy::NAIVE_METHOD_SMALL_N) << std::endl;
+
     PRINT_PARTY(m_partyId) << "is receiving elements" << std::endl;
 
     m_serverSocket.Receive(reinterpret_cast<byte *>(m_elements), m_setSize*sizeof(uint32_t));
@@ -53,7 +58,11 @@ void PsiParty::syncronize() {
 void PsiParty::run() {
     m_statistics.beginTime = clock();
 
+    PRINT_PARTY(m_partyId) << "additive secret sharing is runnning" << std::endl;
+
     additiveSecretShare();
+
+    PRINT_PARTY(m_partyId) << "additive secret sharing completed" << std::endl;
 
     m_statistics.afterSharing = clock();
 
@@ -192,7 +201,7 @@ void PsiParty::additiveSecretShare() {
     memset(m_secretShare, 0, shareSize);
 
     for (auto &share : shares) {
-        AES_PRG prg(share.get(), shareSize);
+        PRG prg(share.get(), shareSize);
 
         for (int i = 0; i < shareSize; i = i + 4) {
             uint32_t expShare = prg.getRandom();

@@ -53,6 +53,7 @@ private:
     crypto* m_crypt;
     uint32_t m_maskbitlen;
     struct statistics m_statistics;
+    enum Strategy m_strategy;
 };
 
 #endif //LIBSCAPI_PSIPARTY_H
