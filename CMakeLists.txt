@@ -11,7 +11,8 @@ find_package(Boost COMPONENTS system thread chrono date_time atomic REQUIRED)
 SET(SCAPI_ROOT /home/naor/libscapi/lib/)
 
 INCLUDE_DIRECTORIES(/usr/include/openssl ${SCAPI_ROOT} ${BOOST_INCLUDEDIR} /usr/include/glib-2.0/ /usr/lib/x86_64-linux-gnu/glib-2.0/include
-        /home/naor/libscapi/MultiPartyPSI/PSI/src/externals/Miracl/include /home/naor/libscapi/MultiPartyPSI/PSI/src/externals/miracl_lib)
+        /home/naor/libscapi/MultiPartyPSI/PSI/src/externals/Miracl/include /home/naor/libscapi/MultiPartyPSI/PSI/src/externals/miracl_lib
+        /home/naor/libscapi/lib/OTExtensionBristol)
 link_directories(/usr/local/ssl/lib/ ${BOOST_LIBRARYDIR} PSI/src/util/crypto/ /home/naor/libscapi/install/lib/ /home/naor/libscapi/MultiPartyPSI/PSI/src/externals/miracl_lib/)
 
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY /home/naor/libscapi/MultiPartyPSI/bin)
@@ -23,7 +24,7 @@ AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI/src/util/ot OT_SOURCE
 AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI/src/hashing HASHING_SOURCES)
 AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI/src/util UTIL_SOURCES)
 
-set(SOURCE_FILES main.cpp PsiParty.cpp common/defs.cpp common/MultiPartyPlayer.cpp PRG/PRG.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/util/connection.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
+set(SOURCE_FILES main.cpp PsiParty.cpp common/defs.cpp common/MultiPartyPlayer.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/util/connection.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
         ${MIRACLE_LIB_SOURCES} ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES})
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 

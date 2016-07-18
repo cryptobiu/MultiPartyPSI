@@ -6,7 +6,7 @@
  */
 
 #include "ot-psi.h"
-
+//#include "../../../../include/interactive_mid_protocols/OTExtensionBristol.hpp"
 
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebytelens, uint8_t** elements,
 		uint8_t*** result, uint32_t** res_bytelen, crypto* crypt_env, CSocket* sock,  uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, double epsilon,
@@ -408,6 +408,7 @@ void oprg_client(uint8_t* hash_table, uint32_t nbins, uint32_t neles, uint32_t* 
 	uint32_t OTsPerElement, numOTs, i, u, maskbytelen, ctr;
 	uint8_t *keyMtx;
 	OTExtension1ooNECCReceiver* receiver;
+	//OTExtensionBristolReciever *bristolReceiver;
 	timeval t_start, t_end;
 
 	maskbytelen = ceil_divide(maskbitlen, 8);

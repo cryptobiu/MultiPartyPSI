@@ -4,7 +4,7 @@
 
 
 #include <boost/thread/thread.hpp>
-#include "PRG/PRG.hpp"
+#include "../include/primitives/AES_PRG.hpp"
 #include "common/defs.h"
 #include <immintrin.h>
 #include "PSI/src/ot-based/ot-psi.h"
@@ -192,7 +192,7 @@ void PsiParty::additiveSecretShare() {
     memset(m_secretShare, 0, shareSize);
 
     for (auto &share : shares) {
-        PRG prg(share.get(), shareSize);
+        AES_PRG prg(share.get(), shareSize);
 
         for (int i = 0; i < shareSize; i = i + 4) {
             uint32_t expShare = prg.getRandom();
