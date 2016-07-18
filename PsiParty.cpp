@@ -8,7 +8,9 @@
 #include "common/defs.h"
 #include <immintrin.h>
 #include "PSI/src/ot-based/ot-psi.h"
+#include "PSI/src/hashing/hashing_util.h"
 #include "PsiParty.h"
+#include <iomanip>
 
 #define KEY_SIZE 16
 
@@ -46,6 +48,8 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
     m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
 
+    PRINT_PARTY(m_partyId) << "Mask size in bytes is " << getMaskSizeInBytes() << std::endl;
+
     syncronize();
 }
 
@@ -80,11 +84,33 @@ void PsiParty::run() {
     finishAndReportStatsToServer();
 }
 
+void PsiParty::printHex(uint8_t *arr, uint32_t size) {
+    for(uint32_t k = 0; k < size; k++) {
+        std::cout << setw(2) << setfill('0') << (hex) << (unsigned int) arr[k] << (dec);
+    }
+}
 
-void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult) {
+void PsiParty::printShares(uint8_t *arr, uint32_t numOfShares) {
+    for (uint32_t i = 0; i < numOfShares; i++) {
+        printHex(arr+i*getMaskSizeInBytes(), getMaskSizeInBytes());
+        std::cout << " ";
+    }
+    std::cout << std::endl;
+}
+
+void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults) {
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
     otpsi(LEADER, m_setSize, m_setSize, sizeof(uint32_t),
-            m_elements, partyResult, m_crypt,party.second, 1, m_maskbitlen, m_secretShare);
+            m_elements, partyResult, leaderResults, m_crypt,party.second, 1, m_maskbitlen, m_secretShare);
+
+    PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
+
+    PRINT_PARTY(m_partyId) << "party " << party.first << " results: ";
+    printShares(*partyResult, NUM_HASH_FUNCTIONS * m_setSize);
+
+    PRINT_PARTY(m_partyId) << "leader results: ";
+    printShares(*leaderResults, m_setSize);
+
     PRINT_PARTY(m_partyId) << "done running leader against party " << party.first << std::endl;
 }
 
@@ -96,8 +122,10 @@ void PsiParty::finishAndReportStatsToServer() {
 void PsiParty::runAsLeader() {
 
     uint8_t **partiesResults;
+    uint8_t **leaderResults;
 
     partiesResults = new uint8_t*[m_numOfParties];
+    leaderResults = new uint8_t*[m_numOfParties];
 
     /*
     boost::thread_group threadpool;
@@ -110,16 +138,17 @@ void PsiParty::runAsLeader() {
     */
 
     for (auto &party : m_parties) {
-        runLeaderAgainstFollower(party, &partiesResults[party.first - 1]);
+        runLeaderAgainstFollower(party, &partiesResults[party.first - 1], &leaderResults[party.first - 1]);
     }
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
     m_statistics.afterOTs = clock();
 
+
     vector<uint32_t> intersection;
     for (uint32_t i = 0; i < m_setSize; i = i + 4) {
-        if (isElementInAllSets(i, partiesResults)) {
+        if (isElementInAllSets(i, partiesResults, leaderResults)) {
             intersection.push_back(*(uint32_t*)(&m_elements[i]));
         }
     }
@@ -130,21 +159,21 @@ void PsiParty::runAsLeader() {
     m_statistics.specificStats.aftetComputing = clock();
 }
 
-void PsiParty::XOR(byte *xoree1, byte *xoree2) {
-    for (uint32_t i = 0; i < getMaskSizeInBytes(); i++) {
+void PsiParty::XOR(byte *xoree1, byte *xoree2, uint32_t size) {
+    for (uint32_t i = 0; i < size; i++) {
         xoree1[i] = xoree1[i] ^ xoree2[i];
     }
 };
 
 bool PsiParty::isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **partiesResults) {
-    if (partyNum < m_numOfParties - 1) {
+    if (partyNum < m_numOfParties) {
         uint8_t *partyResult = partiesResults[partyNum];
-        for (uint32_t i = 0; i < m_setSize; i++) {
-            XOR(formerShare,partyResult+i*getMaskSizeInBytes());
+        for (uint32_t i = 0; i < m_setSize *NUM_HASH_FUNCTIONS; i++) {
+            XOR(formerShare,partyResult+i*getMaskSizeInBytes(), getMaskSizeInBytes());
             if (isZeroXOR(formerShare,partyNum+1, partiesResults)) {
                 return true;
             }
-            XOR(formerShare,partyResult+i*getMaskSizeInBytes());
+            XOR(formerShare,partyResult+i*getMaskSizeInBytes(), getMaskSizeInBytes());
         }
         return false;
     }
@@ -157,15 +186,20 @@ bool PsiParty::isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **parties
     return true;
 };
 
-bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults) {
+bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint8_t **leaderResults) {
     byte* secret = &m_secretShare[index*getMaskSizeInBytes()];
 
-    return isZeroXOR(secret,0, partiesResults);
+    for (auto &party : m_parties) {
+        XOR(secret, leaderResults[party.first-1]+index*getMaskSizeInBytes(), getMaskSizeInBytes());
+    }
+
+    // 1 is always the leader Id
+    return isZeroXOR(secret,1, partiesResults);
 }
 
 void PsiParty::runAsFollower(CSocket *leader) {
     otpsi(FOLLOWER, m_setSize, m_setSize, sizeof(uint32_t),
-          m_elements, NULL, m_crypt, leader, 1, m_maskbitlen, m_secretShare);
+          m_elements, NULL, NULL, m_crypt, leader, 1, m_maskbitlen, m_secretShare);
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
     m_statistics.afterOTs = clock();
     m_statistics.specificStats.afterSend = clock();
@@ -189,12 +223,16 @@ void PsiParty::additiveSecretShare() {
         RAND_bytes(share, KEY_SIZE);
         m_parties[i]->Send(share, KEY_SIZE);
         shares.push_back(boost::shared_ptr<byte>(share));
+        //printHex(share,KEY_SIZE);
+        //std::cout << std::endl;
     }
 
     for (uint i = 1; i <= m_partyId-1; i++) {
         byte *share = new byte[KEY_SIZE];
         m_parties[i]->Receive(share, KEY_SIZE);
         shares.push_back(boost::shared_ptr<byte>(share));
+        //printHex(share,KEY_SIZE);
+        //std::cout << std::endl;
     }
 
     m_secretShare = new byte[shareSize];
@@ -202,12 +240,13 @@ void PsiParty::additiveSecretShare() {
 
     for (auto &share : shares) {
         PRG prg(share.get(), shareSize);
+        byte *prgResult = prg.getRandomBytes();
+        //printHex(prgResult,shareSize);
+        //std::cout << std::endl;
 
-        for (int i = 0; i < shareSize; i = i + 4) {
-            uint32_t expShare = prg.getRandom();
-            uint32_t* secretShare = (uint32_t*)&m_secretShare[i];
-            *secretShare = *secretShare^expShare;
-        }
+        //XOR(m_secretShare, prg.getRandomBytes(), shareSize);
+        XOR(m_secretShare, share.get(), shareSize); // TODO: fix PRG and replace it
+
         /*
         for (uint j = 0; j < shareSize; j += SIZE_OF_BLOCK) {
             __m128i v = _mm_load_si128((__m128i*)(expShare + j));
@@ -215,4 +254,7 @@ void PsiParty::additiveSecretShare() {
         }
         */
     }
+
+    PRINT_PARTY(m_partyId) << "my secret share is: ";
+    printShares(m_secretShare, m_setSize);
 }

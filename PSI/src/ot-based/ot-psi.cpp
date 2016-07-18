@@ -9,7 +9,9 @@
 //#include "../../../../include/interactive_mid_protocols/OTExtensionBristol.hpp"
 
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebytelens, uint8_t** elements,
-		uint8_t*** result, uint32_t** res_bytelen, crypto* crypt_env, CSocket* sock,  uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, double epsilon,
+		uint8_t** server_masks, uint8_t** masks,
+
+			   uint32_t** res_bytelen, crypto* crypt_env, CSocket* sock,  uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, double epsilon,
 		bool detailed_timings) {
 
 	prf_state_ctx prf_state;
@@ -52,9 +54,9 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 	} else { //playing as client
 		nbins = ceil(epsilon * neles);
 		intersect_size = otpsi_client(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env,
-				sock, ntasks, &prf_state, &res_pos);
+				sock, ntasks, &prf_state, server_masks, masks);
 
-		create_result_from_matches_var_bitlen(result, res_bytelen, elebytelens, elements, res_pos, intersect_size);
+		//create_result_from_matches_var_bitlen(result, res_bytelen, elebytelens, elements, res_pos, intersect_size);
 	}
 
 	free(eleptr);
@@ -65,7 +67,7 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 
 
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebytelen, uint8_t* elements,
-		uint8_t** result, crypto* crypt_env, CSocket* sock,  uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, double epsilon,
+			   uint8_t** server_masks, uint8_t** masks, crypto* crypt_env, CSocket* sock,  uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, double epsilon,
 		bool detailed_timings) {
 
 	prf_state_ctx prf_state;
@@ -105,12 +107,12 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebyte
 	} else { //playing as client
 		nbins = ceil(epsilon * neles);
 		intersect_size = otpsi_client(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env,
-				sock, ntasks, &prf_state, &res_pos);
+				sock, ntasks, &prf_state, server_masks, masks);
 		//*result = (uint8_t*) malloc(intersect_size * elebytelen);
 		//for(i = 0; i < intersect_size; i++) {
 		//	memcpy((*result) + i * elebytelen, elements + res_pos[i] * elebytelen, elebytelen);
 		//}
-		create_result_from_matches_fixed_bitlen(result, elebytelen, elements, res_pos, intersect_size);
+		//create_result_from_matches_fixed_bitlen(result, elebytelen, elements, res_pos, intersect_size);
 	}
 
 	if(elebitlen > maskbitlen)
@@ -123,12 +125,11 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebyte
 
 uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles,
 		uint32_t elebitlen, uint32_t maskbitlen, crypto* crypt_env, CSocket* sock, uint32_t ntasks,
-		prf_state_ctx* prf_state, uint32_t** result) {
+		prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks) {
 
 	uint32_t outbitlen, maskbytelen, intersect_size;
-	uint8_t *hash_table, *masks;
+	uint8_t *hash_table;
 	uint32_t* nelesinbin;
-	uint8_t *server_masks;
 	uint32_t* perm = (uint32_t*) calloc(neles, sizeof(uint32_t));
 	pthread_t rcv_masks_thread;
 	pthread_t* query_map_thread = (pthread_t*) malloc(sizeof(pthread_t) * ntasks);
@@ -191,10 +192,10 @@ uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_
 	print_bin_content(hash_table, nbins, ceil_divide(outbitlen, 8), NULL, false);
 #endif
 
-	masks = (uint8_t*) malloc(neles * maskbytelen);
+	*masks = (uint8_t*) malloc(neles * maskbytelen);
 	//Perform the OPRG execution
 	//cout << "otpsi client running ots" << endl;
-	oprg_client(hash_table, nbins, neles, nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, masks);
+	oprg_client(hash_table, nbins, neles, nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, *masks);
 
 	if(DETAILED_TIMINGS) {
 		gettimeofday(&t_start, NULL);
@@ -208,14 +209,15 @@ uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_
 #endif
 #ifdef PRINT_BIN_CONTENT
 	cout << "Client masks: " << endl;
-	print_bin_content(masks, neles, maskbytelen, NULL, false);
+	print_bin_content(*masks, neles, maskbytelen, NULL, false);
 #endif
+
 	//receive server masks
-	server_masks = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * pneles * maskbytelen);
+	*server_masks = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * pneles * maskbytelen);
 
 	//receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
 	//use a separate thread to receive the server's masks
-	rcv_ctx.rcv_buf = server_masks;
+	rcv_ctx.rcv_buf = *server_masks;
 	rcv_ctx.nmasks = NUM_HASH_FUNCTIONS * pneles;
 	rcv_ctx.maskbytelen = maskbytelen;
 	rcv_ctx.sock = sock;
@@ -260,7 +262,7 @@ uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_
 #endif
 #ifdef PRINT_RECEIVED_VALUES
 	cout << "Received server masks: " << endl;
-	print_bin_content(server_masks, NUM_HASH_FUNCTIONS*pneles, maskbytelen, NULL, false);
+	print_bin_content(*server_masks, NUM_HASH_FUNCTIONS*pneles, maskbytelen, NULL, false);
 #endif
 
 	//query hash table using multiple threads
@@ -285,15 +287,15 @@ uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_
 #endif
 
 	//compute intersection
-	intersect_size = otpsi_find_intersection(result, masks, neles, server_masks,
-			pneles * NUM_HASH_FUNCTIONS, maskbytelen, perm);
-
+	//intersect_size = otpsi_find_intersection(result, masks, neles, *server_masks,
+	//		pneles * NUM_HASH_FUNCTIONS, maskbytelen, perm);
+/*
 	if(DETAILED_TIMINGS) {
 		gettimeofday(&t_end, NULL);
 		cout << "Time for intersecting:\t\t" << fixed << std::setprecision(2) <<
 				getMillies(t_start, t_end) << " ms" << endl;
 	}
-
+*/
 	/*free(masks);
 	free(hash_table);
 	free(nelesinbin);
@@ -317,7 +319,7 @@ uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_
 	free(stashmasks);
 #endif
 
-	return intersect_size;
+	return 0;
 }
 
 void XOR(uint8_t *xoree1, uint8_t *xoree2, uint32_t numBytes) {
@@ -325,6 +327,22 @@ void XOR(uint8_t *xoree1, uint8_t *xoree2, uint32_t numBytes) {
 		xoree1[i] = xoree1[i] ^ xoree2[i];
 	}
 };
+
+
+void xor_masks(uint8_t *masks, uint32_t* nelesinbin, uint32_t maskbytelen, uint32_t nbins, uint8_t *secretShare) {
+	uint8_t *maskPtr = masks;
+	uint8_t *secretSharePtr = secretShare;
+	for (uint32_t i = 0; i < nbins; i++) {
+		uint32_t neles = nelesinbin[i];
+		for (uint32_t j = 0; j < neles; j++) {
+			XOR(maskPtr, secretSharePtr, maskbytelen);
+			maskPtr = maskPtr + maskbytelen;
+		}
+		if (((i+1)%NUM_HASH_FUNCTIONS)==0) {
+			secretSharePtr = secretSharePtr + maskbytelen;
+		}
+	}
+}
 
 void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
 		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t *secretShare) {
@@ -373,6 +391,13 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 	cout << "Server: time for OPRG evaluation: " << getMillies(t_start, t_end) << " ms" << endl;
 	gettimeofday(&t_start, NULL);
 #endif
+
+#ifdef PRINT_SENT_VALUES
+	cout << "Sent server masks: " << endl;
+	print_bin_content(masks, NUM_HASH_FUNCTIONS*neles, maskbytelen, NULL, false);
+#endif
+
+	xor_masks(masks, nelesinbin, maskbytelen, nbins, secretShare);
 
 	//send the masks to the receiver
 	send_masks(masks, neles * NUM_HASH_FUNCTIONS, maskbytelen, sock[0]);

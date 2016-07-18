@@ -30,14 +30,17 @@ private:
     void runAsFollower(CSocket *leader);
     void finishAndReportStatsToServer();
     void syncronize();
-    bool isElementInAllSets(uint32_t index, uint8_t **partiesResults);
-    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult);
+    bool isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint8_t **leaderResults);
+    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults);
+
+    void printShares(uint8_t *arr, uint32_t numOfShares);
 
     uint32_t getMaskSizeInBytes() {
         return ceil_divide(m_maskbitlen, 8);
     }
 
-    void XOR(byte *xoree1, byte *xoree2);
+    void printHex(uint8_t *arr, uint32_t size);
+    void XOR(byte *xoree1, byte *xoree2, uint32_t size);
 
     bool isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **partiesResults);
 

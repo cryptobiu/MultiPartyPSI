@@ -72,7 +72,7 @@ def runMPPSI(strategy):
     # make elements to each party and send to them
     intersection = []
 
-    intersectSize = random.randint(1,setSize-1)
+    intersectSize = random.randint(1,setSize)
 
     print "Real intersection size is " + str(intersectSize)
 
