@@ -4,7 +4,9 @@
 
 
 #include <boost/thread/thread.hpp>
-#include "PRG/PRG.hpp"
+#include "../include/primitives/AES_PRG.hpp"
+#include "../include/primitives/Prg.hpp"
+//#include "PRG/PRG.hpp"
 #include "common/defs.h"
 #include <immintrin.h>
 #include "PSI/src/ot-based/ot-psi.h"
@@ -84,7 +86,7 @@ void PsiParty::run() {
     finishAndReportStatsToServer();
 }
 
-void PsiParty::printHex(uint8_t *arr, uint32_t size) {
+void PsiParty::printHex(const uint8_t *arr, uint32_t size) {
     for(uint32_t k = 0; k < size; k++) {
         std::cout << setw(2) << setfill('0') << (hex) << (unsigned int) arr[k] << (dec);
     }
@@ -239,13 +241,34 @@ void PsiParty::additiveSecretShare() {
     memset(m_secretShare, 0, shareSize);
 
     for (auto &share : shares) {
-        PRG prg(share.get(), shareSize);
-        byte *prgResult = prg.getRandomBytes();
-        //printHex(prgResult,shareSize);
-        //std::cout << std::endl;
 
-        //XOR(m_secretShare, prg.getRandomBytes(), shareSize);
-        XOR(m_secretShare, share.get(), shareSize); // TODO: fix PRG and replace it
+        std::cout << "key: ";
+        printHex(share.get(),KEY_SIZE);
+        std::cout << std::endl;
+
+        /*
+        std::shared_ptr<vector<byte>> key;
+        key.reset(new vector<byte>(share.get(), share.get()+KEY_SIZE));
+        AES_PRG prg(key, shareSize);
+        byte *prgResult = prg.getRandomBytes();
+        std::cout << "PRG result: ";
+        printHex(prgResult,shareSize);
+        std::cout << std::endl;
+        */
+
+
+        SecretKey key(share.get(), KEY_SIZE, "RC4");
+
+        OpenSSLRC4 prg;
+        prg.setKey(key);
+        vector<byte> result;
+        prg.getPRGBytes(result, 0,shareSize);
+
+        string res(result.begin(),result.end());
+        PsiParty::printHex(reinterpret_cast<const uint8_t*>(res.data()), 16);
+        std::cout << std::endl;
+
+        XOR(m_secretShare, result.data(), shareSize);
 
         /*
         for (uint j = 0; j < shareSize; j += SIZE_OF_BLOCK) {

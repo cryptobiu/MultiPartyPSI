@@ -16,6 +16,8 @@ public:
     virtual ~PsiParty() {};
 
     void run();
+
+    static void printHex(const uint8_t *arr, uint32_t size);
 private:
 
     /**
@@ -39,7 +41,7 @@ private:
         return ceil_divide(m_maskbitlen, 8);
     }
 
-    void printHex(uint8_t *arr, uint32_t size);
+
     void XOR(byte *xoree1, byte *xoree2, uint32_t size);
 
     bool isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **partiesResults);

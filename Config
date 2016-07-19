@@ -1,6 +1,6 @@
 [General]
 numOfParties=3
-setSize=1
+setSize=2
 securityParameter=128
 elementSizeInBits=32
 blockSizeInBits=1
