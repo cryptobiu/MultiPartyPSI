@@ -65,6 +65,12 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
         m_internal_bitlen = m_elementSizeInBits;
     }
 
+
+    uint32_t  seed_size = m_crypt->get_aes_key_bytes();
+    uint8_t* seed_buf = (uint8_t*) malloc(seed_size);
+    RAND_bytes(seed_buf, seed_size);
+    m_crypt->init_prf_state(&m_prfState, seed_buf);
+
     syncronize();
 }
 
@@ -120,28 +126,16 @@ void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
     std::cout << std::endl;
 }
 
-void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults, uint32_t **bin_ids, uint32_t **perm) {
-
-    uint32_t* nelesinbin;
-    uint32_t outbitlen;
-    uint8_t *hash_table;
+void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults,
+                                        uint32_t* nelesinbin, uint32_t outbitlen, uint8_t *hash_table) {
 
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
 
     m_crypt->gen_common_seed(&m_prfState, *party.second);
 
-    hash_table = cuckko_hash(m_eleptr, m_setSize, m_numOfBins, &nelesinbin, m_internal_bitlen, &outbitlen,
-                         perm, bin_ids, 1, &m_prfState);
-
     otpsi_client(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
                             party.second, 1, &m_prfState, partyResult, leaderResults, outbitlen, nelesinbin, hash_table);
 
-    cout << "bin_ids: ";
-    for (uint32_t i = 0; i < m_numOfBins; i++) {
-        cout << (*bin_ids)[i] << " ";
-    }
-    cout << endl;
-    //create_result_from_matches_var_bitlen(result, res_bytelen, elebytelens, elements, res_pos, intersect_size);
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
@@ -181,15 +175,25 @@ void PsiParty::runAsLeader() {
     uint32_t *bin_ids;
     uint32_t *perm;
 
+    uint32_t* nelesinbin;
+    uint32_t outbitlen;
+    uint8_t *hash_table;
+    hash_table = cuckko_hash(m_eleptr, m_setSize, m_numOfBins, &nelesinbin, m_internal_bitlen, &outbitlen,
+                             &perm, &bin_ids, 1, &m_prfState);
+
+    cout << "bin_ids: ";
+    for (uint32_t i = 0; i < m_numOfBins; i++) {
+        cout << bin_ids[i] << " ";
+    }
+    cout << endl;
 
     for (auto &party : m_parties) {
-        runLeaderAgainstFollower(party, &partiesResults[party.first - 1], &leaderResults[party.first - 1], &bin_ids, &perm);
+        runLeaderAgainstFollower(party, &partiesResults[party.first - 1], &leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table);
     }
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
     m_statistics.afterOTs = clock();
-
 
     vector<uint32_t> intersection;
     for (uint32_t i = 0; i < m_setSize; i = i + 4) {
