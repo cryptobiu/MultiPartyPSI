@@ -284,10 +284,10 @@ void xor_masks(uint8_t *hash_table, uint8_t *elements, uint32_t neles, uint8_t *
 
 	*/
 
-	print_bin_content(elements, neles, elebyetelen, NULL, false);
-	print_bin_content(hash_table, NUM_HASH_FUNCTIONS*neles, elebyetelen, NULL, false);
+	//print_bin_content(elements, neles, elebyetelen, NULL, false);
+	//print_bin_content(hash_table, NUM_HASH_FUNCTIONS*neles, elebyetelen, NULL, false);
 
-	print_bin_content(masks, NUM_HASH_FUNCTIONS*neles, maskbytelen, NULL, false);
+	//print_bin_content(masks, NUM_HASH_FUNCTIONS*neles, maskbytelen, NULL, false);
 
 	uint32_t k = 0;
 	for (uint32_t i = 0; i < nbins; i++) {
@@ -298,7 +298,7 @@ void xor_masks(uint8_t *hash_table, uint8_t *elements, uint32_t neles, uint8_t *
 		}
 	}
 
-	print_bin_content(masks, NUM_HASH_FUNCTIONS*neles, maskbytelen, NULL, false);
+	//print_bin_content(masks, NUM_HASH_FUNCTIONS*neles, maskbytelen, NULL, false);
 }
 
 void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
@@ -356,11 +356,13 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 	print_bin_content(masks, NUM_HASH_FUNCTIONS*neles, maskbytelen, NULL, false);
 #endif
 
+	/*
 	std::cout << "number of elements in each bin is: ";
 	for (uint32_t i = 0; i < nbins; i++) {
 		std::cout << nelesinbin[i] << " ";
 	}
 	std::cout << std::endl;
+	*/
 
 	xor_masks(hash_table, hashed_elements, neles, masks, ceil_divide(outbitlen, 8), maskbytelen, secretShare,nbins,nelesinbin);
 

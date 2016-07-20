@@ -51,7 +51,7 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
     m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
 
-    PRINT_PARTY(m_partyId) << "Mask size in bytes is " << getMaskSizeInBytes() << std::endl;
+    // PRINT_PARTY(m_partyId) << "Mask size in bytes is " << getMaskSizeInBytes() << std::endl;
 
     uint32_t elebytelen = ceil_divide(m_elementSizeInBits, 8);
 
@@ -94,7 +94,7 @@ void PsiParty::run() {
 
     additiveSecretShare();
 
-    PRINT_PARTY(m_partyId) << "additive secret sharing completed" << std::endl;
+    //PRINT_PARTY(m_partyId) << "additive secret sharing completed" << std::endl;
 
     m_statistics.afterSharing = clock();
 
@@ -139,11 +139,13 @@ void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uin
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
+    /*
     PRINT_PARTY(m_partyId) << "party " << party.first << " results: ";
     printShares(*partyResult, NUM_HASH_FUNCTIONS * m_setSize);
 
     PRINT_PARTY(m_partyId) << "leader results: ";
     printShares(*leaderResults, m_setSize);
+    */
 
     PRINT_PARTY(m_partyId) << "done running leader against party " << party.first << std::endl;
 }
@@ -181,11 +183,13 @@ void PsiParty::runAsLeader() {
     hash_table = cuckko_hash(m_eleptr, m_setSize, m_numOfBins, &nelesinbin, m_internal_bitlen, &outbitlen,
                              &perm, &bin_ids, 1, &m_prfState);
 
+    /*
     cout << "bin_ids: ";
     for (uint32_t i = 0; i < m_numOfBins; i++) {
         cout << bin_ids[i] << " ";
     }
     cout << endl;
+    */
 
     for (auto &party : m_parties) {
         runLeaderAgainstFollower(party, &partiesResults[party.first - 1], &leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table);
@@ -198,7 +202,7 @@ void PsiParty::runAsLeader() {
     vector<uint32_t> intersection;
     for (uint32_t i = 0; i < m_setSize; i++) {
         if (isElementInAllSets(i, partiesResults, leaderResults, bin_ids, perm)) {
-            std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
+            // std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
             intersection.push_back(*(uint32_t*)(&m_elements[i]));
         }
     }
@@ -241,7 +245,7 @@ bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint
     uint32_t binIndex = 0;
     for (uint32_t i = 0; i < m_numOfBins; i++) {
         if (bin_ids[i] == index + 1) {
-            std::cout << "Element number " << index << " was found at " << i << std::endl;
+            // std::cout << "Element number " << index << " was found at " << i << std::endl;
             binIndex = i;
             break;
         }
@@ -347,6 +351,8 @@ void PsiParty::additiveSecretShare() {
         */
     }
 
+    /*
     PRINT_PARTY(m_partyId) << "my secret shares are: ";
     printShares(m_secretShare, m_numOfBins);
+    */
 }
