@@ -58,8 +58,12 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 			   uint8_t** server_masks, uint8_t** masks, uint32_t** res_bytelen, crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare);
 */
 
-uint32_t* otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
-		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks, uint32_t **perm);
+uint8_t* cuckko_hash(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t** nelesinbin, uint32_t elebitlen, uint32_t *outbitlen,
+					 uint32_t **perm, uint32_t **bin_ids, uint32_t ntasks, prf_state_ctx* prf_state);
+
+void otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
+		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks, uint32_t outbitlen,
+				  uint32_t* nelesinbin, uint8_t *hash_table);
 
 void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
 		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t *secretShare);

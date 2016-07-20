@@ -121,12 +121,20 @@ void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
 }
 
 void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults, uint32_t **bin_ids, uint32_t **perm) {
+
+    uint32_t* nelesinbin;
+    uint32_t outbitlen;
+    uint8_t *hash_table;
+
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
 
     m_crypt->gen_common_seed(&m_prfState, *party.second);
 
-    *bin_ids = otpsi_client(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
-                            party.second, 1, &m_prfState, partyResult, leaderResults, perm);
+    hash_table = cuckko_hash(m_eleptr, m_setSize, m_numOfBins, &nelesinbin, m_internal_bitlen, &outbitlen,
+                         perm, bin_ids, 1, &m_prfState);
+
+    otpsi_client(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
+                            party.second, 1, &m_prfState, partyResult, leaderResults, outbitlen, nelesinbin, hash_table);
 
     cout << "bin_ids: ";
     for (uint32_t i = 0; i < m_numOfBins; i++) {

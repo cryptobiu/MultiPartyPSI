@@ -71,46 +71,28 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 }
 */
 
-uint32_t* otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles,
-		uint32_t elebitlen, uint32_t maskbitlen, crypto* crypt_env, CSocket* sock, uint32_t ntasks,
-		prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks, uint32_t **perm) {
-
-	uint32_t outbitlen, maskbytelen, intersect_size;
+uint8_t* cuckko_hash(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t** nelesinbin, uint32_t elebitlen, uint32_t *outbitlen,
+					 uint32_t **perm, uint32_t **bin_ids, uint32_t ntasks, prf_state_ctx* prf_state) {
 	uint8_t *hash_table;
-	uint32_t* nelesinbin;
+	*nelesinbin = (uint32_t*) calloc(nbins, sizeof(uint32_t));
 	*perm = (uint32_t*) calloc(neles, sizeof(uint32_t));
+	hash_table = cuckoo_hashing(elements, neles, nbins, elebitlen, outbitlen,
+								*nelesinbin, *perm, ntasks, prf_state, bin_ids);
+	return hash_table;
+}
+
+void otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles,
+		uint32_t elebitlen, uint32_t maskbitlen, crypto* crypt_env, CSocket* sock, uint32_t ntasks,
+		prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks, uint32_t outbitlen, uint32_t* nelesinbin, uint8_t *hash_table) {
+
 	pthread_t rcv_masks_thread;
 	pthread_t* query_map_thread = (pthread_t*) malloc(sizeof(pthread_t) * ntasks);
 	query_ctx* query_data = (query_ctx*) malloc(sizeof(query_ctx) * ntasks);
 	mask_rcv_ctx rcv_ctx;
 	timeval t_start, t_end;
-	uint32_t *bin_ids;
 	uint32_t stashsize = get_stash_size(neles);
 
-	nelesinbin = (uint32_t*) calloc(nbins, sizeof(uint32_t));
-	maskbytelen = ceil_divide(maskbitlen, 8);
-	intersect_size=0;
-
-#ifdef TIMING
-	gettimeofday(&t_start, NULL);
-#endif
-	if(DETAILED_TIMINGS) {
-		gettimeofday(&t_start, NULL);
-	}
-#ifndef TEST_UTILIZATION
-	hash_table = cuckoo_hashing(elements, neles, nbins, elebitlen, &outbitlen,
-			nelesinbin, *perm, ntasks, prf_state, &bin_ids);
-#else
-	cerr << "Test utilization is active, PSI protocol will not be working correctly!" << endl;
-	cuckoo_hashing(elements, neles, nbins, elebitlen, &outbitlen,
-				nelesinbin, perm, ntasks, prf_state);
-#endif
-	if(DETAILED_TIMINGS) {
-		gettimeofday(&t_end, NULL);
-		cout << "Time for Cuckoo hashing:\t" << fixed << std::setprecision(2) <<
-				getMillies(t_start, t_end) << " ms" << endl;
-		gettimeofday(&t_start, NULL);
-	}
+	uint32_t maskbytelen = ceil_divide(maskbitlen, 8);
 
 #ifdef PRINT_CLIENT_MAPPING
 	uint32_t elebytelen = ceil_divide(elebitlen, 8);
@@ -267,8 +249,6 @@ uint32_t* otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32
 	}
 	free(stashmasks);
 #endif
-
-	return bin_ids;
 }
 
 void XOR(uint8_t *xoree1, uint8_t *xoree2, uint32_t numBytes) {
