@@ -72,48 +72,19 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 */
 
 
-uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebytelen, uint8_t* elements,
-			   uint8_t** server_masks, uint8_t** masks, crypto* crypt_env, CSocket* sock,  uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, uint32_t **bin_ids, uint32_t **perm, double epsilon,
-		bool detailed_timings) {
+void otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebytelen, uint8_t* elements,
+			   uint8_t** server_masks, uint8_t** masks, crypto* crypt_env, CSocket* sock,
+			   uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, uint32_t **bin_ids, uint32_t **perm, uint32_t internal_bitlen,
+			   uint32_t nbins, uint8_t *eleptr, prf_state_ctx *prf_state, uint32_t elebitlen) {
 
-	prf_state_ctx prf_state;
-	uint32_t maskbytelen, nbins, intersect_size, internal_bitlen, *res_pos, i, elebitlen;
-	uint8_t *eleptr;
-	timeval t_start, t_end;
 
-	DETAILED_TIMINGS = detailed_timings;
 
-	if (maskbitlen == 0) {
-		maskbitlen = pad_to_multiple(crypt_env->get_seclvl().statbits + ceil_log2(neles) + ceil_log2(pneles), 8);
-	}
-
-	maskbytelen = ceil_divide(maskbitlen, 8);
-	elebitlen = elebytelen * 8;
-
-	if(elebitlen > maskbitlen) {
-		//Hash elements into a smaller domain
-		eleptr = (uint8_t*) malloc(maskbytelen * neles);
-		domain_hashing(neles, elements, elebytelen, eleptr, maskbytelen, crypt_env);
-		internal_bitlen = maskbitlen;
-#ifndef BATCH
-		cout << "Hashing " << neles << " elements with " << elebitlen << " bit-length into " <<
-				maskbitlen << " bit representation " << endl;
-#endif
-	} else {
-		eleptr = elements;
-		internal_bitlen = elebitlen;
-	}
-
-	crypt_env->gen_common_seed(&prf_state, sock[0]);
-
-	if(role == FOLLOWER) {
-		nbins = ceil(epsilon * pneles);
+	if (role == FOLLOWER) {
 		otpsi_server(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env, sock, ntasks,
-				&prf_state, secretShare);
+				prf_state, secretShare);
 	} else { //playing as client
-		nbins = ceil(epsilon * neles);
 		*bin_ids = otpsi_client(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env,
-				sock, ntasks, &prf_state, server_masks, masks, perm);
+				sock, ntasks, prf_state, server_masks, masks, perm);
 		//*result = (uint8_t*) malloc(intersect_size * elebytelen);
 		//for(i = 0; i < intersect_size; i++) {
 		//	memcpy((*result) + i * elebytelen, elements + res_pos[i] * elebytelen, elebytelen);
@@ -130,8 +101,6 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebyte
 
 	if(elebitlen > maskbitlen)
 		free(eleptr);
-
-	return intersect_size;
 }
 
 

@@ -40,6 +40,7 @@ private:
         return ceil_divide(m_maskbitlen, 8);
     }
 
+    void LoadConfiguration();
 
     void XOR(byte *xoree1, byte *xoree2, uint32_t size);
 
@@ -60,6 +61,13 @@ private:
     struct statistics m_statistics;
     enum Strategy m_strategy;
     uint32_t m_numOfBins;
+    prf_state_ctx m_prfState;
+
+    uint32_t m_symsecbits;
+
+    uint8_t* m_eleptr;
+
+    uint32_t m_internal_bitlen;
 };
 
 #endif //LIBSCAPI_PSIPARTY_H

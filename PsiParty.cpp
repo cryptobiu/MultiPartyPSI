@@ -21,30 +21,25 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 {
 
     uint64_t rnd;
-    uint32_t symsecbits=128;
+
     uint8_t* seed = (uint8_t*) malloc(AES_BYTES);
+
+    LoadConfiguration();
 
     memcpy(seed, const_seed, AES_BYTES);
     seed[0] = static_cast<uint8_t>(m_partyId);
-    m_crypt = new crypto(symsecbits, seed);
+    m_crypt = new crypto(m_symsecbits, seed);
 
     m_crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
     srand((unsigned)rnd+time(0));
 
-
-
-    m_setSize = stoi(m_config.Value("General", "setSize"));
-
-
     m_numOfBins = ceil(EPSILON * m_setSize);
-
-    m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
-    m_blockSizeInBits = stoi(m_config.Value("General", "blockSizeInBits"));
 
     m_elements = new uint8_t[m_setSize*sizeof(uint32_t)];
 
     m_serverSocket.Receive(reinterpret_cast<byte *>(&m_strategy), 1);
 
+    m_elementSizeInBits = sizeof(uint32_t) * 8;
 
     PRINT_PARTY(m_partyId) << "is executing strategy " << (m_strategy == Strategy::NAIVE_METHOD_SMALL_N) << std::endl;
 
@@ -58,7 +53,27 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
     PRINT_PARTY(m_partyId) << "Mask size in bytes is " << getMaskSizeInBytes() << std::endl;
 
+    uint32_t elebytelen = ceil_divide(m_elementSizeInBits, 8);
+
+    if(m_elementSizeInBits > m_maskbitlen) {
+        //Hash elements into a smaller domain
+        m_eleptr = (uint8_t*) malloc(getMaskSizeInBytes() * m_setSize);
+        domain_hashing(m_setSize, m_elements, elebytelen, m_eleptr, getMaskSizeInBytes(), m_crypt);
+        m_internal_bitlen = m_maskbitlen;
+    } else {
+        m_eleptr = m_elements;
+        m_internal_bitlen = m_elementSizeInBits;
+    }
+
     syncronize();
+}
+
+void PsiParty::LoadConfiguration() {
+    m_setSize = stoi(m_config.Value("General", "setSize"));
+    m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
+    m_blockSizeInBits = stoi(m_config.Value("General", "blockSizeInBits"));
+
+    m_symsecbits=stoi(m_config.Value("General", "securityParameter"));
 }
 
 void PsiParty::syncronize() {
@@ -109,8 +124,11 @@ void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
 void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults, uint32_t **bin_ids, uint32_t **perm) {
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
 
+    m_crypt->gen_common_seed(&m_prfState, *party.second);
+
     otpsi(LEADER, m_setSize, m_setSize, sizeof(uint32_t),
-            m_elements, partyResult, leaderResults, m_crypt,party.second, 1, m_maskbitlen, m_secretShare, bin_ids, perm);
+            m_elements, partyResult, leaderResults, m_crypt,party.second, 1, m_maskbitlen, m_secretShare, bin_ids, perm, m_internal_bitlen, m_numOfBins, m_eleptr, &m_prfState,
+          m_elementSizeInBits);
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
@@ -231,8 +249,13 @@ bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint
 }
 
 void PsiParty::runAsFollower(CSocket *leader) {
+
+    m_crypt->gen_common_seed(&m_prfState, *leader);
+
     otpsi(FOLLOWER, m_setSize, m_setSize, sizeof(uint32_t),
-          m_elements, NULL, NULL, m_crypt, leader, 1, m_maskbitlen, m_secretShare, NULL, NULL);
+          m_elements, NULL, NULL, m_crypt, leader, 1, m_maskbitlen, m_secretShare, NULL, NULL,
+          m_internal_bitlen, m_numOfBins, m_eleptr, &m_prfState,
+          m_elementSizeInBits);
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
     m_statistics.afterOTs = clock();
     m_statistics.specificStats.afterSend = clock();
