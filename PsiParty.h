@@ -13,7 +13,10 @@
 class PsiParty : public MultiPartyPlayer {
 public:
     PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &ioService);
-    virtual ~PsiParty() {};
+    virtual ~PsiParty() {
+        if(m_elementSizeInBits > m_maskbitlen)
+            free(m_eleptr);
+    };
 
     void run();
 
@@ -50,10 +53,8 @@ private:
     COPY_CTR(PsiParty);
     ASSIGN_OP(PsiParty);
 
-    const uint32_t SIZE_OF_BLOCK = 16;
     uint32_t m_setSize;
     uint32_t m_elementSizeInBits;
-    uint32_t m_blockSizeInBits;
     byte *m_secretShare;
     uint8_t *m_elements;
     crypto* m_crypt;

@@ -71,7 +71,6 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 void PsiParty::LoadConfiguration() {
     m_setSize = stoi(m_config.Value("General", "setSize"));
     m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
-    m_blockSizeInBits = stoi(m_config.Value("General", "blockSizeInBits"));
 
     m_symsecbits=stoi(m_config.Value("General", "securityParameter"));
 }
@@ -126,9 +125,15 @@ void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uin
 
     m_crypt->gen_common_seed(&m_prfState, *party.second);
 
-    otpsi(LEADER, m_setSize, m_setSize, sizeof(uint32_t),
-            m_elements, partyResult, leaderResults, m_crypt,party.second, 1, m_maskbitlen, m_secretShare, bin_ids, perm, m_internal_bitlen, m_numOfBins, m_eleptr, &m_prfState,
-          m_elementSizeInBits);
+    *bin_ids = otpsi_client(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
+                            party.second, 1, &m_prfState, partyResult, leaderResults, perm);
+
+    cout << "bin_ids: ";
+    for (uint32_t i = 0; i < m_numOfBins; i++) {
+        cout << (*bin_ids)[i] << " ";
+    }
+    cout << endl;
+    //create_result_from_matches_var_bitlen(result, res_bytelen, elebytelens, elements, res_pos, intersect_size);
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
@@ -252,10 +257,9 @@ void PsiParty::runAsFollower(CSocket *leader) {
 
     m_crypt->gen_common_seed(&m_prfState, *leader);
 
-    otpsi(FOLLOWER, m_setSize, m_setSize, sizeof(uint32_t),
-          m_elements, NULL, NULL, m_crypt, leader, 1, m_maskbitlen, m_secretShare, NULL, NULL,
-          m_internal_bitlen, m_numOfBins, m_eleptr, &m_prfState,
-          m_elementSizeInBits);
+    otpsi_server(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt, leader, 1,
+                 &m_prfState, m_secretShare);
+
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
     m_statistics.afterOTs = clock();
     m_statistics.specificStats.afterSend = clock();

@@ -53,11 +53,6 @@ struct query_ctx {
 	uint32_t hashbytelen;
 };
 
-
-void otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebytelen, uint8_t* elements,
-			   uint8_t** server_masks, uint8_t** masks, crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, uint32_t **bin_ids,
-		   uint32_t **perm, uint32_t internal_bitlen,
-		   uint32_t nbins, uint8_t *eleptr, prf_state_ctx *prf_state, uint32_t elebitlen);
 /*
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebytelens, uint8_t** elements,
 			   uint8_t** server_masks, uint8_t** masks, uint32_t** res_bytelen, crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare);

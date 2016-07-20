@@ -71,39 +71,6 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 }
 */
 
-
-void otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebytelen, uint8_t* elements,
-			   uint8_t** server_masks, uint8_t** masks, crypto* crypt_env, CSocket* sock,
-			   uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, uint32_t **bin_ids, uint32_t **perm, uint32_t internal_bitlen,
-			   uint32_t nbins, uint8_t *eleptr, prf_state_ctx *prf_state, uint32_t elebitlen) {
-
-
-
-	if (role == FOLLOWER) {
-		otpsi_server(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env, sock, ntasks,
-				prf_state, secretShare);
-	} else { //playing as client
-		*bin_ids = otpsi_client(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env,
-				sock, ntasks, prf_state, server_masks, masks, perm);
-		//*result = (uint8_t*) malloc(intersect_size * elebytelen);
-		//for(i = 0; i < intersect_size; i++) {
-		//	memcpy((*result) + i * elebytelen, elements + res_pos[i] * elebytelen, elebytelen);
-		//}
-		//create_result_from_matches_fixed_bitlen(result, elebytelen, elements, res_pos, intersect_size);
-
-		cout << "bin_ids: ";
-		for (uint32_t i = 0; i < nbins; i++) {
-			cout << (*bin_ids)[i] << " ";
-		}
-		cout << endl;
-		//create_result_from_matches_var_bitlen(result, res_bytelen, elebytelens, elements, res_pos, intersect_size);
-	}
-
-	if(elebitlen > maskbitlen)
-		free(eleptr);
-}
-
-
 uint32_t* otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles,
 		uint32_t elebitlen, uint32_t maskbitlen, crypto* crypt_env, CSocket* sock, uint32_t ntasks,
 		prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks, uint32_t **perm) {
