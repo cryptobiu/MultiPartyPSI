@@ -70,6 +70,7 @@ private:
     uint8_t* m_eleptr;
 
     uint32_t m_internal_bitlen;
+    uint32_t m_seedSize;
 };
 
 #endif //LIBSCAPI_PSIPARTY_H

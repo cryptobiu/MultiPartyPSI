@@ -66,9 +66,8 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
     }
 
 
-    uint32_t  seed_size = m_crypt->get_aes_key_bytes();
-    uint8_t* seed_buf = (uint8_t*) malloc(seed_size);
-    RAND_bytes(seed_buf, seed_size);
+    uint8_t* seed_buf = (uint8_t*) malloc(m_seedSize);
+    m_serverSocket.Receive(seed_buf, m_seedSize*sizeof(uint8_t));
     m_crypt->init_prf_state(&m_prfState, seed_buf);
 
     syncronize();
@@ -79,6 +78,7 @@ void PsiParty::LoadConfiguration() {
     m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
 
     m_symsecbits=stoi(m_config.Value("General", "securityParameter"));
+    m_seedSize=stoi(m_config.Value("General", "seedSizeInBytes"));
 }
 
 void PsiParty::syncronize() {
@@ -131,7 +131,7 @@ void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uin
 
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
 
-    m_crypt->gen_common_seed(&m_prfState, *party.second);
+    //m_crypt->gen_common_seed(&m_prfState, *party.second);
 
     otpsi_client(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
                             party.second, 1, &m_prfState, partyResult, leaderResults, outbitlen, nelesinbin, hash_table);
@@ -267,7 +267,7 @@ bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint
 
 void PsiParty::runAsFollower(CSocket *leader) {
 
-    m_crypt->gen_common_seed(&m_prfState, *leader);
+    // m_crypt->gen_common_seed(&m_prfState, *leader);
 
     otpsi_server(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt, leader, 1,
                  &m_prfState, m_secretShare);

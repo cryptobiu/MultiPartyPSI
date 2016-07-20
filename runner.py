@@ -7,6 +7,7 @@ from subprocess import Popen
 import thread
 import struct
 import random
+import os
 
 MAX_INT = 2**32-1
 MIN_INT = 0
@@ -45,6 +46,7 @@ serverIp = config.get("server", "ip")
 serverPort = int(config.get("server", "port"))
 leaderId = int(config.get("General", "leaderId"))
 setSize = int(config.get("General", "setSize"))
+seedSizeInBytes=int(config.get("General", "seedSizeInBytes"))
 
 def startPrograms(processes):
     if config.get("General", "debug") == "True":
@@ -94,6 +96,10 @@ def runMPPSI(strategy):
             buffer = buffer + struct.pack("<I",e)
 
         parties[i+1].send(buffer)
+
+    seed = os.urandom(seedSizeInBytes)
+    for i in xrange(numOfParties):
+        parties[i+1].send(seed)
 
     print "syncronizing... "
 

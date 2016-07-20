@@ -1,9 +1,9 @@
 [General]
 numOfParties=3
-setSize=1
+setSize=2
 securityParameter=128
+seedSizeInBytes=16
 elementSizeInBits=32
-blockSizeInBits=1
 leaderId=1
 debug=False
 [server]
