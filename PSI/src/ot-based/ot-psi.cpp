@@ -8,6 +8,7 @@
 #include "ot-psi.h"
 //#include "../../../../include/interactive_mid_protocols/OTExtensionBristol.hpp"
 
+/*
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebytelens, uint8_t** elements,
 		uint8_t** server_masks, uint8_t** masks,
 
@@ -53,9 +54,14 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 				&prf_state, secretShare);
 	} else { //playing as client
 		nbins = ceil(epsilon * neles);
-		intersect_size = otpsi_client(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env,
+		uint32_t *perm = otpsi_client(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env,
 				sock, ntasks, &prf_state, server_masks, masks);
 
+		cout << "Permutation is: ";
+		for (uint32_t i = 0; i < neles; i++) {
+			cout << perm[i] << " ";
+		}
+		cout << endl;
 		//create_result_from_matches_var_bitlen(result, res_bytelen, elebytelens, elements, res_pos, intersect_size);
 	}
 
@@ -63,11 +69,11 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 
 	return intersect_size;
 }
-
+*/
 
 
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebytelen, uint8_t* elements,
-			   uint8_t** server_masks, uint8_t** masks, crypto* crypt_env, CSocket* sock,  uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, double epsilon,
+			   uint8_t** server_masks, uint8_t** masks, crypto* crypt_env, CSocket* sock,  uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, uint32_t **bin_ids, uint32_t **perm, double epsilon,
 		bool detailed_timings) {
 
 	prf_state_ctx prf_state;
@@ -106,13 +112,20 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebyte
 				&prf_state, secretShare);
 	} else { //playing as client
 		nbins = ceil(epsilon * neles);
-		intersect_size = otpsi_client(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env,
-				sock, ntasks, &prf_state, server_masks, masks);
+		*bin_ids = otpsi_client(eleptr, neles, nbins, pneles, internal_bitlen, maskbitlen, crypt_env,
+				sock, ntasks, &prf_state, server_masks, masks, perm);
 		//*result = (uint8_t*) malloc(intersect_size * elebytelen);
 		//for(i = 0; i < intersect_size; i++) {
 		//	memcpy((*result) + i * elebytelen, elements + res_pos[i] * elebytelen, elebytelen);
 		//}
 		//create_result_from_matches_fixed_bitlen(result, elebytelen, elements, res_pos, intersect_size);
+
+		cout << "bin_ids: ";
+		for (uint32_t i = 0; i < nbins; i++) {
+			cout << (*bin_ids)[i] << " ";
+		}
+		cout << endl;
+		//create_result_from_matches_var_bitlen(result, res_bytelen, elebytelens, elements, res_pos, intersect_size);
 	}
 
 	if(elebitlen > maskbitlen)
@@ -122,20 +135,20 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebyte
 }
 
 
-
-uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles,
+uint32_t* otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles,
 		uint32_t elebitlen, uint32_t maskbitlen, crypto* crypt_env, CSocket* sock, uint32_t ntasks,
-		prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks) {
+		prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks, uint32_t **perm) {
 
 	uint32_t outbitlen, maskbytelen, intersect_size;
 	uint8_t *hash_table;
 	uint32_t* nelesinbin;
-	uint32_t* perm = (uint32_t*) calloc(neles, sizeof(uint32_t));
+	*perm = (uint32_t*) calloc(neles, sizeof(uint32_t));
 	pthread_t rcv_masks_thread;
 	pthread_t* query_map_thread = (pthread_t*) malloc(sizeof(pthread_t) * ntasks);
 	query_ctx* query_data = (query_ctx*) malloc(sizeof(query_ctx) * ntasks);
 	mask_rcv_ctx rcv_ctx;
 	timeval t_start, t_end;
+	uint32_t *bin_ids;
 	uint32_t stashsize = get_stash_size(neles);
 
 	nelesinbin = (uint32_t*) calloc(nbins, sizeof(uint32_t));
@@ -150,7 +163,7 @@ uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_
 	}
 #ifndef TEST_UTILIZATION
 	hash_table = cuckoo_hashing(elements, neles, nbins, elebitlen, &outbitlen,
-			nelesinbin, perm, ntasks, prf_state);
+			nelesinbin, *perm, ntasks, prf_state, &bin_ids);
 #else
 	cerr << "Test utilization is active, PSI protocol will not be working correctly!" << endl;
 	cuckoo_hashing(elements, neles, nbins, elebitlen, &outbitlen,
@@ -319,7 +332,7 @@ uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_
 	free(stashmasks);
 #endif
 
-	return 0;
+	return bin_ids;
 }
 
 void XOR(uint8_t *xoree1, uint8_t *xoree2, uint32_t numBytes) {
@@ -328,27 +341,56 @@ void XOR(uint8_t *xoree1, uint8_t *xoree2, uint32_t numBytes) {
 	}
 };
 
-
-void xor_masks(uint8_t *masks, uint32_t* nelesinbin, uint32_t maskbytelen, uint32_t nbins, uint8_t *secretShare) {
-	uint8_t *maskPtr = masks;
-	uint8_t *secretSharePtr = secretShare;
-	for (uint32_t i = 0; i < nbins; i++) {
-		uint32_t neles = nelesinbin[i];
-		for (uint32_t j = 0; j < neles; j++) {
-			XOR(maskPtr, secretSharePtr, maskbytelen);
-			maskPtr = maskPtr + maskbytelen;
-		}
-		if (((i+1)%NUM_HASH_FUNCTIONS)==0) {
-			secretSharePtr = secretSharePtr + maskbytelen;
+bool Equal(uint8_t *el1, uint8_t *el2, uint32_t numBytes) {
+	for (uint32_t i = 0; i < numBytes; i++) {
+		if (el1[i] != el2[i]) {
+			return false;
 		}
 	}
+	return true;
+};
+
+
+void xor_masks(uint8_t *hash_table, uint8_t *elements, uint32_t neles, uint8_t *masks,
+			   uint32_t elebyetelen, uint32_t maskbytelen, uint8_t *secretShare, uint32_t nbins, uint32_t* nelesinbin) {
+
+	/*
+
+	for (uint32_t i = 0; i < neles; i++) {
+		uint8_t *element = elements+i*elebyetelen;
+		for (uint32_t j = 0; j < neles*NUM_HASH_FUNCTIONS; j++) {
+			if (Equal(hash_table+j*elebyetelen, element, elebyetelen)) {
+				std::cout << "Found equality !!!!" << std::endl;
+				XOR(masks+j*maskbytelen,secretShare+i*maskbytelen,maskbytelen);
+			}
+		}
+	}
+
+	*/
+
+	print_bin_content(elements, neles, elebyetelen, NULL, false);
+	print_bin_content(hash_table, NUM_HASH_FUNCTIONS*neles, elebyetelen, NULL, false);
+
+	print_bin_content(masks, NUM_HASH_FUNCTIONS*neles, maskbytelen, NULL, false);
+
+	uint32_t k = 0;
+	for (uint32_t i = 0; i < nbins; i++) {
+		uint8_t *share = secretShare+i*maskbytelen;
+		for (uint32_t j = 0; j < nelesinbin[i]; j++) {
+			XOR(masks+k*maskbytelen,share,maskbytelen);
+			k++;
+		}
+	}
+
+	print_bin_content(masks, NUM_HASH_FUNCTIONS*neles, maskbytelen, NULL, false);
 }
 
 void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
 		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t *secretShare) {
 	uint8_t *hash_table, *masks;
+	uint8_t *hashed_elements;
 	uint32_t* nelesinbin;
-	uint32_t outbitlen, maskbytelen;
+	uint32_t outbitlen, maskbytelen, elebytelen;
 	timeval t_start, t_end;
 #ifdef ENABLE_STASH
 	uint32_t stashsize = get_stash_size(neles);
@@ -356,6 +398,7 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 
 	nelesinbin = (uint32_t*) malloc(sizeof(uint32_t) * nbins);
 	maskbytelen = ceil_divide(maskbitlen, 8);
+	elebytelen = ceil_divide(elebitlen, 8);
 
 	//outbitlen = getOutBitLen(inbitlen, nbins);//bitlen - addr_bits;
 
@@ -366,7 +409,7 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 #ifdef TIMING
 	gettimeofday(&t_start, NULL);
 #endif
-	hash_table = simple_hashing(elements, neles, elebitlen, &outbitlen, nelesinbin, nbins, ntasks, prf_state);
+	hash_table = simple_hashing(elements, neles, elebitlen, &outbitlen, nelesinbin, nbins, ntasks, prf_state, &hashed_elements);
 	if(DETAILED_TIMINGS) {
 		gettimeofday(&t_end, NULL);
 		cout << "Time for simple hashing:\t" << fixed << std::setprecision(2) <<
@@ -382,7 +425,7 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 	print_bin_content(hash_table, nbins, ceil_divide(outbitlen, 8), nelesinbin, true);
 #endif
 	masks = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * neles * maskbytelen);
-	oprg_server(hash_table, nbins, neles * NUM_HASH_FUNCTIONS, nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, masks, secretShare);
+	oprg_server(hash_table, nbins, neles * NUM_HASH_FUNCTIONS, nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, masks);
 	if(DETAILED_TIMINGS) {
 		gettimeofday(&t_start, NULL);
 	}
@@ -397,7 +440,13 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 	print_bin_content(masks, NUM_HASH_FUNCTIONS*neles, maskbytelen, NULL, false);
 #endif
 
-	xor_masks(masks, nelesinbin, maskbytelen, nbins, secretShare);
+	std::cout << "number of elements in each bin is: ";
+	for (uint32_t i = 0; i < nbins; i++) {
+		std::cout << nelesinbin[i] << " ";
+	}
+	std::cout << std::endl;
+
+	xor_masks(hash_table, hashed_elements, neles, masks, ceil_divide(outbitlen, 8), maskbytelen, secretShare,nbins,nelesinbin);
 
 	//send the masks to the receiver
 	send_masks(masks, neles * NUM_HASH_FUNCTIONS, maskbytelen, sock[0]);
@@ -542,7 +591,7 @@ void oprg_client(uint8_t* hash_table, uint32_t nbins, uint32_t neles, uint32_t* 
 
 
 void oprg_server(uint8_t* hash_table, uint32_t nbins, uint32_t totaleles, uint32_t* nelesinbin, uint32_t elebitlen,
-		uint32_t maskbitlen, crypto* crypt, CSocket* sock, uint32_t nthreads, uint8_t* res_buf, uint8_t *secretShare) {
+		uint32_t maskbitlen, crypto* crypt, CSocket* sock, uint32_t nthreads, uint8_t* res_buf) {
 	CBitVector input, results;
 	CBitVector baseOTchoices;
 	uint8_t* keySeeds;
@@ -594,7 +643,7 @@ void oprg_server(uint8_t* hash_table, uint32_t nbins, uint32_t totaleles, uint32
 	values[1].Create(numOTs * AES_BITS);
 
 	//m_fMaskFct = new XORMasking(bitlength, m_cCrypto);
-	OPEMasking* mskfct = new OPEMasking(elebitlen, maskbitlen, nbins, nelesinbin, input, results, crypt, secretShare);
+	OPEMasking* mskfct = new OPEMasking(elebitlen, maskbitlen, nbins, nelesinbin, input, results, crypt);
 	//cout << "Sender performing " << numOTs << " ots" << endl;
 	sender->send(numOTs, AES_BITS, values, RN_OT, nthreads, mskfct);//ObliviouslySend(values, numOTs, AES_BITS, RN_OT);
 	if(DETAILED_TIMINGS) {

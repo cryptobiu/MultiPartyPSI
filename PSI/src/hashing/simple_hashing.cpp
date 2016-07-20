@@ -8,7 +8,7 @@
 #include "simple_hashing.h"
 
 uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t bitlen, uint32_t *outbitlen, uint32_t* nelesinbin, uint32_t nbins,
-		uint32_t ntasks, prf_state_ctx* prf_state) {
+		uint32_t ntasks, prf_state_ctx* prf_state, uint8_t **hashed_elements) {
 	sht_ctx* table;
 	//uint8_t** bin_content;
 	uint8_t *eleptr, *bin_ptr, *result, *res_bins;
@@ -57,6 +57,14 @@ uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t bitlen, uint
 		}
 	}
 
+	*hashed_elements = (uint8_t*)malloc(neles*hs.outbytelen*sizeof(uint8_t));
+	uint32_t k = 0;
+	for(i = 0; i < ntasks; i++) {
+		uint32_t arr_size = (ctx[i].endpos-ctx[i].startpos)*hs.outbytelen;
+		memcpy((*hashed_elements)+k,ctx[i].hashed_elements, arr_size);
+		k = k + arr_size;
+	}
+
 	//for(i = 0, eleptr=elements; i < neles; i++, eleptr+=inbytelen) {
 	//	insert_element(table, eleptr, tmpbuf);
 	//}
@@ -102,6 +110,7 @@ void *gen_entries(void *ctx_tmp) {
 	sheg_ctx* ctx = (sheg_ctx*) ctx_tmp;
 	uint32_t i, inbytelen, *address;
 
+	ctx->hashed_elements = (uint8_t*) malloc((ctx->endpos- ctx->startpos)* ctx->hs->outbytelen * sizeof(uint8_t));
 	address = (uint32_t*) malloc(NUM_HASH_FUNCTIONS * sizeof(uint32_t));
 	tmpbuf = (uint8_t*) calloc(ceil_divide(ctx->hs->outbitlen, 8), sizeof(uint8_t));	//for(i = 0; i < NUM_HASH_FUNCTIONS; i++) {
 	//	tmpbuf[i] = (uint8_t*) malloc(ceil_divide(ctx->hs->outbitlen, 8));
@@ -109,6 +118,7 @@ void *gen_entries(void *ctx_tmp) {
 
 	for(i = ctx->startpos, eleptr=ctx->elements, inbytelen=ctx->hs->inbytelen; i < ctx->endpos; i++, eleptr+=inbytelen) {
 		insert_element(ctx->table, eleptr, address, tmpbuf, ctx->hs);
+		memcpy(ctx->hashed_elements+(i-ctx->startpos)*ctx->hs->outbytelen, tmpbuf, ctx->hs->outbytelen*sizeof(uint8_t));
 	}
 	free(tmpbuf);
 	free(address);

@@ -31,7 +31,13 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
     m_crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
     srand((unsigned)rnd+time(0));
 
+
+
     m_setSize = stoi(m_config.Value("General", "setSize"));
+
+
+    m_numOfBins = ceil(EPSILON * m_setSize);
+
     m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
     m_blockSizeInBits = stoi(m_config.Value("General", "blockSizeInBits"));
 
@@ -92,7 +98,7 @@ void PsiParty::printHex(const uint8_t *arr, uint32_t size) {
     }
 }
 
-void PsiParty::printShares(uint8_t *arr, uint32_t numOfShares) {
+void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
     for (uint32_t i = 0; i < numOfShares; i++) {
         printHex(arr+i*getMaskSizeInBytes(), getMaskSizeInBytes());
         std::cout << " ";
@@ -100,10 +106,11 @@ void PsiParty::printShares(uint8_t *arr, uint32_t numOfShares) {
     std::cout << std::endl;
 }
 
-void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults) {
+void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults, uint32_t **bin_ids, uint32_t **perm) {
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
+
     otpsi(LEADER, m_setSize, m_setSize, sizeof(uint32_t),
-            m_elements, partyResult, leaderResults, m_crypt,party.second, 1, m_maskbitlen, m_secretShare);
+            m_elements, partyResult, leaderResults, m_crypt,party.second, 1, m_maskbitlen, m_secretShare, bin_ids, perm);
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
@@ -139,8 +146,13 @@ void PsiParty::runAsLeader() {
     threadpool.join_all();
     */
 
+    // it would written over each time but every run gives the same thing
+    uint32_t *bin_ids;
+    uint32_t *perm;
+
+
     for (auto &party : m_parties) {
-        runLeaderAgainstFollower(party, &partiesResults[party.first - 1], &leaderResults[party.first - 1]);
+        runLeaderAgainstFollower(party, &partiesResults[party.first - 1], &leaderResults[party.first - 1], &bin_ids, &perm);
     }
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
@@ -150,7 +162,8 @@ void PsiParty::runAsLeader() {
 
     vector<uint32_t> intersection;
     for (uint32_t i = 0; i < m_setSize; i = i + 4) {
-        if (isElementInAllSets(i, partiesResults, leaderResults)) {
+        if (isElementInAllSets(i, partiesResults, leaderResults, bin_ids, perm)) {
+            std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
             intersection.push_back(*(uint32_t*)(&m_elements[i]));
         }
     }
@@ -188,11 +201,29 @@ bool PsiParty::isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **parties
     return true;
 };
 
-bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint8_t **leaderResults) {
-    byte* secret = &m_secretShare[index*getMaskSizeInBytes()];
+bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint8_t **leaderResults, uint32_t *bin_ids, uint32_t *perm) {
+
+    uint32_t binIndex = 0;
+    for (uint32_t i = 0; i < m_numOfBins; i++) {
+        if (bin_ids[i] == index + 1) {
+            std::cout << "Element number " << index << " was found at " << i << std::endl;
+            binIndex = i;
+            break;
+        }
+    }
+
+    uint32_t newIndex = 0;
+    for (uint32_t i = 0; i < m_numOfBins; i++) {
+        if (perm[i] == index) {
+            newIndex = i;
+            break;
+        }
+    }
+
+    byte* secret = &m_secretShare[binIndex*getMaskSizeInBytes()];
 
     for (auto &party : m_parties) {
-        XOR(secret, leaderResults[party.first-1]+index*getMaskSizeInBytes(), getMaskSizeInBytes());
+        XOR(secret, leaderResults[party.first-1]+newIndex*getMaskSizeInBytes(), getMaskSizeInBytes());
     }
 
     // 1 is always the leader Id
@@ -201,7 +232,7 @@ bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint
 
 void PsiParty::runAsFollower(CSocket *leader) {
     otpsi(FOLLOWER, m_setSize, m_setSize, sizeof(uint32_t),
-          m_elements, NULL, NULL, m_crypt, leader, 1, m_maskbitlen, m_secretShare);
+          m_elements, NULL, NULL, m_crypt, leader, 1, m_maskbitlen, m_secretShare, NULL, NULL);
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
     m_statistics.afterOTs = clock();
     m_statistics.specificStats.afterSend = clock();
@@ -217,7 +248,7 @@ void PsiParty::additiveSecretShare() {
 
     uint elementSize = SIZE_OF_BLOCK * numOfBlocks;
     */
-    uint32_t shareSize = getMaskSizeInBytes() * m_setSize;
+    uint32_t shareSize = getMaskSizeInBytes() * m_numOfBins;
     vector<boost::shared_ptr<byte>> shares;
 
     for (uint i = m_partyId+1; i <= m_numOfParties; i++) {
@@ -241,12 +272,11 @@ void PsiParty::additiveSecretShare() {
     memset(m_secretShare, 0, shareSize);
 
     for (auto &share : shares) {
-
+        /*
         std::cout << "key: ";
         printHex(share.get(),KEY_SIZE);
         std::cout << std::endl;
 
-        /*
         std::shared_ptr<vector<byte>> key;
         key.reset(new vector<byte>(share.get(), share.get()+KEY_SIZE));
         AES_PRG prg(key, shareSize);
@@ -264,9 +294,9 @@ void PsiParty::additiveSecretShare() {
         vector<byte> result;
         prg.getPRGBytes(result, 0,shareSize);
 
-        string res(result.begin(),result.end());
-        PsiParty::printHex(reinterpret_cast<const uint8_t*>(res.data()), 16);
-        std::cout << std::endl;
+        //string res(result.begin(),result.end());
+        //PRINT_PARTY(m_partyId);
+        //printShares(reinterpret_cast<const uint8_t*>(res.data()), 2);
 
         XOR(m_secretShare, result.data(), shareSize);
 
@@ -278,6 +308,6 @@ void PsiParty::additiveSecretShare() {
         */
     }
 
-    PRINT_PARTY(m_partyId) << "my secret share is: ";
-    printShares(m_secretShare, m_setSize);
+    PRINT_PARTY(m_partyId) << "my secret shares are: ";
+    printShares(m_secretShare, m_numOfBins);
 }

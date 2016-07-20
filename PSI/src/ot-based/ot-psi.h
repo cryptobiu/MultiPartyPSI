@@ -31,7 +31,7 @@ static bool DETAILED_TIMINGS=0;
 //#define PRINT_CRF_EVAL
 //#define PRINT_CLIENT_MAPPING
 //#define ENABLE_STASH //TODO: enabling stash introduces errors. fix!
-#define PRINT_SENT_VALUES
+//#define PRINT_SENT_VALUES
 
 struct mask_rcv_ctx {
 	uint8_t* rcv_buf;
@@ -55,7 +55,7 @@ struct query_ctx {
 
 
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t elebitlen, uint8_t* elements,
-			   uint8_t** server_masks, uint8_t** masks, crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, double epsilon=1.2,
+			   uint8_t** server_masks, uint8_t** masks, crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare, uint32_t **bin_ids, uint32_t **perm, double epsilon=1.2,
 		bool detailed_timings=false);
 
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebytelens, uint8_t** elements,
@@ -63,8 +63,8 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 		bool detailed_timings=false);
 
 
-uint32_t otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
-		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks);
+uint32_t* otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
+		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks, uint32_t **perm);
 
 void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
 		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t *secretShare);
@@ -72,7 +72,7 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 void oprg_client(uint8_t* hash_table, uint32_t nbins, uint32_t neles, uint32_t* nelesinbin, uint32_t elebitlen,
 		uint32_t maskbitlen, crypto* crypt, CSocket* sock, uint32_t nthreads, uint8_t* res_buf);
 void oprg_server(uint8_t* hash_table, uint32_t nbins, uint32_t totaleles, uint32_t* nelesinbin, uint32_t elebitlen,
-		uint32_t maskbitlen, crypto* crypt, CSocket* sock, uint32_t nthreads, uint8_t* res_buf, uint8_t *secretShare);
+		uint32_t maskbitlen, crypto* crypt, CSocket* sock, uint32_t nthreads, uint8_t* res_buf);
 
 void send_masks(uint8_t* masks, uint32_t nmasks, uint32_t maskbytelen, CSocket& sock);
 void *receive_masks(void *ctx_tmp);

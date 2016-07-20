@@ -14,7 +14,7 @@ uint8_t*
 uint32_t
 #endif
 cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t bitlen, uint32_t *outbitlen, uint32_t* nelesinbin,
-		uint32_t* perm,	uint32_t ntasks, prf_state_ctx* prf_state)
+		uint32_t* perm,	uint32_t ntasks, prf_state_ctx* prf_state, uint32_t **bin_ids)
 {
 	//The resulting hash table
 	uint8_t* hash_table;
@@ -102,6 +102,7 @@ cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t bitle
 #ifndef TEST_UTILIZATION
 	hash_table = (uint8_t*) calloc(nbins, hs.outbytelen);
 
+	*bin_ids = (uint32_t *) calloc(nbins, hs.outbytelen);
 	for(i = 0; i < nbins; i++) {
 		if(cuckoo_table[i] != NULL) {
 			memcpy(hash_table + i * hs.outbytelen, cuckoo_table[i]->val, hs.outbytelen);
@@ -109,6 +110,7 @@ cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t bitle
 			*perm_ptr = cuckoo_table[i]->eleid;
 			perm_ptr++;
 			nelesinbin[i] = 1;
+			(*bin_ids)[i] = cuckoo_table[i]->eleid+1;
 		} else {
 			memset(hash_table + i * hs.outbytelen, DUMMY_ENTRY_CLIENT, hs.outbytelen);
 			nelesinbin[i] = 0;

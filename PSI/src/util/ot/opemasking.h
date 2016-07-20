@@ -22,7 +22,7 @@ class OPEMasking : public MaskingFunction
 {
 public:
 	//Constructor that is called by the server
-	OPEMasking(uint32_t itembitlen, uint32_t maskbitlen, uint32_t nbins, uint32_t* nelements,  CBitVector& server_choices, CBitVector& results, crypto* crypt, uint8_t* secretShare) {
+	OPEMasking(uint32_t itembitlen, uint32_t maskbitlen, uint32_t nbins, uint32_t* nelements,  CBitVector& server_choices, CBitVector& results, crypto* crypt) {
 		m_vServerChoices = server_choices;
 		m_vNumEleInBin = nelements;
 		init(itembitlen, maskbitlen, results, crypt, true);

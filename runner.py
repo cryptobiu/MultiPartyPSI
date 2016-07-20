@@ -86,6 +86,9 @@ def runMPPSI(strategy):
 
         s = s + intersection
         random.shuffle(s)
+
+        print "elements to party %d is %s" % (i, " ".join([str(el) for el in s]))
+
         buffer = ""
         for e in s:
             buffer = buffer + struct.pack("<I",e)

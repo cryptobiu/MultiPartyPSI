@@ -64,7 +64,7 @@ uint8_t*
 uint32_t
 #endif
 cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t bitlen, uint32_t* outbitlen, uint32_t* nelesinbin,
-		uint32_t* perm,	uint32_t ntasks, prf_state_ctx* prf_state);
+		uint32_t* perm,	uint32_t ntasks, prf_state_ctx* prf_state, uint32_t **bin_ids);
 //routine for generating the entries, is invoked by the threads
 void *gen_cuckoo_entries(void *ctx);
 inline void gen_cuckoo_entry(uint8_t* in, cuckoo_entry_ctx* out, hs_t* hs, uint32_t ele_id);

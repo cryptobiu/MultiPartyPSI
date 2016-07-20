@@ -18,6 +18,7 @@ public:
     void run();
 
     static void printHex(const uint8_t *arr, uint32_t size);
+    void printShares(const uint8_t *arr, uint32_t numOfShares);
 private:
 
     /**
@@ -32,10 +33,8 @@ private:
     void runAsFollower(CSocket *leader);
     void finishAndReportStatsToServer();
     void syncronize();
-    bool isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint8_t **leaderResults);
-    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults);
-
-    void printShares(uint8_t *arr, uint32_t numOfShares);
+    bool isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint8_t **leaderResults, uint32_t *bin_ids, uint32_t *perm);
+    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults, uint32_t **bin_ids, uint32_t **perm);
 
     uint32_t getMaskSizeInBytes() {
         return ceil_divide(m_maskbitlen, 8);
@@ -46,6 +45,7 @@ private:
 
     bool isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **partiesResults);
 
+    const double EPSILON=1.2;
     COPY_CTR(PsiParty);
     ASSIGN_OP(PsiParty);
 
@@ -59,6 +59,7 @@ private:
     uint32_t m_maskbitlen;
     struct statistics m_statistics;
     enum Strategy m_strategy;
+    uint32_t m_numOfBins;
 };
 
 #endif //LIBSCAPI_PSIPARTY_H
