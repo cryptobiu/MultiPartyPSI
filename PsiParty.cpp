@@ -196,7 +196,7 @@ void PsiParty::runAsLeader() {
     m_statistics.afterOTs = clock();
 
     vector<uint32_t> intersection;
-    for (uint32_t i = 0; i < m_setSize; i = i + 4) {
+    for (uint32_t i = 0; i < m_setSize; i++) {
         if (isElementInAllSets(i, partiesResults, leaderResults, bin_ids, perm)) {
             std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
             intersection.push_back(*(uint32_t*)(&m_elements[i]));

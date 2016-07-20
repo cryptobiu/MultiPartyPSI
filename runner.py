@@ -87,7 +87,7 @@ def runMPPSI(strategy):
             s.append(random.randint(MIN_INT, MAX_INT))
 
         s = s + intersection
-        random.shuffle(s)
+        #random.shuffle(s)
 
         print "elements to party %d is %s" % (i, " ".join([str(el) for el in s]))
 
