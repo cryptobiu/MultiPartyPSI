@@ -8,9 +8,7 @@
 
 vector<uint32_t> NaiveLeader::run() {
 
-    for (auto &party : m_parties) {
-        receive_server_masks(m_setSize, m_maskSizeInBytes, &m_partiesResults[party.first - 1], party.second);
-    }
+    receiveServerMasks();
 
     vector<uint32_t> intersection;
     for (uint32_t i = 0; i < m_setSize; i++) {
@@ -22,6 +20,45 @@ vector<uint32_t> NaiveLeader::run() {
     }
 
     return intersection;
+}
+
+void NaiveLeader::receiveServerMasks() {
+    vector<pthread_t> rcv_masks_threads;
+
+    mask_rcv_ctx *rcv_ctxs = new mask_rcv_ctx[m_parties.size()+1];
+    for (auto &party : m_parties) {
+        pthread_t rcv_masks_thread;
+
+        //receive server masks
+        m_partiesResults[party.first - 1] = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * m_setSize * m_maskSizeInBytes);
+
+        //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
+        //use a separate thread to receive the server's masks
+        rcv_ctxs[party.first - 1].rcv_buf = m_partiesResults[party.first - 1];
+        rcv_ctxs[party.first - 1].nmasks = NUM_HASH_FUNCTIONS * m_setSize;
+        rcv_ctxs[party.first - 1].maskbytelen = m_maskSizeInBytes;
+        rcv_ctxs[party.first - 1].sock = party.second;
+        if(pthread_create(&rcv_masks_thread, NULL, receive_masks, (void*) (&rcv_ctxs[party.first - 1]))) {
+            cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
+            exit(0);
+        }
+
+        rcv_masks_threads.push_back(rcv_masks_thread);
+    }
+
+    for (auto rcv_masks_thread : rcv_masks_threads) {
+        //meanwhile generate the hash table
+        //GHashTable* map = otpsi_create_hash_table(ceil_divide(inbitlen,8), masks, neles, maskbytelen, perm);
+        //intersect_size = otpsi_find_intersection(eleptr, result, ceil_divide(inbitlen,8), masks, neles, server_masks,
+        //		neles * NUM_HASH_FUNCTIONS, maskbytelen, perm);
+        //wait for receiving thread
+        if(pthread_join(rcv_masks_thread, NULL)) {
+            cerr << "Error in joining pthread at cuckoo hashing!" << endl;
+            exit(0);
+        }
+    }
+
+    free(rcv_ctxs);
 }
 
 bool NaiveLeader::isElementInAllSets(uint32_t index) {

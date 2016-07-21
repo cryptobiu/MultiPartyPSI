@@ -22,6 +22,8 @@ private:
     COPY_CTR(NaiveLeader);
     ASSIGN_OP(NaiveLeader);
 
+    void receiveServerMasks();
+
     bool isElementInAllSets(uint32_t index);
 
     bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum);
