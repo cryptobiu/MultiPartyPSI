@@ -24,19 +24,7 @@
 PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &ioService) :
     MultiPartyPlayer(partyId, config, ioService)
 {
-
-    uint64_t rnd;
-
-    uint8_t* seed = (uint8_t*) malloc(AES_BYTES);
-
     LoadConfiguration();
-
-    memcpy(seed, const_seed, AES_BYTES);
-    seed[0] = static_cast<uint8_t>(m_partyId);
-    m_crypt = new crypto(m_symsecbits, seed);
-
-    m_crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
-    srand((unsigned)rnd+time(0));
 
     m_numOfBins = ceil(EPSILON * m_setSize);
 
@@ -54,6 +42,11 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
     m_statistics.partyId = partyId;
 
+    uint8_t* seed_buf = (uint8_t*) malloc(m_seedSize);
+    m_serverSocket.Receive(seed_buf, m_seedSize*sizeof(uint8_t));
+
+    m_crypt = initializeCrypto(seed_buf);
+
     m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
 
     // PRINT_PARTY(m_partyId) << "Mask size in bytes is " << getMaskSizeInBytes() << std::endl;
@@ -70,12 +63,25 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
         m_internal_bitlen = m_elementSizeInBits;
     }
 
-
-    uint8_t* seed_buf = (uint8_t*) malloc(m_seedSize);
-    m_serverSocket.Receive(seed_buf, m_seedSize*sizeof(uint8_t));
-    m_crypt->init_prf_state(&m_prfState, seed_buf);
-
     syncronize();
+
+}
+
+crypto* PsiParty::initializeCrypto(uint8_t* seed_buf) {
+    uint64_t rnd;
+
+    uint8_t* seed = (uint8_t*) malloc(AES_BYTES);
+
+    memcpy(seed, const_seed, AES_BYTES);
+    seed[0] = static_cast<uint8_t>(m_partyId);
+    crypto *crypt = new crypto(m_symsecbits, seed);
+
+    crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
+    srand((unsigned)rnd+time(0));
+
+    crypt->init_prf_state(&m_prfState, seed_buf);
+
+    return crypt;
 }
 
 void PsiParty::LoadConfiguration() {
@@ -132,14 +138,16 @@ void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
 }
 
 void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **leaderResults,
-                                        uint32_t* nelesinbin, uint32_t outbitlen, uint8_t *hash_table) {
+                                        uint32_t* nelesinbin, uint32_t outbitlen, uint8_t * const hash_table) {
 
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
 
+    // uint8_t* seed_buf = (uint8_t*) malloc(m_seedSize);
+    // RAND_bytes(seed_buf, m_seedSize);
     //m_crypt->gen_common_seed(&m_prfState, *party.second);
 
-    otpsi_client(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
-                            party.second, 1, &m_prfState, leaderResults, outbitlen, nelesinbin, hash_table);
+    otpsi_client(m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
+                            party.second, 1, leaderResults, outbitlen, nelesinbin, hash_table);
 
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
@@ -162,20 +170,7 @@ void PsiParty::finishAndReportStatsToServer() {
 
 void PsiParty::runAsLeader() {
 
-    uint8_t **partiesResults;
-    uint8_t **leaderResults;
-
-    leaderResults = new uint8_t*[m_numOfParties];
-
-    /*
-    boost::thread_group threadpool;
-
-    for (auto &party : m_parties) {
-        threadpool.create_thread(boost::bind(&PsiParty::runLeaderAgainstFollower, this,
-                                             party, &partiesResults[party.first-1]));
-    }
-    threadpool.join_all();
-    */
+    uint8_t **leaderResults = new uint8_t*[m_numOfParties];
 
     // it would written over each time but every run gives the same thing
     uint32_t *bin_ids;
@@ -194,6 +189,17 @@ void PsiParty::runAsLeader() {
     }
     cout << endl;
     */
+
+/*
+    boost::thread_group threadpool;
+
+    for (auto &party : m_parties) {
+        threadpool.create_thread(boost::bind(&PsiParty::runLeaderAgainstFollower, this,
+                                             party, &leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table));
+    }
+    threadpool.join_all();
+*/
+
 
     for (auto &party : m_parties) {
         runLeaderAgainstFollower(party, &leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table);

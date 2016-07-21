@@ -66,15 +66,15 @@ void xor_masks(uint8_t *hash_table, uint8_t *elements, uint32_t neles, uint8_t *
 
 void receive_server_masks(uint32_t pneles, uint32_t maskbytelen, uint8_t** server_masks, CSocket* sock);
 
-void otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
-		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t **masks, uint32_t outbitlen,
-				  uint32_t* nelesinbin, uint8_t *hash_table);
+void otpsi_client(uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
+		crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint8_t **masks, uint32_t outbitlen,
+				  uint32_t* nelesinbin, uint8_t * const hash_table);
 
 void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
 		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t *secretShare, uint8_t **hash_table, uint8_t **masks,
 				  uint8_t **hashed_elements, uint32_t** nelesinbin);
 
-void oprg_client(uint8_t* hash_table, uint32_t nbins, uint32_t neles, uint32_t* nelesinbin, uint32_t elebitlen,
+void oprg_client(uint8_t* const hash_table, uint32_t nbins, uint32_t neles, uint32_t* nelesinbin, uint32_t elebitlen,
 		uint32_t maskbitlen, crypto* crypt, CSocket* sock, uint32_t nthreads, uint8_t* res_buf);
 void oprg_server(uint8_t* hash_table, uint32_t nbins, uint32_t totaleles, uint32_t* nelesinbin, uint32_t elebitlen,
 		uint32_t maskbitlen, crypto* crypt, CSocket* sock, uint32_t nthreads, uint8_t* res_buf);
