@@ -15,6 +15,7 @@
 #include "Follower.h"
 #include "NaiveFollower.h"
 #include "FollowerFactory.h"
+#include "NaiveLeader.h"
 #include <iomanip>
 
 #define KEY_SIZE 16
@@ -202,75 +203,20 @@ void PsiParty::runAsLeader() {
 
     m_statistics.afterOTs = clock();
 
-    vector<uint32_t> intersection;
-    for (uint32_t i = 0; i < m_setSize; i++) {
-        if (isElementInAllSets(i, partiesResults, leaderResults, bin_ids, perm)) {
-            // std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
-            intersection.push_back(*(uint32_t*)(&m_elements[i]));
-        }
-    }
+    NaiveLeader leader(partiesResults, leaderResults, bin_ids, perm,
+                       m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize, m_parties,
+                       NUM_HASH_FUNCTIONS);
+
+    auto intersection = leader.run();
+
+    m_statistics.intersectionSize = intersection.size();
 
     PRINT_PARTY(m_partyId) << "found that intersection size is " << intersection.size() << std::endl;
-    m_statistics.intersectionSize = intersection.size();
 
     m_statistics.specificStats.aftetComputing = clock();
 }
 
-void PsiParty::XOR(byte *xoree1, byte *xoree2, uint32_t size) {
-    for (uint32_t i = 0; i < size; i++) {
-        xoree1[i] = xoree1[i] ^ xoree2[i];
-    }
-};
 
-bool PsiParty::isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **partiesResults) {
-    if (partyNum < m_numOfParties) {
-        uint8_t *partyResult = partiesResults[partyNum];
-        for (uint32_t i = 0; i < m_setSize *NUM_HASH_FUNCTIONS; i++) {
-            XOR(formerShare,partyResult+i*getMaskSizeInBytes(), getMaskSizeInBytes());
-            if (isZeroXOR(formerShare,partyNum+1, partiesResults)) {
-                return true;
-            }
-            XOR(formerShare,partyResult+i*getMaskSizeInBytes(), getMaskSizeInBytes());
-        }
-        return false;
-    }
-
-    for (uint32_t i = 0; i < getMaskSizeInBytes(); i++) {
-        if (formerShare[i] != 0) {
-            return false;
-        }
-    }
-    return true;
-};
-
-bool PsiParty::isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint8_t **leaderResults, uint32_t *bin_ids, uint32_t *perm) {
-
-    uint32_t binIndex = 0;
-    for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if (bin_ids[i] == index + 1) {
-            // std::cout << "Element number " << index << " was found at " << i << std::endl;
-            binIndex = i;
-            break;
-        }
-    }
-
-    uint32_t newIndex = 0;
-    for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if (perm[i] == index) {
-            newIndex = i;
-            break;
-        }
-    }
-
-    byte* secret = &m_secretShare[binIndex*getMaskSizeInBytes()];
-
-    for (auto &party : m_parties) {
-        XOR(secret, leaderResults[party.first-1]+newIndex*getMaskSizeInBytes(), getMaskSizeInBytes());
-    }
-
-    // 1 is always the leader Id
-    return isZeroXOR(secret,1, partiesResults);
-}
 
 void PsiParty::runAsFollower(CSocket *leader) {
 

@@ -14,7 +14,9 @@ public:
     virtual ~NaiveFollower() {};
 
     virtual void run();
+
 private:
+
     COPY_CTR(NaiveFollower);
     ASSIGN_OP(NaiveFollower);
 };

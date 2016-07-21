@@ -36,7 +36,7 @@ private:
     void runAsFollower(CSocket *leader);
     void finishAndReportStatsToServer();
     void syncronize();
-    bool isElementInAllSets(uint32_t index, uint8_t **partiesResults, uint8_t **leaderResults, uint32_t *bin_ids, uint32_t *perm);
+
     void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults,
                                   uint32_t* nelesinbin, uint32_t outbitlen, uint8_t *hash_table);
 
@@ -45,10 +45,6 @@ private:
     }
 
     void LoadConfiguration();
-
-    void XOR(byte *xoree1, byte *xoree2, uint32_t size);
-
-    bool isZeroXOR(byte *formerShare, uint32_t partyNum, uint8_t **partiesResults);
 
     const double EPSILON=1.2;
     COPY_CTR(PsiParty);

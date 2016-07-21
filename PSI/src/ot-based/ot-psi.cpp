@@ -7,6 +7,7 @@
 
 #include "ot-psi.h"
 //#include "../../../../include/interactive_mid_protocols/OTExtensionBristol.hpp"
+#include "../../../common/defs.h"
 
 /*
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebytelens, uint8_t** elements,
@@ -250,12 +251,6 @@ void otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 	free(stashmasks);
 #endif
 }
-
-void XOR(uint8_t *xoree1, uint8_t *xoree2, uint32_t numBytes) {
-	for (uint32_t i = 0; i < numBytes; i++) {
-		xoree1[i] = xoree1[i] ^ xoree2[i];
-	}
-};
 
 bool Equal(uint8_t *el1, uint8_t *el2, uint32_t numBytes) {
 	for (uint32_t i = 0; i < numBytes; i++) {
