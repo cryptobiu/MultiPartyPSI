@@ -302,17 +302,15 @@ void xor_masks(uint8_t *hash_table, uint8_t *elements, uint32_t neles, uint8_t *
 }
 
 void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
-		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t *secretShare) {
-	uint8_t *hash_table, *masks;
-	uint8_t *hashed_elements;
-	uint32_t* nelesinbin;
+		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t *secretShare, uint8_t **hash_table, uint8_t **masks,
+				  uint8_t **hashed_elements, uint32_t** nelesinbin) {
 	uint32_t outbitlen, maskbytelen, elebytelen;
 	timeval t_start, t_end;
 #ifdef ENABLE_STASH
 	uint32_t stashsize = get_stash_size(neles);
 #endif
 
-	nelesinbin = (uint32_t*) malloc(sizeof(uint32_t) * nbins);
+	*nelesinbin = (uint32_t*) malloc(sizeof(uint32_t) * nbins);
 	maskbytelen = ceil_divide(maskbitlen, 8);
 	elebytelen = ceil_divide(elebitlen, 8);
 
@@ -325,7 +323,7 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 #ifdef TIMING
 	gettimeofday(&t_start, NULL);
 #endif
-	hash_table = simple_hashing(elements, neles, elebitlen, &outbitlen, nelesinbin, nbins, ntasks, prf_state, &hashed_elements);
+	*hash_table = simple_hashing(elements, neles, elebitlen, &outbitlen, *nelesinbin, nbins, ntasks, prf_state, hashed_elements);
 	if(DETAILED_TIMINGS) {
 		gettimeofday(&t_end, NULL);
 		cout << "Time for simple hashing:\t" << fixed << std::setprecision(2) <<
@@ -340,8 +338,8 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 #ifdef PRINT_BIN_CONTENT
 	print_bin_content(hash_table, nbins, ceil_divide(outbitlen, 8), nelesinbin, true);
 #endif
-	masks = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * neles * maskbytelen);
-	oprg_server(hash_table, nbins, neles * NUM_HASH_FUNCTIONS, nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, masks);
+	*masks = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * neles * maskbytelen);
+	oprg_server(*hash_table, nbins, neles * NUM_HASH_FUNCTIONS, *nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, *masks);
 	if(DETAILED_TIMINGS) {
 		gettimeofday(&t_start, NULL);
 	}
@@ -364,10 +362,7 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 	std::cout << std::endl;
 	*/
 
-	xor_masks(hash_table, hashed_elements, neles, masks, ceil_divide(outbitlen, 8), maskbytelen, secretShare,nbins,nelesinbin);
 
-	//send the masks to the receiver
-	send_masks(masks, neles * NUM_HASH_FUNCTIONS, maskbytelen, sock[0]);
 
 
 #ifdef ENABLE_STASH
@@ -387,10 +382,6 @@ void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 	gettimeofday(&t_end, NULL);
 	cout << "Server: time for sending masks: " << getMillies(t_start, t_end) << " ms" << endl;
 #endif
-
-	free(masks);
-	free(hash_table);
-	free(nelesinbin);
 }
 
 void oprg_client(uint8_t* hash_table, uint32_t nbins, uint32_t neles, uint32_t* nelesinbin, uint32_t elebitlen,

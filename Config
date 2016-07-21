@@ -1,6 +1,6 @@
 [General]
 numOfParties=3
-setSize=10
+setSize=20
 securityParameter=128
 seedSizeInBytes=16
 elementSizeInBits=32

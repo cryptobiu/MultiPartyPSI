@@ -273,8 +273,23 @@ void PsiParty::runAsFollower(CSocket *leader) {
 
     // m_crypt->gen_common_seed(&m_prfState, *leader);
 
+    uint8_t *hash_table;
+    uint8_t *masks;
+    uint8_t *hashed_elements;
+    uint32_t* nelesinbin;
+
     otpsi_server(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt, leader, 1,
-                 &m_prfState, m_secretShare);
+                 &m_prfState, m_secretShare, &hash_table, &masks, &hashed_elements, &nelesinbin);
+
+    xor_masks(hash_table, hashed_elements, m_setSize, masks, ceil_divide(m_internal_bitlen, 8), getMaskSizeInBytes(), m_secretShare,m_numOfBins,nelesinbin);
+
+    //send the masks to the receiver
+    send_masks(masks, m_setSize * NUM_HASH_FUNCTIONS, getMaskSizeInBytes(), *leader);
+
+    free(hash_table);
+    free(masks);
+    free(hashed_elements);
+    free(nelesinbin);
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
     m_statistics.afterOTs = clock();
