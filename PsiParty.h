@@ -37,7 +37,7 @@ private:
     void finishAndReportStatsToServer();
     void syncronize();
 
-    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults,
+    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **leaderResults,
                                   uint32_t* nelesinbin, uint32_t outbitlen, uint8_t *hash_table);
 
     uint32_t getMaskSizeInBytes() {

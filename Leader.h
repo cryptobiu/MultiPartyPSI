@@ -11,10 +11,10 @@
 
 class Leader {
 public:
-    Leader(uint8_t **partiesResults, uint8_t **leaderResults, uint32_t *binIds, uint32_t *perm, uint32_t numOfBins,
+    Leader(uint8_t **leaderResults, uint32_t *binIds, uint32_t *perm, uint32_t numOfBins,
            uint8_t *secretShare, uint32_t maskSizeInBytes, uint32_t setSize, std::map<uint32_t, CSocket*> parties,
            uint32_t numOfHashFunctions):
-            m_partiesResults(partiesResults), m_leaderResults(leaderResults), m_binIds(binIds), m_perm(perm),
+            m_leaderResults(leaderResults), m_binIds(binIds), m_perm(perm),
             m_numOfBins(numOfBins), m_secretShare(secretShare), m_maskSizeInBytes(maskSizeInBytes), m_setSize(setSize),
             m_parties(parties), m_numOfHashFunctions(numOfHashFunctions) {}
     virtual ~Leader() {};

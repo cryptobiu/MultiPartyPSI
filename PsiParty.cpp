@@ -130,7 +130,7 @@ void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
     std::cout << std::endl;
 }
 
-void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **partyResult, uint8_t **leaderResults,
+void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **leaderResults,
                                         uint32_t* nelesinbin, uint32_t outbitlen, uint8_t *hash_table) {
 
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
@@ -139,7 +139,7 @@ void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uin
 
     otpsi_client(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
                             party.second, 1, &m_prfState, leaderResults, outbitlen, nelesinbin, hash_table);
-    receive_server_masks(m_setSize, getMaskSizeInBytes(), partyResult, party.second);
+
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
@@ -164,7 +164,6 @@ void PsiParty::runAsLeader() {
     uint8_t **partiesResults;
     uint8_t **leaderResults;
 
-    partiesResults = new uint8_t*[m_numOfParties];
     leaderResults = new uint8_t*[m_numOfParties];
 
     /*
@@ -196,14 +195,14 @@ void PsiParty::runAsLeader() {
     */
 
     for (auto &party : m_parties) {
-        runLeaderAgainstFollower(party, &partiesResults[party.first - 1], &leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table);
+        runLeaderAgainstFollower(party, &leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table);
     }
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
     m_statistics.afterOTs = clock();
 
-    NaiveLeader leader(partiesResults, leaderResults, bin_ids, perm,
+    NaiveLeader leader(leaderResults, bin_ids, perm,
                        m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize, m_parties,
                        NUM_HASH_FUNCTIONS);
 
