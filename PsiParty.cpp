@@ -12,6 +12,8 @@
 #include "PSI/src/ot-based/ot-psi.h"
 #include "PSI/src/hashing/hashing_util.h"
 #include "PsiParty.h"
+#include "Follower.h"
+#include "NaiveFollower.h"
 #include <iomanip>
 
 #define KEY_SIZE 16
@@ -281,10 +283,12 @@ void PsiParty::runAsFollower(CSocket *leader) {
     otpsi_server(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt, leader, 1,
                  &m_prfState, m_secretShare, &hash_table, &masks, &hashed_elements, &nelesinbin);
 
-    xor_masks(hash_table, hashed_elements, m_setSize, masks, ceil_divide(m_internal_bitlen, 8), getMaskSizeInBytes(), m_secretShare,m_numOfBins,nelesinbin);
 
-    //send the masks to the receiver
-    send_masks(masks, m_setSize * NUM_HASH_FUNCTIONS, getMaskSizeInBytes(), *leader);
+    struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table, nelesinbin, m_numOfBins,
+        NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes()};
+
+    NaiveFollower follower(set, m_secretShare, *leader);
+    follower.run();
 
     free(hash_table);
     free(masks);

@@ -25,7 +25,7 @@ AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI/src/hashing HASHING_S
 AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI/src/util UTIL_SOURCES)
 
 set(SOURCE_FILES main.cpp PsiParty.cpp common/defs.cpp common/MultiPartyPlayer.cpp PRG/PRG.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/util/connection.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
-        ${MIRACLE_LIB_SOURCES} ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES})
+        NaiveFollower.cpp ${MIRACLE_LIB_SOURCES} ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES})
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI
