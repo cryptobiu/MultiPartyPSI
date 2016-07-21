@@ -64,8 +64,10 @@ uint8_t* cuckko_hash(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t
 void xor_masks(uint8_t *hash_table, uint8_t *elements, uint32_t neles, uint8_t *masks,
 			   uint32_t elebyetelen, uint32_t maskbytelen, uint8_t *secretShare, uint32_t nbins, uint32_t* nelesinbin);
 
+void receive_server_masks(uint32_t pneles, uint32_t maskbytelen, uint8_t** server_masks, CSocket* sock);
+
 void otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,
-		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks, uint32_t outbitlen,
+		crypto* crypt_env, CSocket* sock, uint32_t ntasks, prf_state_ctx* prf_state, uint8_t **masks, uint32_t outbitlen,
 				  uint32_t* nelesinbin, uint8_t *hash_table);
 
 void otpsi_server(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t elebitlen, uint32_t maskbitlen,

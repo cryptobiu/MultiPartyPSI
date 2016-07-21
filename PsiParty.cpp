@@ -138,8 +138,8 @@ void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uin
     //m_crypt->gen_common_seed(&m_prfState, *party.second);
 
     otpsi_client(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
-                            party.second, 1, &m_prfState, partyResult, leaderResults, outbitlen, nelesinbin, hash_table);
-
+                            party.second, 1, &m_prfState, leaderResults, outbitlen, nelesinbin, hash_table);
+    receive_server_masks(m_setSize, getMaskSizeInBytes(), partyResult, party.second);
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 

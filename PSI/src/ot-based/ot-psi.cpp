@@ -82,9 +82,37 @@ uint8_t* cuckko_hash(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t
 	return hash_table;
 }
 
+void receive_server_masks(uint32_t pneles, uint32_t maskbytelen, uint8_t** server_masks, CSocket* sock) {
+	mask_rcv_ctx rcv_ctx;
+	pthread_t rcv_masks_thread;
+
+	//receive server masks
+	*server_masks = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * pneles * maskbytelen);
+
+	//receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
+	//use a separate thread to receive the server's masks
+	rcv_ctx.rcv_buf = *server_masks;
+	rcv_ctx.nmasks = NUM_HASH_FUNCTIONS * pneles;
+	rcv_ctx.maskbytelen = maskbytelen;
+	rcv_ctx.sock = sock;
+	if(pthread_create(&rcv_masks_thread, NULL, receive_masks, (void*) (&rcv_ctx))) {
+		cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
+		exit(0);
+	}
+	//meanwhile generate the hash table
+	//GHashTable* map = otpsi_create_hash_table(ceil_divide(inbitlen,8), masks, neles, maskbytelen, perm);
+	//intersect_size = otpsi_find_intersection(eleptr, result, ceil_divide(inbitlen,8), masks, neles, server_masks,
+	//		neles * NUM_HASH_FUNCTIONS, maskbytelen, perm);
+	//wait for receiving thread
+	if(pthread_join(rcv_masks_thread, NULL)) {
+		cerr << "Error in joining pthread at cuckoo hashing!" << endl;
+		exit(0);
+	}
+}
+
 void otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pneles,
 		uint32_t elebitlen, uint32_t maskbitlen, crypto* crypt_env, CSocket* sock, uint32_t ntasks,
-		prf_state_ctx* prf_state, uint8_t** server_masks, uint8_t **masks, uint32_t outbitlen, uint32_t* nelesinbin, uint8_t *hash_table) {
+		prf_state_ctx* prf_state, uint8_t **masks, uint32_t outbitlen, uint32_t* nelesinbin, uint8_t *hash_table) {
 
 	pthread_t rcv_masks_thread;
 	pthread_t* query_map_thread = (pthread_t*) malloc(sizeof(pthread_t) * ntasks);
@@ -143,29 +171,6 @@ void otpsi_client(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t pn
 	cout << "Client masks: " << endl;
 	print_bin_content(*masks, neles, maskbytelen, NULL, false);
 #endif
-
-	//receive server masks
-	*server_masks = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * pneles * maskbytelen);
-
-	//receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
-	//use a separate thread to receive the server's masks
-	rcv_ctx.rcv_buf = *server_masks;
-	rcv_ctx.nmasks = NUM_HASH_FUNCTIONS * pneles;
-	rcv_ctx.maskbytelen = maskbytelen;
-	rcv_ctx.sock = sock;
-	if(pthread_create(&rcv_masks_thread, NULL, receive_masks, (void*) (&rcv_ctx))) {
-		cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
-		exit(0);
-	}
-	//meanwhile generate the hash table
-	//GHashTable* map = otpsi_create_hash_table(ceil_divide(inbitlen,8), masks, neles, maskbytelen, perm);
-	//intersect_size = otpsi_find_intersection(eleptr, result, ceil_divide(inbitlen,8), masks, neles, server_masks,
-	//		neles * NUM_HASH_FUNCTIONS, maskbytelen, perm);
-	//wait for receiving thread
-	if(pthread_join(rcv_masks_thread, NULL)) {
-		cerr << "Error in joining pthread at cuckoo hashing!" << endl;
-		exit(0);
-	}
 
 #ifdef ENABLE_STASH
 	//receive the masks for the stash
