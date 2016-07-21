@@ -14,6 +14,7 @@
 #include "PsiParty.h"
 #include "Follower.h"
 #include "NaiveFollower.h"
+#include "FollowerFactory.h"
 #include <iomanip>
 
 #define KEY_SIZE 16
@@ -287,8 +288,8 @@ void PsiParty::runAsFollower(CSocket *leader) {
     struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table, nelesinbin, m_numOfBins,
         NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes()};
 
-    NaiveFollower follower(set, m_secretShare, *leader);
-    follower.run();
+    auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, *leader);
+    follower->run();
 
     free(hash_table);
     free(masks);

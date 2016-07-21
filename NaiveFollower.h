@@ -11,6 +11,7 @@ class NaiveFollower : public Follower {
 public:
     NaiveFollower(const FollowerSet& followerSet, uint8_t *secretShare, CSocket &leader) :
             Follower(followerSet, secretShare, leader) {};
+    virtual ~NaiveFollower() {};
 
     virtual void run();
 private:

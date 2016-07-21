@@ -25,6 +25,7 @@ class Follower {
 public:
     Follower(const FollowerSet& followerSet, uint8_t *secretShare, CSocket &leader) :
             m_followerSet(followerSet), m_secretShare(secretShare), m_leader(leader) {};
+    virtual ~Follower() {};
 
     virtual void run()=0;
 protected:
