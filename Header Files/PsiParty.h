@@ -5,10 +5,10 @@
 #ifndef LIBSCAPI_PSIPARTY_H
 #define LIBSCAPI_PSIPARTY_H
 
-#include "common/MultiPartyPlayer.h"
-#include "common/statistics.h"
-#include "PSI/src/util/typedefs.h"
-#include "PSI/src/util/crypto/crypto.h"
+#include "MultiPartyPlayer.h"
+#include "statistics.h"
+#include "../PSI/src/util/typedefs.h"
+#include "../PSI/src/util/crypto/crypto.h"
 
 class PsiParty : public MultiPartyPlayer {
 public:

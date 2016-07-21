@@ -2,9 +2,9 @@
 // Created by root on 7/21/16.
 //
 
-#include "LeaderFactory.h"
+#include "../Header Files/LeaderFactory.h"
 
-#include "NaiveLeader.h"
+#include "../Header Files/NaiveLeader.h"
 
 boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, uint8_t **leaderResults, uint32_t *binIds, uint32_t *perm, uint32_t numOfBins,
                                                      uint8_t *secretShare, uint32_t maskSizeInBytes, uint32_t setSize, std::map<uint32_t, CSocket*> parties,

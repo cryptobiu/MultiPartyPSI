@@ -2,9 +2,9 @@
 // Created by root on 7/21/16.
 //
 
-#include "NaiveLeader.h"
-#include "common/defs.h"
-#include "PSI/src/ot-based/ot-psi.h"
+#include "../Header Files/NaiveLeader.h"
+#include "../Header Files/defs.h"
+#include "../PSI/src/ot-based/ot-psi.h"
 
 vector<uint32_t> NaiveLeader::run() {
 

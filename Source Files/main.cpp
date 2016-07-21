@@ -1,15 +1,15 @@
 #include <iostream>
 #include <sstream>
-#include "../include/primitives/AES_PRG.hpp"
+#include "../../include/primitives/AES_PRG.hpp"
 
 #include <stdlib.h>
-#include "../include/comm/Comm.hpp"
-#include "common/defs.h"
-#include "../include/infra/ConfigFile.hpp"
-#include "common/MultiPartyPlayer.h"
+#include "../../include/comm/Comm.hpp"
+#include "../Header Files/defs.h"
+#include "../../include/infra/ConfigFile.hpp"
+#include "../Header Files/MultiPartyPlayer.h"
 
 #include <boost/thread/thread.hpp>
-#include "PsiParty.h"
+#include "../Header Files/PsiParty.h"
 
 using namespace std;
 

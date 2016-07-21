@@ -7,7 +7,7 @@
 
 #include "ot-psi.h"
 //#include "../../../../include/interactive_mid_protocols/OTExtensionBristol.hpp"
-#include "../../../common/defs.h"
+#include "../../../Header Files/defs.h"
 
 /*
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebytelens, uint8_t** elements,

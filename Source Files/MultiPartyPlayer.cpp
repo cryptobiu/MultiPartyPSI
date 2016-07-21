@@ -2,7 +2,7 @@
 // Created by root on 6/20/16.
 //
 
-#include "MultiPartyPlayer.h"
+#include "../Header Files/MultiPartyPlayer.h"
 #include <boost/bind.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/asio/io_service.hpp>

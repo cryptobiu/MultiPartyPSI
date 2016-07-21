@@ -4,19 +4,19 @@
 
 
 #include <boost/thread/thread.hpp>
-#include "../include/primitives/AES_PRG.hpp"
-#include "../include/primitives/Prg.hpp"
+#include "../../include/primitives/AES_PRG.hpp"
+#include "../../include/primitives/Prg.hpp"
 //#include "PRG/PRG.hpp"
-#include "common/defs.h"
+#include "../Header Files/defs.h"
 #include <immintrin.h>
-#include "PSI/src/ot-based/ot-psi.h"
-#include "PSI/src/hashing/hashing_util.h"
-#include "PsiParty.h"
-#include "Follower.h"
-#include "NaiveFollower.h"
-#include "FollowerFactory.h"
-#include "LeaderFactory.h"
-#include "NaiveLeader.h"
+#include "../PSI/src/ot-based/ot-psi.h"
+#include "../PSI/src/hashing/hashing_util.h"
+#include "../Header Files/PsiParty.h"
+#include "../Header Files/Follower.h"
+#include "../Header Files/NaiveFollower.h"
+#include "../Header Files/FollowerFactory.h"
+#include "../Header Files/LeaderFactory.h"
+#include "../Header Files/NaiveLeader.h"
 #include <iomanip>
 
 #define KEY_SIZE 16

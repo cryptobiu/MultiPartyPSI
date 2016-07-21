@@ -6,8 +6,8 @@
 #define MULTIPARTYPSI_FOLLOWER_H
 
 #include <stdlib.h>
-#include "common/defs.h"
-#include "PSI/src/util/socket.h"
+#include "defs.h"
+#include "../PSI/src/util/socket.h"
 
 struct FollowerSet {
     uint8_t *m_elements;

@@ -5,9 +5,9 @@
 #ifndef MULTIPARTYPSI_LEADER_H
 #define MULTIPARTYPSI_LEADER_H
 
-#include "common/defs.h"
+#include "defs.h"
 #include <map>
-#include "PSI/src/util/socket.h"
+#include "../PSI/src/util/socket.h"
 
 class Leader {
 public:

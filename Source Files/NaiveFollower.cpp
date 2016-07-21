@@ -2,8 +2,8 @@
 // Created by root on 7/21/16.
 //
 
-#include "NaiveFollower.h"
-#include "PSI/src/ot-based/ot-psi.h"
+#include "../Header Files/NaiveFollower.h"
+#include "../PSI/src/ot-based/ot-psi.h"
 
 void NaiveFollower::run() {
     xor_masks(m_followerSet.m_hashTable, m_followerSet.m_elements, m_followerSet.m_numOfElements, m_followerSet.m_masks, m_followerSet.m_elementSizeInBytes,
