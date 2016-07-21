@@ -11,7 +11,7 @@ vector<uint32_t> NaiveLeader::run() {
     for (auto &party : m_parties) {
         receive_server_masks(m_setSize, m_maskSizeInBytes, &m_partiesResults[party.first - 1], party.second);
     }
-    
+
     vector<uint32_t> intersection;
     for (uint32_t i = 0; i < m_setSize; i++) {
         if (isElementInAllSets(i)) {

@@ -15,6 +15,7 @@
 #include "Follower.h"
 #include "NaiveFollower.h"
 #include "FollowerFactory.h"
+#include "LeaderFactory.h"
 #include "NaiveLeader.h"
 #include <iomanip>
 
@@ -202,11 +203,11 @@ void PsiParty::runAsLeader() {
 
     m_statistics.afterOTs = clock();
 
-    NaiveLeader leader(leaderResults, bin_ids, perm,
-                       m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize, m_parties,
-                       NUM_HASH_FUNCTIONS);
+    auto leader = LeaderFactory::getLeader(m_strategy, leaderResults, bin_ids, perm,
+                                             m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize, m_parties,
+                                             NUM_HASH_FUNCTIONS);
 
-    auto intersection = leader.run();
+    auto intersection = leader->run();
 
     m_statistics.intersectionSize = intersection.size();
 
