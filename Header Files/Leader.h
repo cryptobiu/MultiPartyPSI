@@ -23,7 +23,7 @@ public:
     virtual vector<uint32_t> run()=0;
 
 protected:
-    map<uint32_t , uint8_t *> m_partiesResults;
+    map<uint32_t , boost::shared_ptr<uint8_t>> m_partiesResults;
     map<uint32_t , boost::shared_ptr<uint8_t>> m_leaderResults;
     boost::shared_ptr<uint32_t> m_binIds;
     boost::shared_ptr<uint32_t> m_perm;
