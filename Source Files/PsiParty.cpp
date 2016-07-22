@@ -234,7 +234,7 @@ void PsiParty::runAsFollower(CSocket *leader) {
     uint32_t* nelesinbin;
 
     otpsi_server(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt, leader, 1,
-                 &m_prfState, m_secretShare, &hash_table, &masks, &hashed_elements, &nelesinbin);
+                 &m_prfState, &hash_table, &masks, &hashed_elements, &nelesinbin);
 
 
     struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table, nelesinbin, m_numOfBins,
@@ -283,8 +283,8 @@ void PsiParty::additiveSecretShare() {
         //std::cout << std::endl;
     }
 
-    m_secretShare = new byte[shareSize];
-    memset(m_secretShare, 0, shareSize);
+    m_secretShare.reset(new byte[shareSize]);
+    memset(m_secretShare.get(), 0, shareSize);
 
     for (auto &share : shares) {
         /*
@@ -313,7 +313,7 @@ void PsiParty::additiveSecretShare() {
         //PRINT_PARTY(m_partyId);
         //printShares(reinterpret_cast<const uint8_t*>(res.data()), 2);
 
-        XOR(m_secretShare, result.data(), shareSize);
+        XOR(m_secretShare.get(), result.data(), shareSize);
 
         /*
         for (uint j = 0; j < shareSize; j += SIZE_OF_BLOCK) {

@@ -9,7 +9,7 @@
 
 class NaiveFollower : public Follower {
 public:
-    NaiveFollower(const FollowerSet& followerSet, uint8_t *secretShare, CSocket &leader) :
+    NaiveFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader) :
             Follower(followerSet, secretShare, leader) {};
     virtual ~NaiveFollower() {};
 

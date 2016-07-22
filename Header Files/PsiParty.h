@@ -53,7 +53,7 @@ private:
 
     uint32_t m_setSize;
     uint32_t m_elementSizeInBits;
-    byte *m_secretShare;
+    boost::shared_ptr<uint8_t> m_secretShare;
     uint8_t *m_elements;
     crypto* m_crypt;
     uint32_t m_maskbitlen;

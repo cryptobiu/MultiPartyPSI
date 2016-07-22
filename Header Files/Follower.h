@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "defs.h"
 #include "../PSI/src/util/socket.h"
+#include "boost/shared_ptr.hpp"
 
 struct FollowerSet {
     uint8_t *m_elements;
@@ -23,14 +24,14 @@ struct FollowerSet {
 
 class Follower {
 public:
-    Follower(const FollowerSet& followerSet, uint8_t *secretShare, CSocket &leader) :
+    Follower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader) :
             m_followerSet(followerSet), m_secretShare(secretShare), m_leader(leader) {};
     virtual ~Follower() {};
 
     virtual void run()=0;
 protected:
     const FollowerSet &m_followerSet;
-    uint8_t *m_secretShare;
+    boost::shared_ptr<uint8_t> m_secretShare;
     CSocket &m_leader;
 private:
     COPY_CTR(Follower);

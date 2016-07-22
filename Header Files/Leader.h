@@ -8,11 +8,12 @@
 #include "defs.h"
 #include <map>
 #include "../PSI/src/util/socket.h"
+#include "boost/shared_ptr.hpp"
 
 class Leader {
 public:
     Leader(uint8_t **leaderResults, uint32_t *binIds, uint32_t *perm, uint32_t numOfBins,
-           uint8_t *secretShare, uint32_t maskSizeInBytes, uint32_t setSize, std::map<uint32_t, CSocket*> parties,
+           const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize, std::map<uint32_t, CSocket*> parties,
            uint32_t numOfHashFunctions):
             m_leaderResults(leaderResults), m_binIds(binIds), m_perm(perm),
             m_numOfBins(numOfBins), m_secretShare(secretShare), m_maskSizeInBytes(maskSizeInBytes), m_setSize(setSize),
@@ -27,7 +28,7 @@ protected:
     uint32_t *m_binIds;
     uint32_t *m_perm;
     uint32_t m_numOfBins;
-    uint8_t *m_secretShare;
+    boost::shared_ptr<uint8_t> m_secretShare;
     uint32_t m_maskSizeInBytes;
     uint32_t m_setSize;
     std::map<uint32_t, CSocket*> m_parties;
