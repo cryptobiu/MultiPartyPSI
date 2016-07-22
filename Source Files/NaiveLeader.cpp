@@ -65,7 +65,7 @@ bool NaiveLeader::isElementInAllSets(uint32_t index) {
 
     uint32_t binIndex = 0;
     for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if (m_binIds[i] == index + 1) {
+        if ((m_binIds.get())[i] == index + 1) {
             // std::cout << "Element number " << index << " was found at " << i << std::endl;
             binIndex = i;
             break;
