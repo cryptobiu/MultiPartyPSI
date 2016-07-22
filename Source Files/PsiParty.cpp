@@ -174,13 +174,14 @@ void PsiParty::runAsLeader() {
 
     // it would written over each time but every run gives the same thing
     uint32_t *bin_ids;
-    uint32_t *perm;
+    uint32_t *perm = (uint32_t*) calloc(m_setSize, sizeof(uint32_t));
 
-    uint32_t* nelesinbin;
+    uint32_t* nelesinbin = (uint32_t*) calloc(m_numOfBins, sizeof(uint32_t));
     uint32_t outbitlen;
     uint8_t *hash_table;
-    hash_table = cuckko_hash(m_eleptr, m_setSize, m_numOfBins, &nelesinbin, m_internal_bitlen, &outbitlen,
-                             &perm, &bin_ids, 1, &m_prfState);
+
+    hash_table = cuckoo_hashing(m_eleptr, m_setSize, m_numOfBins, m_internal_bitlen, &outbitlen,
+                                nelesinbin, perm, 1, &m_prfState, &bin_ids);
 
     /*
     cout << "bin_ids: ";

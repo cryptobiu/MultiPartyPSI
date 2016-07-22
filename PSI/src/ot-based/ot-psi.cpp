@@ -72,14 +72,9 @@ uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebyt
 }
 */
 
-uint8_t* cuckko_hash(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t** nelesinbin, uint32_t elebitlen, uint32_t *outbitlen,
-					 uint32_t **perm, uint32_t **bin_ids, uint32_t ntasks, prf_state_ctx* prf_state) {
-	uint8_t *hash_table;
-	*nelesinbin = (uint32_t*) calloc(nbins, sizeof(uint32_t));
-	*perm = (uint32_t*) calloc(neles, sizeof(uint32_t));
-	hash_table = cuckoo_hashing(elements, neles, nbins, elebitlen, outbitlen,
-								*nelesinbin, *perm, ntasks, prf_state, bin_ids);
-	return hash_table;
+uint8_t* cuckko_hash(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t* nelesinbin, uint32_t elebitlen, uint32_t *outbitlen,
+					 uint32_t *perm, uint32_t **bin_ids, uint32_t ntasks, prf_state_ctx* prf_state) {
+
 }
 
 void receive_server_masks(uint32_t pneles, uint32_t maskbytelen, uint8_t** server_masks, CSocket* sock) {
