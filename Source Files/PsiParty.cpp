@@ -169,7 +169,7 @@ void PsiParty::finishAndReportStatsToServer() {
 
 void PsiParty::runAsLeader() {
 
-    uint8_t **leaderResults = new uint8_t*[m_numOfParties];
+    map<uint32_t , uint8_t *> leaderResults;
 
     boost::shared_ptr<uint32_t> perm(new uint32_t[m_setSize]);
     memset(perm.get(),0,m_setSize);
@@ -213,8 +213,8 @@ void PsiParty::runAsLeader() {
 
 
     for (auto &party : m_parties) {
-        leaderResults[party.first - 1] = (uint8_t*) malloc(m_setSize * getMaskSizeInBytes());
-        runLeaderAgainstFollower(party, leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table);
+        leaderResults[party.first] = (uint8_t*) malloc(m_setSize * getMaskSizeInBytes());
+        runLeaderAgainstFollower(party, leaderResults[party.first], nelesinbin, outbitlen, hash_table);
     }
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;

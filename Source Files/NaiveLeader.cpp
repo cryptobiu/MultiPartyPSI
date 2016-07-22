@@ -30,11 +30,11 @@ void NaiveLeader::receiveServerMasks() {
         pthread_t rcv_masks_thread;
 
         //receive server masks
-        m_partiesResults[party.first - 1] = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * m_setSize * m_maskSizeInBytes);
+        m_partiesResults[party.first] = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * m_setSize * m_maskSizeInBytes);
 
         //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
         //use a separate thread to receive the server's masks
-        (rcv_ctxs.get())[party.first - 1].rcv_buf = m_partiesResults[party.first - 1];
+        (rcv_ctxs.get())[party.first - 1].rcv_buf = m_partiesResults[party.first];
         (rcv_ctxs.get())[party.first - 1].nmasks = NUM_HASH_FUNCTIONS * m_setSize;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].sock = party.second;
@@ -81,15 +81,15 @@ bool NaiveLeader::isElementInAllSets(uint32_t index) {
     uint8_t* secret = &(m_secretShare.get()[binIndex*m_maskSizeInBytes]);
 
     for (auto &party : m_parties) {
-        XOR(secret, m_leaderResults[party.first-1]+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
+        XOR(secret, m_leaderResults[party.first]+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
     }
 
     // 1 is always the leader Id
-    return isZeroXOR(secret,1);
+    return isZeroXOR(secret,2);
 }
 
 bool NaiveLeader::isZeroXOR(uint8_t *formerShare, uint32_t partyNum) {
-    if (partyNum < m_parties.size()+1) {
+    if (partyNum <= m_parties.size()+1) {
         uint8_t *partyResult = m_partiesResults[partyNum];
         for (uint32_t i = 0; i < m_setSize *m_numOfHashFunctions; i++) {
             XOR(formerShare,partyResult+i*m_maskSizeInBytes, m_maskSizeInBytes);

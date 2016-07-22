@@ -16,7 +16,7 @@ public:
     LeaderFactory();
     virtual ~LeaderFactory() {};
 
-    static boost::shared_ptr<Leader> getLeader(enum Strategy strategy, uint8_t **leaderResults, const boost::shared_ptr<uint32_t> &binIds, const boost::shared_ptr<uint32_t> &perm, uint32_t numOfBins,
+    static boost::shared_ptr<Leader> getLeader(enum Strategy strategy, const map<uint32_t , uint8_t *>& leaderResults, const boost::shared_ptr<uint32_t> &binIds, const boost::shared_ptr<uint32_t> &perm, uint32_t numOfBins,
                                                const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize, std::map<uint32_t, CSocket*> parties,
                                                  uint32_t numOfHashFunctions);
 private:
