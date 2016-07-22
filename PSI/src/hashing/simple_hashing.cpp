@@ -7,8 +7,8 @@
 
 #include "simple_hashing.h"
 
-uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t bitlen, uint32_t *outbitlen, uint32_t* nelesinbin, uint32_t nbins,
-		uint32_t ntasks, prf_state_ctx* prf_state, uint8_t **hashed_elements, hs_t &hs) {
+uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t* nelesinbin,
+		uint32_t ntasks, uint8_t **hashed_elements, hs_t &hs) {
 	sht_ctx* table;
 	//uint8_t** bin_content;
 	uint8_t *eleptr, *bin_ptr, *result, *res_bins;

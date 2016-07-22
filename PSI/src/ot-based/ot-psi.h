@@ -68,7 +68,7 @@ void otpsi_client(uint32_t neles, uint32_t nbins, uint32_t pneles, uint32_t eleb
 				  uint32_t* nelesinbin, uint8_t * const hash_table);
 
 void otpsi_server(uint32_t neles, uint32_t nbins, uint32_t elebitlen, uint32_t maskbitlen,
-		crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint8_t *hash_table, uint8_t **masks,
+		crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint8_t *hash_table, uint8_t *masks,
 				  uint32_t* nelesinbin, uint32_t outbitlen);
 
 void oprg_client(uint8_t* const hash_table, uint32_t nbins, uint32_t neles, uint32_t* nelesinbin, uint32_t elebitlen,

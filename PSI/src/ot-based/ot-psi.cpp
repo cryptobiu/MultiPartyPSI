@@ -297,7 +297,7 @@ void xor_masks(uint8_t *hash_table, uint8_t *elements, uint32_t neles, uint8_t *
 }
 
 void otpsi_server(uint32_t neles, uint32_t nbins, uint32_t elebitlen, uint32_t maskbitlen,
-		crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint8_t *hash_table, uint8_t **masks,
+		crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint8_t *hash_table, uint8_t *masks,
 				  uint32_t* nelesinbin, uint32_t outbitlen) {
 	uint32_t maskbytelen, elebytelen;
 	timeval t_start, t_end;
@@ -332,8 +332,8 @@ void otpsi_server(uint32_t neles, uint32_t nbins, uint32_t elebitlen, uint32_t m
 #ifdef PRINT_BIN_CONTENT
 	print_bin_content(hash_table, nbins, ceil_divide(outbitlen, 8), nelesinbin, true);
 #endif
-	*masks = (uint8_t*) malloc(NUM_HASH_FUNCTIONS * neles * maskbytelen);
-	oprg_server(hash_table, nbins, neles * NUM_HASH_FUNCTIONS, nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, *masks);
+
+	oprg_server(hash_table, nbins, neles * NUM_HASH_FUNCTIONS, nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, masks);
 	if(DETAILED_TIMINGS) {
 		gettimeofday(&t_start, NULL);
 	}

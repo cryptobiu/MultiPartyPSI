@@ -241,7 +241,7 @@ void PsiParty::runAsFollower(CSocket *leader) {
     // m_crypt->gen_common_seed(&m_prfState, *leader);
 
     boost::shared_ptr<uint8_t> hash_table;
-    uint8_t *masks;
+    boost::shared_ptr<uint8_t> masks;
     uint8_t *hashed_elements;
     boost::shared_ptr<uint32_t> nelesinbin(new uint32_t[sizeof(uint32_t) * m_numOfBins]);
 
@@ -250,22 +250,23 @@ void PsiParty::runAsFollower(CSocket *leader) {
     init_hashing_state(&hs, m_setSize, m_internal_bitlen, m_numOfBins, &m_prfState);
     //Set the output bit-length of the hashed elements
     uint32_t outbitlen = hs.outbitlen;
-    
-    hash_table.reset(simple_hashing(m_eleptr, m_setSize, m_internal_bitlen, &outbitlen, nelesinbin.get(), m_numOfBins, 1, &m_prfState, &hashed_elements, hs));
+
+    hash_table.reset(simple_hashing(m_eleptr, m_setSize, nelesinbin.get(), 1, &hashed_elements, hs));
 
     free_hashing_state(&hs);
 
+    masks.reset(new uint8_t[NUM_HASH_FUNCTIONS * m_setSize * getMaskSizeInBytes()]);
+
     otpsi_server(m_setSize, m_numOfBins, m_internal_bitlen, m_maskbitlen, m_crypt.get(), leader, 1,
-                 hash_table.get(), &masks, nelesinbin.get(), outbitlen);
+                 hash_table.get(), masks.get(), nelesinbin.get(), outbitlen);
 
 
     struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table.get(), nelesinbin.get(), m_numOfBins,
-        NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes()};
+        NUM_HASH_FUNCTIONS, masks.get(), getMaskSizeInBytes()};
 
     auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, *leader);
     follower->run();
 
-    free(masks);
     free(hashed_elements);
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
