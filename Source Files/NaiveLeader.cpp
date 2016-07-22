@@ -81,7 +81,7 @@ bool NaiveLeader::isElementInAllSets(uint32_t index) {
     uint8_t* secret = &(m_secretShare.get()[binIndex*m_maskSizeInBytes]);
 
     for (auto &party : m_parties) {
-        XOR(secret, m_leaderResults[party.first]+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
+        XOR(secret, m_leaderResults[party.first].get()+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
     }
 
     // 1 is always the leader Id

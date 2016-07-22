@@ -136,7 +136,7 @@ void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
     std::cout << std::endl;
 }
 
-void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t *leaderResults,
+void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, const boost::shared_ptr<uint8_t> &leaderResults,
                                         const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table) {
 
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
@@ -146,7 +146,7 @@ void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uin
     //m_crypt->gen_common_seed(&m_prfState, *party.second);
 
     otpsi_client(m_setSize, m_numOfBins, m_maskbitlen, m_crypt.get(),
-                            party.second, 1, leaderResults, outbitlen, nelesinbin.get(), hash_table.get());
+                            party.second, 1, leaderResults.get(), outbitlen, nelesinbin.get(), hash_table.get());
 
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
@@ -169,7 +169,7 @@ void PsiParty::finishAndReportStatsToServer() {
 
 void PsiParty::runAsLeader() {
 
-    map<uint32_t , uint8_t *> leaderResults;
+    map<uint32_t , boost::shared_ptr<uint8_t>> leaderResults;
 
     boost::shared_ptr<uint32_t> perm(new uint32_t[m_setSize]);
     memset(perm.get(),0,m_setSize);
@@ -213,7 +213,7 @@ void PsiParty::runAsLeader() {
 
 
     for (auto &party : m_parties) {
-        leaderResults[party.first] = (uint8_t*) malloc(m_setSize * getMaskSizeInBytes());
+        leaderResults[party.first] = boost::shared_ptr<uint8_t>(new uint8_t[m_setSize * getMaskSizeInBytes()]);
         runLeaderAgainstFollower(party, leaderResults[party.first], nelesinbin, outbitlen, hash_table);
     }
 

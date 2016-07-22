@@ -12,7 +12,7 @@
 
 class Leader {
 public:
-    Leader(const map<uint32_t , uint8_t *> &leaderResults, const boost::shared_ptr<uint32_t> &binIds, const boost::shared_ptr<uint32_t> &perm, uint32_t numOfBins,
+    Leader(const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults, const boost::shared_ptr<uint32_t> &binIds, const boost::shared_ptr<uint32_t> &perm, uint32_t numOfBins,
            const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize, std::map<uint32_t, CSocket*> parties,
            uint32_t numOfHashFunctions):
             m_leaderResults(leaderResults), m_binIds(binIds), m_perm(perm),
@@ -24,7 +24,7 @@ public:
 
 protected:
     map<uint32_t , uint8_t *> m_partiesResults;
-    map<uint32_t , uint8_t *> m_leaderResults;
+    map<uint32_t , boost::shared_ptr<uint8_t>> m_leaderResults;
     boost::shared_ptr<uint32_t> m_binIds;
     boost::shared_ptr<uint32_t> m_perm;
     uint32_t m_numOfBins;
