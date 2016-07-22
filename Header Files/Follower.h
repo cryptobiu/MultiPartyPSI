@@ -11,14 +11,14 @@
 #include "boost/shared_ptr.hpp"
 
 struct FollowerSet {
-    uint8_t *m_elements;
+    boost::shared_ptr<uint8_t> m_elements;
     uint32_t m_numOfElements;
     uint32_t m_elementSizeInBytes;
-    uint8_t *m_hashTable;
-    uint32_t *m_numOfElementsInBin;
+    boost::shared_ptr<uint8_t> m_hashTable;
+    boost::shared_ptr<uint32_t> m_numOfElementsInBin;
     uint32_t m_numOfBins;
     uint32_t m_numOfHashFunctions;
-    uint8_t *m_masks;
+    boost::shared_ptr<uint8_t> m_masks;
     uint32_t m_maskSizeInBytes;
 };
 

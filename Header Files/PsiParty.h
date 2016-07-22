@@ -13,10 +13,7 @@
 class PsiParty : public MultiPartyPlayer {
 public:
     PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &ioService);
-    virtual ~PsiParty() {
-        if(m_elementSizeInBits > m_maskbitlen)
-            free(m_eleptr);
-    };
+    virtual ~PsiParty() { };
 
     void run();
 
@@ -33,11 +30,11 @@ private:
     void additiveSecretShare();
 
     void runAsLeader();
-    void runAsFollower(CSocket *leader);
+    void runAsFollower(CSocket &leader);
     void finishAndReportStatsToServer();
     void syncronize();
 
-    crypto* initializeCrypto(uint8_t* seed_buf);
+    void initializeCrypto();
     void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **leaderResults,
                                   const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table);
 
@@ -54,7 +51,7 @@ private:
     uint32_t m_setSize;
     uint32_t m_elementSizeInBits;
     boost::shared_ptr<uint8_t> m_secretShare;
-    uint8_t *m_elements;
+    boost::shared_ptr<uint8_t> m_elements;
     boost::shared_ptr<crypto> m_crypt;
     uint32_t m_maskbitlen;
     struct statistics m_statistics;
@@ -64,7 +61,7 @@ private:
 
     uint32_t m_symsecbits;
 
-    uint8_t* m_eleptr;
+    boost::shared_ptr<uint8_t> m_eleptr;
 
     uint32_t m_internal_bitlen;
     uint32_t m_seedSize;
