@@ -7,14 +7,15 @@
 
 #include "simple_hashing.h"
 
-uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t* nelesinbin,
-		uint32_t ntasks, uint8_t **hashed_elements, hs_t &hs) {
+struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins,
+		uint32_t ntasks, hs_t &hs) {
 	sht_ctx* table;
 	//uint8_t** bin_content;
 	uint8_t *eleptr, *bin_ptr, *result, *res_bins;
 	uint32_t i, j, tmpneles;
 	sheg_ctx* ctx;
 	pthread_t* entry_gen_tasks;
+	uint32_t *nelesinbin = new uint32_t[sizeof(uint32_t) * nbins];
 
 
 	entry_gen_tasks = (pthread_t*) malloc(sizeof(pthread_t) * ntasks);
@@ -53,11 +54,11 @@ uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t* nelesinbin,
 		}
 	}
 
-	*hashed_elements = (uint8_t*)malloc(neles*hs.outbytelen*sizeof(uint8_t));
+	uint8_t *hashed_elements = new uint8_t[neles*hs.outbytelen*sizeof(uint8_t)];
 	uint32_t k = 0;
 	for(i = 0; i < ntasks; i++) {
 		uint32_t arr_size = (ctx[i].endpos-ctx[i].startpos)*hs.outbytelen;
-		memcpy((*hashed_elements)+k,ctx[i].hashed_elements, arr_size);
+		memcpy(hashed_elements+k,ctx[i].hashed_elements, arr_size);
 		k = k + arr_size;
 	}
 
@@ -95,9 +96,12 @@ uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t* nelesinbin,
 	//	pthread_mutex_destroy(locks+i);
 	//free(locks);
 
+	struct simple_hash_output output;
+	output.hashed_elements = hashed_elements;
+	output.res_bins = res_bins;
+	output.nelesinbin = nelesinbin;
 
-
-	return res_bins;
+	return output;
 }
 
 void *gen_entries(void *ctx_tmp) {

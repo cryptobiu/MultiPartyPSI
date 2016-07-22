@@ -41,11 +41,15 @@ typedef struct simple_hash_entry_gen_ctx {
 	hs_t* hs;
 } sheg_ctx;
 
-
+typedef struct simple_hash_output {
+	uint8_t *hashed_elements;
+	uint8_t *res_bins;
+	uint32_t *nelesinbin;
+} simple_hash_output;
 
 //returns a cuckoo hash table with the first dimension being the bins and the second dimension being the pointer to the elements
-uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t* nelesinbin,
-		uint32_t ntasks, uint8_t **hashed_elements, hs_t &hs);
+struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins,
+		uint32_t ntasks, hs_t &hs);
 //routine for generating the entries, is invoked by the threads
 void *gen_entries(void *ctx);
 void init_hash_table(sht_ctx* table, uint32_t nelements, hs_t* hs);
