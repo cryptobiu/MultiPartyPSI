@@ -243,13 +243,13 @@ void PsiParty::runAsFollower(CSocket *leader) {
     uint8_t *hash_table;
     uint8_t *masks;
     uint8_t *hashed_elements;
-    uint32_t* nelesinbin;
+    boost::shared_ptr<uint32_t> nelesinbin(new uint32_t[sizeof(uint32_t) * m_numOfBins]);
 
     otpsi_server(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt.get(), leader, 1,
-                 &m_prfState, &hash_table, &masks, &hashed_elements, &nelesinbin);
+                 &m_prfState, &hash_table, &masks, &hashed_elements, nelesinbin.get());
 
 
-    struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table, nelesinbin, m_numOfBins,
+    struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table, nelesinbin.get(), m_numOfBins,
         NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes()};
 
     auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, *leader);
@@ -258,7 +258,6 @@ void PsiParty::runAsFollower(CSocket *leader) {
     free(hash_table);
     free(masks);
     free(hashed_elements);
-    free(nelesinbin);
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
     m_statistics.afterOTs = clock();
