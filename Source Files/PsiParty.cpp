@@ -44,7 +44,7 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
     initializeCrypto();
 
-    m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
+    initializeMaskSize();
 
     // PRINT_PARTY(m_partyId) << "Mask size in bytes is " << getMaskSizeInBytes() << std::endl;
 
@@ -62,6 +62,49 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
     syncronize();
 
+}
+
+void PsiParty::initializeMaskSize() {
+    switch(m_strategy) {
+        case Strategy::NAIVE_METHOD_SMALL_N:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
+            break;
+        case Strategy::NAIVE_METHOD_LARGE_N:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*m_setSize, 8);
+            break;
+        case Strategy::SIMPLE_HASH:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
+            break;
+        case Strategy::CUCKOO_HASH:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*(m_crypt->get_seclvl().statbits/ceil_log2(m_setSize)+2), 8);
+            break;
+        case Strategy::POLYNOMIALS:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits, 8);
+            break;
+        case Strategy::BLOOM_FILTER:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits, 8);
+            break;
+        case Strategy::BINARY_HASH:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits, 8);
+            break;
+        case Strategy::POLYNOMIALS_SIMPLE_HASH:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits, 8);
+            break;
+        case Strategy::BINARY_HASH_SIMPLE_HASH:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits, 8);
+            break;
+        case Strategy::CUCKOO_HASH_POLYNOMIALS:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*3, 8);
+            break;
+        case Strategy::CUCKOO_HASH_BLOOM_FILTER:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*3, 8);
+            break;
+        case Strategy::CUCKOO_HASH_BINARY_HASH:
+            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*3, 8);
+            break;
+        default:
+            throw system_error();
+    }
 }
 
 void PsiParty::initializeCrypto() {

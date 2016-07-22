@@ -35,6 +35,7 @@ private:
     void finishAndReportStatsToServer();
     void syncronize();
 
+    void initializeMaskSize();
     void initializeCrypto();
     void runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_ptr<CSocket>> &party, const boost::shared_ptr<uint8_t> &leaderResults,
                                   const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table);

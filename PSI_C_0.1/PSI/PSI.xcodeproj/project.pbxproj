@@ -1,0 +1,647 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3109929A16E4CE5C00F53A4B /* RandomSource.c in Sources */ = {isa = PBXBuildFile; fileRef = 3109929916E4CE5C00F53A4B /* RandomSource.c */; };
+		3109929D16E512C300F53A4B /* MTBuilder.c in Sources */ = {isa = PBXBuildFile; fileRef = 3109929C16E512C300F53A4B /* MTBuilder.c */; };
+		310992A816E612AD00F53A4B /* BuilderTasks.c in Sources */ = {isa = PBXBuildFile; fileRef = 310992A716E612AD00F53A4B /* BuilderTasks.c */; };
+		312CCEAE16E8CA8900F751B6 /* BitMatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 312CCEAD16E8CA8900F751B6 /* BitMatrix.c */; };
+		312CCEB116E8D7AD00F751B6 /* OTExtRcvr.c in Sources */ = {isa = PBXBuildFile; fileRef = 312CCEB016E8D7AD00F751B6 /* OTExtRcvr.c */; };
+		312CCEB416E9054F00F751B6 /* OTExtSndr.c in Sources */ = {isa = PBXBuildFile; fileRef = 312CCEB316E9054F00F751B6 /* OTExtSndr.c */; };
+		3130ADCF16DA7D40005D0C73 /* client.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3130ADCE16DA7D40005D0C73 /* client.1 */; };
+		3130ADD916DA812C005D0C73 /* BF.c in Sources */ = {isa = PBXBuildFile; fileRef = 3130ADD816DA812C005D0C73 /* BF.c */; };
+		3130ADDC16DABE49005D0C73 /* RangeHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 3130ADDB16DABE49005D0C73 /* RangeHash.c */; };
+		313D621F16EF2E39009A7633 /* client.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D621E16EF2E39009A7633 /* client.c */; };
+		313D622316EF5E2B009A7633 /* networkComm.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D622216EF5E2B009A7633 /* networkComm.c */; };
+		313D622416EF5E2B009A7633 /* networkComm.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D622216EF5E2B009A7633 /* networkComm.c */; };
+		313D622616EF65B5009A7633 /* Util.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D622516EF65B5009A7633 /* Util.c */; };
+		313D622716EF65B5009A7633 /* Util.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D622516EF65B5009A7633 /* Util.c */; };
+		313D622A16EFA47F009A7633 /* clientTasks.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D622916EFA47F009A7633 /* clientTasks.c */; };
+		313D623416EFAA9C009A7633 /* server.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 313D623316EFAA9C009A7633 /* server.1 */; };
+		313D623816EFAAD5009A7633 /* NPOTSndr.c in Sources */ = {isa = PBXBuildFile; fileRef = 314E204516E797440006CB6C /* NPOTSndr.c */; };
+		313D623916EFAAD5009A7633 /* NPOTRcvr.c in Sources */ = {isa = PBXBuildFile; fileRef = 314E203F16E7402D0006CB6C /* NPOTRcvr.c */; };
+		313D623A16EFAAD5009A7633 /* OTExtRcvr.c in Sources */ = {isa = PBXBuildFile; fileRef = 312CCEB016E8D7AD00F751B6 /* OTExtRcvr.c */; };
+		313D623B16EFAAD5009A7633 /* OTExtSndr.c in Sources */ = {isa = PBXBuildFile; fileRef = 312CCEB316E9054F00F751B6 /* OTExtSndr.c */; };
+		313D623C16EFAAD5009A7633 /* BuilderTasks.c in Sources */ = {isa = PBXBuildFile; fileRef = 310992A716E612AD00F53A4B /* BuilderTasks.c */; };
+		313D623D16EFAAD5009A7633 /* clientTasks.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D622916EFA47F009A7633 /* clientTasks.c */; };
+		313D623E16EFAAD5009A7633 /* BF.c in Sources */ = {isa = PBXBuildFile; fileRef = 3130ADD816DA812C005D0C73 /* BF.c */; };
+		313D623F16EFAAD5009A7633 /* RangeHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 3130ADDB16DABE49005D0C73 /* RangeHash.c */; };
+		313D624016EFAAD5009A7633 /* AESRandom.c in Sources */ = {isa = PBXBuildFile; fileRef = 31D7F31A16E0C54E00072FE5 /* AESRandom.c */; };
+		313D624116EFAAD5009A7633 /* Util.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D622516EF65B5009A7633 /* Util.c */; };
+		313D624216EFAAD5009A7633 /* GarbledBF.c in Sources */ = {isa = PBXBuildFile; fileRef = 31CE2AF216E39F2D0060220A /* GarbledBF.c */; };
+		313D624316EFAAD5009A7633 /* RandomSource.c in Sources */ = {isa = PBXBuildFile; fileRef = 3109929916E4CE5C00F53A4B /* RandomSource.c */; };
+		313D624416EFAAD5009A7633 /* MTBuilder.c in Sources */ = {isa = PBXBuildFile; fileRef = 3109929C16E512C300F53A4B /* MTBuilder.c */; };
+		313D624716EFAAD5009A7633 /* MessageDigest.c in Sources */ = {isa = PBXBuildFile; fileRef = 314E204216E765020006CB6C /* MessageDigest.c */; };
+		313D624816EFAAD5009A7633 /* BitMatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 312CCEAD16E8CA8900F751B6 /* BitMatrix.c */; };
+		313D624916EFAAD5009A7633 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 31573EA816EE3A7500D4AC2C /* list.c */; };
+		313D624A16EFAAD5009A7633 /* chtbl.c in Sources */ = {isa = PBXBuildFile; fileRef = 31573EAB16EE3A8F00D4AC2C /* chtbl.c */; };
+		313D624B16EFAAD5009A7633 /* networkComm.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D622216EF5E2B009A7633 /* networkComm.c */; };
+		313D624C16EFAB1C009A7633 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 319ABBC316E1129000F0D9F9 /* libssl.dylib */; };
+		313D624D16EFAB23009A7633 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 319ABBC116E1128800F0D9F9 /* libcrypto.dylib */; };
+		313D625016EFAC23009A7633 /* server.c in Sources */ = {isa = PBXBuildFile; fileRef = 313D624F16EFAC23009A7633 /* server.c */; };
+		314E204016E7402D0006CB6C /* NPOTRcvr.c in Sources */ = {isa = PBXBuildFile; fileRef = 314E203F16E7402D0006CB6C /* NPOTRcvr.c */; };
+		314E204316E765020006CB6C /* MessageDigest.c in Sources */ = {isa = PBXBuildFile; fileRef = 314E204216E765020006CB6C /* MessageDigest.c */; };
+		314E204616E797440006CB6C /* NPOTSndr.c in Sources */ = {isa = PBXBuildFile; fileRef = 314E204516E797440006CB6C /* NPOTSndr.c */; };
+		31573EA916EE3A7500D4AC2C /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 31573EA816EE3A7500D4AC2C /* list.c */; };
+		31573EAA16EE3A7500D4AC2C /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 31573EA816EE3A7500D4AC2C /* list.c */; };
+		31573EAC16EE3A8F00D4AC2C /* chtbl.c in Sources */ = {isa = PBXBuildFile; fileRef = 31573EAB16EE3A8F00D4AC2C /* chtbl.c */; };
+		31573EAD16EE3A8F00D4AC2C /* chtbl.c in Sources */ = {isa = PBXBuildFile; fileRef = 31573EAB16EE3A8F00D4AC2C /* chtbl.c */; };
+		315F5A6F16F0CEB40068727E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 3164A0A916EA276E00290DF7 /* main.c */; };
+		315F5A7216F0EECF0068727E /* serverTasks.c in Sources */ = {isa = PBXBuildFile; fileRef = 315F5A7116F0EECF0068727E /* serverTasks.c */; };
+		3164A0B116EA278400290DF7 /* NPOTSndr.c in Sources */ = {isa = PBXBuildFile; fileRef = 314E204516E797440006CB6C /* NPOTSndr.c */; };
+		3164A0B216EA278400290DF7 /* NPOTRcvr.c in Sources */ = {isa = PBXBuildFile; fileRef = 314E203F16E7402D0006CB6C /* NPOTRcvr.c */; };
+		3164A0B516EA278500290DF7 /* OTExtRcvr.c in Sources */ = {isa = PBXBuildFile; fileRef = 312CCEB016E8D7AD00F751B6 /* OTExtRcvr.c */; };
+		3164A0B716EA278500290DF7 /* OTExtSndr.c in Sources */ = {isa = PBXBuildFile; fileRef = 312CCEB316E9054F00F751B6 /* OTExtSndr.c */; };
+		3164A0B916EA278E00290DF7 /* BuilderTasks.c in Sources */ = {isa = PBXBuildFile; fileRef = 310992A716E612AD00F53A4B /* BuilderTasks.c */; };
+		3164A0BB16EA279500290DF7 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 3130ADBB16DA772B005D0C73 /* main.c */; };
+		3164A0BE16EA279500290DF7 /* BF.c in Sources */ = {isa = PBXBuildFile; fileRef = 3130ADD816DA812C005D0C73 /* BF.c */; };
+		3164A0C016EA279500290DF7 /* RangeHash.c in Sources */ = {isa = PBXBuildFile; fileRef = 3130ADDB16DABE49005D0C73 /* RangeHash.c */; };
+		3164A0C216EA279500290DF7 /* AESRandom.c in Sources */ = {isa = PBXBuildFile; fileRef = 31D7F31A16E0C54E00072FE5 /* AESRandom.c */; };
+		3164A0C616EA279500290DF7 /* GarbledBF.c in Sources */ = {isa = PBXBuildFile; fileRef = 31CE2AF216E39F2D0060220A /* GarbledBF.c */; };
+		3164A0C816EA279500290DF7 /* RandomSource.c in Sources */ = {isa = PBXBuildFile; fileRef = 3109929916E4CE5C00F53A4B /* RandomSource.c */; };
+		3164A0CA16EA279500290DF7 /* MTBuilder.c in Sources */ = {isa = PBXBuildFile; fileRef = 3109929C16E512C300F53A4B /* MTBuilder.c */; };
+		3164A0D016EA279500290DF7 /* MessageDigest.c in Sources */ = {isa = PBXBuildFile; fileRef = 314E204216E765020006CB6C /* MessageDigest.c */; };
+		3164A0D216EA279500290DF7 /* BitMatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 312CCEAD16E8CA8900F751B6 /* BitMatrix.c */; };
+		3164A0D316EA27D200290DF7 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 319ABBC116E1128800F0D9F9 /* libcrypto.dylib */; };
+		3164A0D416EA27D900290DF7 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 319ABBC316E1129000F0D9F9 /* libssl.dylib */; };
+		3164A0D516EA5D1C00290DF7 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 3130ADCC16DA7D40005D0C73 /* main.c */; };
+		319ABBC216E1128800F0D9F9 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 319ABBC116E1128800F0D9F9 /* libcrypto.dylib */; };
+		319ABBC416E1129100F0D9F9 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 319ABBC316E1129000F0D9F9 /* libssl.dylib */; };
+		31CE2AF016E38E420060220A /* AESRandom.c in Sources */ = {isa = PBXBuildFile; fileRef = 31D7F31A16E0C54E00072FE5 /* AESRandom.c */; };
+		31CE2AF316E39F2D0060220A /* GarbledBF.c in Sources */ = {isa = PBXBuildFile; fileRef = 31CE2AF216E39F2D0060220A /* GarbledBF.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3130ADC816DA7D40005D0C73 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				3130ADCF16DA7D40005D0C73 /* client.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		313D622D16EFAA9C009A7633 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				313D623416EFAA9C009A7633 /* server.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		3164A0A516EA276E00290DF7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3109929816E4CCA900F53A4B /* RandomSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RandomSource.h; sourceTree = "<group>"; };
+		3109929916E4CE5C00F53A4B /* RandomSource.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = RandomSource.c; sourceTree = "<group>"; };
+		3109929B16E50F7100F53A4B /* MTBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTBuilder.h; sourceTree = "<group>"; };
+		3109929C16E512C300F53A4B /* MTBuilder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MTBuilder.c; sourceTree = "<group>"; };
+		310992A616E6129F00F53A4B /* BuilderTasks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuilderTasks.h; sourceTree = "<group>"; };
+		310992A716E612AD00F53A4B /* BuilderTasks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BuilderTasks.c; sourceTree = "<group>"; };
+		312CCEAC16E8CA7B00F751B6 /* BitMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitMatrix.h; sourceTree = "<group>"; };
+		312CCEAD16E8CA8900F751B6 /* BitMatrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BitMatrix.c; sourceTree = "<group>"; };
+		312CCEAF16E8D79E00F751B6 /* OTExtSndr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTExtSndr.h; sourceTree = "<group>"; };
+		312CCEB016E8D7AD00F751B6 /* OTExtRcvr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OTExtRcvr.c; sourceTree = "<group>"; };
+		312CCEB216E9053D00F751B6 /* OTExtRcvr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTExtRcvr.h; sourceTree = "<group>"; };
+		312CCEB316E9054F00F751B6 /* OTExtSndr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OTExtSndr.c; sourceTree = "<group>"; };
+		3130ADBB16DA772B005D0C73 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		3130ADBD16DA772B005D0C73 /* PSI.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = PSI.1; sourceTree = "<group>"; };
+		3130ADCC16DA7D40005D0C73 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		3130ADCE16DA7D40005D0C73 /* client.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = client.1; sourceTree = "<group>"; };
+		3130ADD716DA7F54005D0C73 /* BF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BF.h; sourceTree = "<group>"; };
+		3130ADD816DA812C005D0C73 /* BF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BF.c; sourceTree = "<group>"; };
+		3130ADDA16DABBB1005D0C73 /* RangeHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeHash.h; sourceTree = "<group>"; };
+		3130ADDB16DABE49005D0C73 /* RangeHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = RangeHash.c; sourceTree = "<group>"; };
+		313D621D16EF2E2D009A7633 /* client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = client.h; sourceTree = "<group>"; };
+		313D621E16EF2E39009A7633 /* client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = client.c; sourceTree = "<group>"; };
+		313D622016EF39E9009A7633 /* param.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = param.h; sourceTree = "<group>"; };
+		313D622116EF5E1C009A7633 /* networkComm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = networkComm.h; sourceTree = "<group>"; };
+		313D622216EF5E2B009A7633 /* networkComm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = networkComm.c; sourceTree = "<group>"; };
+		313D622516EF65B5009A7633 /* Util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Util.c; sourceTree = "<group>"; };
+		313D622816EFA46F009A7633 /* clientTasks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clientTasks.h; sourceTree = "<group>"; };
+		313D622916EFA47F009A7633 /* clientTasks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = clientTasks.c; sourceTree = "<group>"; };
+		313D623316EFAA9C009A7633 /* server.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = server.1; sourceTree = "<group>"; };
+		313D624E16EFAC15009A7633 /* server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = server.h; sourceTree = "<group>"; };
+		313D624F16EFAC23009A7633 /* server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = server.c; sourceTree = "<group>"; };
+		314E203E16E7401A0006CB6C /* NPOTRcvr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NPOTRcvr.h; sourceTree = "<group>"; };
+		314E203F16E7402D0006CB6C /* NPOTRcvr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = NPOTRcvr.c; sourceTree = "<group>"; };
+		314E204116E764F40006CB6C /* MessageDigest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageDigest.h; sourceTree = "<group>"; };
+		314E204216E765020006CB6C /* MessageDigest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MessageDigest.c; sourceTree = "<group>"; };
+		314E204416E797350006CB6C /* NPOTSndr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NPOTSndr.h; sourceTree = "<group>"; };
+		314E204516E797440006CB6C /* NPOTSndr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = NPOTSndr.c; sourceTree = "<group>"; };
+		31573EA716EE3A6200D4AC2C /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = list.h; sourceTree = "<group>"; };
+		31573EA816EE3A7500D4AC2C /* list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = list.c; sourceTree = "<group>"; };
+		31573EAB16EE3A8F00D4AC2C /* chtbl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = chtbl.c; sourceTree = "<group>"; };
+		31573EAE16EE3A9E00D4AC2C /* chtbl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chtbl.h; sourceTree = "<group>"; };
+		31573EAF16EE3BC900D4AC2C /* intHashTbl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = intHashTbl.h; sourceTree = "<group>"; };
+		315F5A7016F0EEB90068727E /* serverTasks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = serverTasks.h; sourceTree = "<group>"; };
+		315F5A7116F0EECF0068727E /* serverTasks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = serverTasks.c; sourceTree = "<group>"; };
+		3164A0A916EA276E00290DF7 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		319ABBC116E1128800F0D9F9 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
+		319ABBC316E1129000F0D9F9 /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = usr/lib/libssl.dylib; sourceTree = SDKROOT; };
+		31CE2AEC16E357260060220A /* byteswap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = byteswap.h; sourceTree = "<group>"; };
+		31CE2AED16E3845B0060220A /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
+		31CE2AF116E39F130060220A /* GarbledBF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GarbledBF.h; sourceTree = "<group>"; };
+		31CE2AF216E39F2D0060220A /* GarbledBF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = GarbledBF.c; sourceTree = "<group>"; };
+		31D7F31916E0C53300072FE5 /* AESRandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESRandom.h; sourceTree = "<group>"; };
+		31D7F31A16E0C54E00072FE5 /* AESRandom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AESRandom.c; sourceTree = "<group>"; };
+		7FC9B4AD17B10A6D004C32B4 /* psiClient */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = psiClient; sourceTree = BUILT_PRODUCTS_DIR; };
+		7FC9B4AE17B10A6D004C32B4 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
+		7FC9B4AF17B10A6D004C32B4 /* psiServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = psiServer; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3130ADC716DA7D40005D0C73 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				319ABBC416E1129100F0D9F9 /* libssl.dylib in Frameworks */,
+				319ABBC216E1128800F0D9F9 /* libcrypto.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		313D622C16EFAA9C009A7633 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				313D624D16EFAB23009A7633 /* libcrypto.dylib in Frameworks */,
+				313D624C16EFAB1C009A7633 /* libssl.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3164A0A416EA276E00290DF7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3164A0D416EA27D900290DF7 /* libssl.dylib in Frameworks */,
+				3164A0D316EA27D200290DF7 /* libcrypto.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		310992A516E6125600F53A4B /* Threads */ = {
+			isa = PBXGroup;
+			children = (
+				310992A716E612AD00F53A4B /* BuilderTasks.c */,
+				313D622916EFA47F009A7633 /* clientTasks.c */,
+				315F5A7116F0EECF0068727E /* serverTasks.c */,
+			);
+			path = Threads;
+			sourceTree = "<group>";
+		};
+		3130ADAF16DA772B005D0C73 = {
+			isa = PBXGroup;
+			children = (
+				319ABBC316E1129000F0D9F9 /* libssl.dylib */,
+				319ABBC116E1128800F0D9F9 /* libcrypto.dylib */,
+				7FC9B4AA17B0F894004C32B4 /* test */,
+				7FC9B4A917B0EE6B004C32B4 /* headers */,
+				314E203D16E73FED0006CB6C /* OT */,
+				310992A516E6125600F53A4B /* Threads */,
+				3130ADBA16DA772B005D0C73 /* Structures */,
+				3130ADCB16DA7D40005D0C73 /* client */,
+				313D623016EFAA9C009A7633 /* server */,
+				7FC9B4AD17B10A6D004C32B4 /* psiClient */,
+				7FC9B4AE17B10A6D004C32B4 /* test */,
+				7FC9B4AF17B10A6D004C32B4 /* psiServer */,
+			);
+			sourceTree = "<group>";
+		};
+		3130ADBA16DA772B005D0C73 /* Structures */ = {
+			isa = PBXGroup;
+			children = (
+				3130ADBD16DA772B005D0C73 /* PSI.1 */,
+				3130ADD816DA812C005D0C73 /* BF.c */,
+				3130ADDB16DABE49005D0C73 /* RangeHash.c */,
+				31D7F31A16E0C54E00072FE5 /* AESRandom.c */,
+				313D622516EF65B5009A7633 /* Util.c */,
+				31CE2AF216E39F2D0060220A /* GarbledBF.c */,
+				3109929916E4CE5C00F53A4B /* RandomSource.c */,
+				3109929C16E512C300F53A4B /* MTBuilder.c */,
+				314E204216E765020006CB6C /* MessageDigest.c */,
+				312CCEAD16E8CA8900F751B6 /* BitMatrix.c */,
+				31573EA816EE3A7500D4AC2C /* list.c */,
+				31573EAB16EE3A8F00D4AC2C /* chtbl.c */,
+				313D622216EF5E2B009A7633 /* networkComm.c */,
+			);
+			name = Structures;
+			path = PSI;
+			sourceTree = "<group>";
+		};
+		3130ADCB16DA7D40005D0C73 /* client */ = {
+			isa = PBXGroup;
+			children = (
+				3130ADCC16DA7D40005D0C73 /* main.c */,
+				3130ADCE16DA7D40005D0C73 /* client.1 */,
+				313D621E16EF2E39009A7633 /* client.c */,
+			);
+			path = client;
+			sourceTree = "<group>";
+		};
+		313D623016EFAA9C009A7633 /* server */ = {
+			isa = PBXGroup;
+			children = (
+				3164A0A916EA276E00290DF7 /* main.c */,
+				313D624F16EFAC23009A7633 /* server.c */,
+				313D623316EFAA9C009A7633 /* server.1 */,
+			);
+			path = server;
+			sourceTree = "<group>";
+		};
+		314E203D16E73FED0006CB6C /* OT */ = {
+			isa = PBXGroup;
+			children = (
+				314E204516E797440006CB6C /* NPOTSndr.c */,
+				314E203F16E7402D0006CB6C /* NPOTRcvr.c */,
+				312CCEB016E8D7AD00F751B6 /* OTExtRcvr.c */,
+				312CCEB316E9054F00F751B6 /* OTExtSndr.c */,
+			);
+			path = OT;
+			sourceTree = "<group>";
+		};
+		7FC9B4A917B0EE6B004C32B4 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				310992A616E6129F00F53A4B /* BuilderTasks.h */,
+				313D622816EFA46F009A7633 /* clientTasks.h */,
+				315F5A7016F0EEB90068727E /* serverTasks.h */,
+				314E203E16E7401A0006CB6C /* NPOTRcvr.h */,
+				3130ADD716DA7F54005D0C73 /* BF.h */,
+				3130ADDA16DABBB1005D0C73 /* RangeHash.h */,
+				31D7F31916E0C53300072FE5 /* AESRandom.h */,
+				31CE2AEC16E357260060220A /* byteswap.h */,
+				31CE2AED16E3845B0060220A /* Util.h */,
+				31CE2AF116E39F130060220A /* GarbledBF.h */,
+				3109929816E4CCA900F53A4B /* RandomSource.h */,
+				313D624E16EFAC15009A7633 /* server.h */,
+				3109929B16E50F7100F53A4B /* MTBuilder.h */,
+				314E204116E764F40006CB6C /* MessageDigest.h */,
+				312CCEAC16E8CA7B00F751B6 /* BitMatrix.h */,
+				313D621D16EF2E2D009A7633 /* client.h */,
+				31573EA716EE3A6200D4AC2C /* list.h */,
+				31573EAE16EE3A9E00D4AC2C /* chtbl.h */,
+				31573EAF16EE3BC900D4AC2C /* intHashTbl.h */,
+				313D622016EF39E9009A7633 /* param.h */,
+				313D622116EF5E1C009A7633 /* networkComm.h */,
+				314E204416E797350006CB6C /* NPOTSndr.h */,
+				312CCEAF16E8D79E00F751B6 /* OTExtSndr.h */,
+				312CCEB216E9053D00F751B6 /* OTExtRcvr.h */,
+			);
+			path = headers;
+			sourceTree = "<group>";
+		};
+		7FC9B4AA17B0F894004C32B4 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				3130ADBB16DA772B005D0C73 /* main.c */,
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3130ADC916DA7D40005D0C73 /* psiClient */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3130ADD016DA7D40005D0C73 /* Build configuration list for PBXNativeTarget "psiClient" */;
+			buildPhases = (
+				3130ADC616DA7D40005D0C73 /* Sources */,
+				3130ADC716DA7D40005D0C73 /* Frameworks */,
+				3130ADC816DA7D40005D0C73 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = psiClient;
+			productName = client;
+			productReference = 7FC9B4AD17B10A6D004C32B4 /* psiClient */;
+			productType = "com.apple.product-type.tool";
+		};
+		313D622E16EFAA9C009A7633 /* psiServer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 313D623516EFAA9C009A7633 /* Build configuration list for PBXNativeTarget "psiServer" */;
+			buildPhases = (
+				313D622B16EFAA9C009A7633 /* Sources */,
+				313D622C16EFAA9C009A7633 /* Frameworks */,
+				313D622D16EFAA9C009A7633 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = psiServer;
+			productName = server;
+			productReference = 7FC9B4AF17B10A6D004C32B4 /* psiServer */;
+			productType = "com.apple.product-type.tool";
+		};
+		3164A0A616EA276E00290DF7 /* test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3164A0AF16EA276E00290DF7 /* Build configuration list for PBXNativeTarget "test" */;
+			buildPhases = (
+				3164A0A316EA276E00290DF7 /* Sources */,
+				3164A0A416EA276E00290DF7 /* Frameworks */,
+				3164A0A516EA276E00290DF7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = test;
+			productName = test;
+			productReference = 7FC9B4AE17B10A6D004C32B4 /* test */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3130ADB016DA772B005D0C73 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Changyu Dong";
+			};
+			buildConfigurationList = 3130ADB316DA772B005D0C73 /* Build configuration list for PBXProject "PSI" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 3130ADAF16DA772B005D0C73;
+			productRefGroup = 3130ADAF16DA772B005D0C73;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3130ADC916DA7D40005D0C73 /* psiClient */,
+				3164A0A616EA276E00290DF7 /* test */,
+				313D622E16EFAA9C009A7633 /* psiServer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3130ADC616DA7D40005D0C73 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3164A0D516EA5D1C00290DF7 /* main.c in Sources */,
+				31CE2AF016E38E420060220A /* AESRandom.c in Sources */,
+				3130ADD916DA812C005D0C73 /* BF.c in Sources */,
+				3130ADDC16DABE49005D0C73 /* RangeHash.c in Sources */,
+				31CE2AF316E39F2D0060220A /* GarbledBF.c in Sources */,
+				3109929A16E4CE5C00F53A4B /* RandomSource.c in Sources */,
+				3109929D16E512C300F53A4B /* MTBuilder.c in Sources */,
+				310992A816E612AD00F53A4B /* BuilderTasks.c in Sources */,
+				314E204016E7402D0006CB6C /* NPOTRcvr.c in Sources */,
+				314E204316E765020006CB6C /* MessageDigest.c in Sources */,
+				314E204616E797440006CB6C /* NPOTSndr.c in Sources */,
+				312CCEAE16E8CA8900F751B6 /* BitMatrix.c in Sources */,
+				312CCEB116E8D7AD00F751B6 /* OTExtRcvr.c in Sources */,
+				312CCEB416E9054F00F751B6 /* OTExtSndr.c in Sources */,
+				31573EA916EE3A7500D4AC2C /* list.c in Sources */,
+				31573EAC16EE3A8F00D4AC2C /* chtbl.c in Sources */,
+				313D621F16EF2E39009A7633 /* client.c in Sources */,
+				313D622316EF5E2B009A7633 /* networkComm.c in Sources */,
+				313D622616EF65B5009A7633 /* Util.c in Sources */,
+				313D622A16EFA47F009A7633 /* clientTasks.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		313D622B16EFAA9C009A7633 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				313D623816EFAAD5009A7633 /* NPOTSndr.c in Sources */,
+				313D623916EFAAD5009A7633 /* NPOTRcvr.c in Sources */,
+				313D623A16EFAAD5009A7633 /* OTExtRcvr.c in Sources */,
+				313D623B16EFAAD5009A7633 /* OTExtSndr.c in Sources */,
+				313D623C16EFAAD5009A7633 /* BuilderTasks.c in Sources */,
+				313D623D16EFAAD5009A7633 /* clientTasks.c in Sources */,
+				313D623E16EFAAD5009A7633 /* BF.c in Sources */,
+				313D623F16EFAAD5009A7633 /* RangeHash.c in Sources */,
+				313D624016EFAAD5009A7633 /* AESRandom.c in Sources */,
+				313D624116EFAAD5009A7633 /* Util.c in Sources */,
+				313D624216EFAAD5009A7633 /* GarbledBF.c in Sources */,
+				313D624316EFAAD5009A7633 /* RandomSource.c in Sources */,
+				313D624416EFAAD5009A7633 /* MTBuilder.c in Sources */,
+				313D624716EFAAD5009A7633 /* MessageDigest.c in Sources */,
+				313D624816EFAAD5009A7633 /* BitMatrix.c in Sources */,
+				313D624916EFAAD5009A7633 /* list.c in Sources */,
+				313D624A16EFAAD5009A7633 /* chtbl.c in Sources */,
+				313D624B16EFAAD5009A7633 /* networkComm.c in Sources */,
+				313D625016EFAC23009A7633 /* server.c in Sources */,
+				315F5A6F16F0CEB40068727E /* main.c in Sources */,
+				315F5A7216F0EECF0068727E /* serverTasks.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3164A0A316EA276E00290DF7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3164A0BB16EA279500290DF7 /* main.c in Sources */,
+				3164A0BE16EA279500290DF7 /* BF.c in Sources */,
+				3164A0C016EA279500290DF7 /* RangeHash.c in Sources */,
+				3164A0C216EA279500290DF7 /* AESRandom.c in Sources */,
+				3164A0C616EA279500290DF7 /* GarbledBF.c in Sources */,
+				3164A0C816EA279500290DF7 /* RandomSource.c in Sources */,
+				3164A0CA16EA279500290DF7 /* MTBuilder.c in Sources */,
+				3164A0D016EA279500290DF7 /* MessageDigest.c in Sources */,
+				3164A0D216EA279500290DF7 /* BitMatrix.c in Sources */,
+				3164A0B916EA278E00290DF7 /* BuilderTasks.c in Sources */,
+				3164A0B116EA278400290DF7 /* NPOTSndr.c in Sources */,
+				3164A0B216EA278400290DF7 /* NPOTRcvr.c in Sources */,
+				3164A0B516EA278500290DF7 /* OTExtRcvr.c in Sources */,
+				3164A0B716EA278500290DF7 /* OTExtSndr.c in Sources */,
+				31573EAA16EE3A7500D4AC2C /* list.c in Sources */,
+				31573EAD16EE3A8F00D4AC2C /* chtbl.c in Sources */,
+				313D622416EF5E2B009A7633 /* networkComm.c in Sources */,
+				313D622716EF65B5009A7633 /* Util.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3130ADBF16DA772B005D0C73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/include/openssl;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = /usr/include/openssl;
+			};
+			name = Debug;
+		};
+		3130ADC016DA772B005D0C73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = "RELEASE=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /usr/include/openssl;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_LDFLAGS = "";
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = /usr/include/openssl;
+			};
+			name = Release;
+		};
+		3130ADD116DA7D40005D0C73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_OPTIMIZATION_LEVEL = s;
+				LIBRARY_SEARCH_PATHS = /usr/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3130ADD216DA7D40005D0C73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_OPTIMIZATION_LEVEL = s;
+				LIBRARY_SEARCH_PATHS = /usr/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		313D623616EFAA9C009A7633 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		313D623716EFAA9C009A7633 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		3164A0AD16EA276E00290DF7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3164A0AE16EA276E00290DF7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3130ADB316DA772B005D0C73 /* Build configuration list for PBXProject "PSI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3130ADBF16DA772B005D0C73 /* Debug */,
+				3130ADC016DA772B005D0C73 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3130ADD016DA7D40005D0C73 /* Build configuration list for PBXNativeTarget "psiClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3130ADD116DA7D40005D0C73 /* Debug */,
+				3130ADD216DA7D40005D0C73 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		313D623516EFAA9C009A7633 /* Build configuration list for PBXNativeTarget "psiServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				313D623616EFAA9C009A7633 /* Debug */,
+				313D623716EFAA9C009A7633 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3164A0AF16EA276E00290DF7 /* Build configuration list for PBXNativeTarget "test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3164A0AD16EA276E00290DF7 /* Debug */,
+				3164A0AE16EA276E00290DF7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3130ADB016DA772B005D0C73 /* Project object */;
+}
