@@ -245,8 +245,15 @@ void PsiParty::runAsFollower(CSocket *leader) {
     uint8_t *hashed_elements;
     boost::shared_ptr<uint32_t> nelesinbin(new uint32_t[sizeof(uint32_t) * m_numOfBins]);
 
-    uint32_t outbitlen;
-    hash_table.reset(simple_hashing(m_eleptr, m_setSize, m_internal_bitlen, &outbitlen, nelesinbin.get(), m_numOfBins, 1, &m_prfState, &hashed_elements));
+    hs_t hs;
+
+    init_hashing_state(&hs, m_setSize, m_internal_bitlen, m_numOfBins, &m_prfState);
+    //Set the output bit-length of the hashed elements
+    uint32_t outbitlen = hs.outbitlen;
+    
+    hash_table.reset(simple_hashing(m_eleptr, m_setSize, m_internal_bitlen, &outbitlen, nelesinbin.get(), m_numOfBins, 1, &m_prfState, &hashed_elements, hs));
+
+    free_hashing_state(&hs);
 
     otpsi_server(m_setSize, m_numOfBins, m_internal_bitlen, m_maskbitlen, m_crypt.get(), leader, 1,
                  hash_table.get(), &masks, nelesinbin.get(), outbitlen);

@@ -8,18 +8,14 @@
 #include "simple_hashing.h"
 
 uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t bitlen, uint32_t *outbitlen, uint32_t* nelesinbin, uint32_t nbins,
-		uint32_t ntasks, prf_state_ctx* prf_state, uint8_t **hashed_elements) {
+		uint32_t ntasks, prf_state_ctx* prf_state, uint8_t **hashed_elements, hs_t &hs) {
 	sht_ctx* table;
 	//uint8_t** bin_content;
 	uint8_t *eleptr, *bin_ptr, *result, *res_bins;
 	uint32_t i, j, tmpneles;
 	sheg_ctx* ctx;
 	pthread_t* entry_gen_tasks;
-	hs_t hs;
 
-	init_hashing_state(&hs, neles, bitlen, nbins, prf_state);
-	//Set the output bit-length of the hashed elements
-	*outbitlen = hs.outbitlen;
 
 	entry_gen_tasks = (pthread_t*) malloc(sizeof(pthread_t) * ntasks);
 	ctx = (sheg_ctx*) malloc(sizeof(sheg_ctx) * ntasks);
@@ -99,7 +95,7 @@ uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t bitlen, uint
 	//	pthread_mutex_destroy(locks+i);
 	//free(locks);
 
-	free_hashing_state(&hs);
+
 
 	return res_bins;
 }
