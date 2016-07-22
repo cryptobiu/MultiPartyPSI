@@ -13,8 +13,8 @@ uint8_t*
 #else
 uint32_t
 #endif
-cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t bitlen, uint32_t *outbitlen, uint32_t* nelesinbin,
-		uint32_t* perm,	uint32_t ntasks, prf_state_ctx* prf_state, uint32_t **bin_ids)
+cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, hs_t &hs, uint32_t* nelesinbin,
+		uint32_t* perm,	uint32_t ntasks, uint32_t **bin_ids)
 {
 	//The resulting hash table
 	uint8_t* hash_table;
@@ -28,15 +28,14 @@ cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t bitle
 	uint32_t *perm_ptr;
 	pthread_t* entry_gen_tasks;
 	cuckoo_entry_gen_ctx* ctx;
-	hs_t hs;
+
 
 #ifdef COUNT_FAILS
 	uint32_t fails = 0;
 #endif
 
 
-	init_hashing_state(&hs, neles, bitlen, nbins, prf_state);
-	*outbitlen = hs.outbitlen;
+
 #ifdef DOUBLE_TABLE
 	cuckoo_table = (cuckoo_entry_ctx***) calloc(2, sizeof(cuckoo_entry_ctx**));
 	cuckoo_table[0] = (cuckoo_entry_ctx**) calloc(nbins, sizeof(cuckoo_entry_ctx*));
@@ -137,7 +136,7 @@ cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t bitle
 	free(entry_gen_tasks);
 	free(ctx);
 
-	free_hashing_state(&hs);
+
 
 #ifdef TEST_UTILIZATION
 	return fails;

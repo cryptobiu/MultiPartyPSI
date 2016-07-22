@@ -181,10 +181,16 @@ void PsiParty::runAsLeader() {
     boost::shared_ptr<uint8_t> hash_table;
 
     uint32_t *bin_ids;
-    uint32_t outbitlen;
 
-    hash_table.reset(cuckoo_hashing(m_eleptr, m_setSize, m_numOfBins, m_internal_bitlen, &outbitlen,
-                                nelesinbin.get(), perm.get(), 1, &m_prfState, &bin_ids));
+    hs_t hs;
+    init_hashing_state(&hs, m_setSize, m_internal_bitlen, m_numOfBins, &m_prfState);
+    uint32_t outbitlen = hs.outbitlen;
+
+
+    hash_table.reset(cuckoo_hashing(m_eleptr, m_setSize, m_numOfBins, hs,
+                                nelesinbin.get(), perm.get(), 1, &bin_ids));
+
+    free_hashing_state(&hs);
 
     /*
     cout << "bin_ids: ";
