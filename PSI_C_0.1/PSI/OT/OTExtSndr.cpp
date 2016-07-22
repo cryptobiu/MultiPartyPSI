@@ -11,7 +11,7 @@
 #include "OTExtSndr.h"
 
 int OTExtSndr_Create(OTExtSndr** sndr, int32_t m, int32_t secLev, uint8_t** toSend, int32_t lByteLen){
-    OTExtSndr* newSndr=calloc(1,sizeof(OTExtSndr));
+    OTExtSndr* newSndr=(OTExtSndr*)calloc(1,sizeof(OTExtSndr));
     assert(newSndr!=NULL);
     
     newSndr->m=m;
@@ -21,14 +21,14 @@ int OTExtSndr_Create(OTExtSndr** sndr, int32_t m, int32_t secLev, uint8_t** toSe
     newSndr->seedByteLen=newSndr->secLev/8;
     newSndr->lByteLength=lByteLen;
     newSndr->toSend=toSend;
-    newSndr->seededRnd=calloc(secLev, sizeof(AESRandom*));
+    newSndr->seededRnd=(AESRandom**)calloc(secLev, sizeof(AESRandom*));
     
     newSndr->H=getHashInstance(secLev);
     
     //initialise s
     newSndr->sByteLen=getByteLenByBitLen(secLev);
     newSndr->sLeadingZeroes=getLeadingZeroes(secLev);
-    newSndr->s=calloc(newSndr->sByteLen, sizeof(uint8_t));
+    newSndr->s=(uint8_t*)calloc(newSndr->sByteLen, sizeof(uint8_t));
     assert(newSndr->s!=NULL);
     AESRandom* rnd= getRandomInstance(secLev);
     assert(rnd!=NULL);
@@ -38,13 +38,13 @@ int OTExtSndr_Create(OTExtSndr** sndr, int32_t m, int32_t secLev, uint8_t** toSe
     assert(newSndr->baseOTRcvr!=NULL);
     
     
-    newSndr->row=calloc(newSndr->sByteLen, sizeof(uint8_t));
+    newSndr->row=(uint8_t*)calloc(newSndr->sByteLen, sizeof(uint8_t));
     assert(newSndr->row!=NULL);
     
-    newSndr->allZeroes=calloc(newSndr->sByteLen, sizeof(uint8_t));
+    newSndr->allZeroes=(uint8_t*)calloc(newSndr->sByteLen, sizeof(uint8_t));
     assert(newSndr->allZeroes!=NULL);
     
-    newSndr->hashTemp=calloc(newSndr->H->digestLen, sizeof(uint8_t));
+    newSndr->hashTemp=(uint8_t*)calloc(newSndr->H->digestLen, sizeof(uint8_t));
     assert(newSndr->hashTemp!=NULL);
     
     AESRandom_Destroy(rnd);
@@ -74,7 +74,7 @@ void OTExtSndr_ReInitialise(OTExtSndr* sndr, uint8_t** toSend, int32_t m){
 }
 
 uint8_t** OTExtSndr_step3_1(OTExtSndr* sndr, uint8_t*** received, int32_t recStrLen,EC_POINT** grs){
-    uint8_t ** out = calloc(sndr->k, sizeof(uint8_t*));
+    uint8_t ** out = (uint8_t **)calloc(sndr->k, sizeof(uint8_t*));
     for(int i=0;i<sndr->k;i++){
         OTExtSndr_step3_1Single(sndr, received[i],recStrLen, grs[i],i,sndr->H,out);
     }
@@ -138,7 +138,7 @@ uint8_t* OTExtSndr_step3_3Single(OTExtSndr* sndr,BitMatrix* Q, int32_t j,Message
     if(sndr->toSend[j]!=NULL){
         xorByteArray(sndr->toSend[j], sndr->hashTemp, sndr->lByteLength);
     }else{
-        sndr->toSend[j]=calloc(sndr->lByteLength, sizeof(uint8_t));
+        sndr->toSend[j]=(uint8_t*)calloc(sndr->lByteLength, sizeof(uint8_t));
         memcpy(sndr->toSend[j], sndr->hashTemp, sndr->lByteLength);
     }
     return sndr->toSend[j];
@@ -159,7 +159,7 @@ uint8_t* OTExtSndr_step3_3SingleMT(OTExtSndr* sndr,BitMatrix* Q, int32_t j,Messa
     if(sndr->toSend[j]!=NULL){
         xorByteArray(sndr->toSend[j], hashBuf, sndr->lByteLength);
     }else{
-        sndr->toSend[j]=calloc(sndr->lByteLength, sizeof(uint8_t));
+        sndr->toSend[j]=(uint8_t*)calloc(sndr->lByteLength, sizeof(uint8_t));
         memcpy(sndr->toSend[j], hashBuf, sndr->lByteLength);
     }
     return sndr->toSend[j];

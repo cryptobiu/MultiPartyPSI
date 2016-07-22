@@ -190,18 +190,18 @@ inline int exists(int32_t idx, int32_t* indHis, int32_t i){
     }
     return 0;
 };
-
+/*
 inline int num_cores()
 {
     int mib[4];
     int numCPU;
     size_t len = sizeof(numCPU);
     
-    /* set the mib for hw.ncpu */
+    // set the mib for hw.ncpu
     mib[0] = CTL_HW;
     mib[1] = HW_NCPU;  // alternatively, try HW_NCPU;
     
-    /* get the number of CPUs from the system */
+    // get the number of CPUs from the system
     sysctl(mib, 2, &numCPU, &len, NULL, 0);
     
     if( numCPU < 1 )
@@ -211,7 +211,12 @@ inline int num_cores()
     }
     return numCPU;
 };
+*/
 
+inline int num_cores()
+{
+    return 1;
+}
 inline void receiveBulk(int sock, size_t toReceive, uint8_t* buf){
     size_t receivedLen=0;
     size_t step=1024;

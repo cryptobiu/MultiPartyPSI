@@ -14,7 +14,7 @@
 int OTExtRcvr_Create(OTExtRcvr** rcvr,uint8_t* str, int32_t m, int32_t secLev){
     assert(secLev==80||secLev==128||secLev==192||secLev==256);
     
-    OTExtRcvr* newRcvr=calloc(1,sizeof(OTExtRcvr));
+    OTExtRcvr* newRcvr=(OTExtRcvr*)calloc(1,sizeof(OTExtRcvr));
     
     assert(newRcvr!=NULL);
     
@@ -32,24 +32,24 @@ int OTExtRcvr_Create(OTExtRcvr** rcvr,uint8_t* str, int32_t m, int32_t secLev){
     //generate random seeds
     //initialise randoms
     AESRandom* rnd= getRandomInstance(secLev);
-    newRcvr->seeds=calloc(secLev, sizeof(uint8_t**));
-    newRcvr->seededRnd=calloc(secLev, sizeof(AESRandom**));
+    newRcvr->seeds=(uint8_t***)calloc(secLev, sizeof(uint8_t**));
+    newRcvr->seededRnd=(AESRandom***)calloc(secLev, sizeof(AESRandom**));
     assert(newRcvr->seeds!=NULL);
 
     for(int i=0;i<secLev;i++){
-        newRcvr->seeds[i]=calloc(2, sizeof(uint8_t*));
-        newRcvr->seededRnd[i]=calloc(3, sizeof(AESRandom*));
+        newRcvr->seeds[i]=(uint8_t**)calloc(2, sizeof(uint8_t*));
+        newRcvr->seededRnd[i]=(AESRandom**)calloc(3, sizeof(AESRandom*));
         assert(newRcvr->seeds[i]!=NULL);
         assert(newRcvr->seededRnd[i]!=NULL);
         
-        newRcvr->seeds[i][0]=calloc(newRcvr->seedByteLen, sizeof(uint8_t));
+        newRcvr->seeds[i][0]=(uint8_t*)calloc(newRcvr->seedByteLen, sizeof(uint8_t));
         assert(newRcvr->seeds[i][0]!=NULL);
         AESRandom_NextBytes(rnd, newRcvr->seeds[i][0], newRcvr->seedByteLen);
         
         newRcvr->seededRnd[i][0]= getSeededRandomInstance(newRcvr->seeds[i][0], secLev);
         newRcvr->seededRnd[i][2]= getSeededRandomInstance(newRcvr->seeds[i][0], secLev);
         
-        newRcvr->seeds[i][1]=calloc(newRcvr->seedByteLen, sizeof(uint8_t));
+        newRcvr->seeds[i][1]=(uint8_t*)calloc(newRcvr->seedByteLen, sizeof(uint8_t));
         assert(newRcvr->seeds[i][1]!=NULL);
         AESRandom_NextBytes(rnd, newRcvr->seeds[i][1], newRcvr->seedByteLen);
          newRcvr->seededRnd[i][1]= getSeededRandomInstance(newRcvr->seeds[i][1], secLev);
@@ -60,7 +60,7 @@ int OTExtRcvr_Create(OTExtRcvr** rcvr,uint8_t* str, int32_t m, int32_t secLev){
     assert(newRcvr->T!=NULL);
     
     for(int i=0;i<secLev;i++){
-        uint8_t* ti = calloc(newRcvr->strByteLen, sizeof(uint8_t));
+        uint8_t* ti = (uint8_t*)calloc(newRcvr->strByteLen, sizeof(uint8_t));
         assert(ti!=NULL);
         AESRandom_NextBytes( newRcvr->seededRnd[i][0],ti,newRcvr->strByteLen);
         BM_SetColumn(newRcvr->T, i, ti, newRcvr->strByteLen);
@@ -70,9 +70,9 @@ int OTExtRcvr_Create(OTExtRcvr** rcvr,uint8_t* str, int32_t m, int32_t secLev){
     
     assert(newRcvr->baseOTSndr!=NULL);
     
-    newRcvr->allZero=calloc(getByteLenByBitLen(secLev), sizeof(uint8_t));
-    newRcvr->row=calloc(getByteLenByBitLen(secLev), sizeof(uint8_t));
-    newRcvr->hashTemp=calloc(newRcvr->md->digestLen, sizeof(uint8_t));
+    newRcvr->allZero=(uint8_t*)calloc(getByteLenByBitLen(secLev), sizeof(uint8_t));
+    newRcvr->row=(uint8_t*)calloc(getByteLenByBitLen(secLev), sizeof(uint8_t));
+    newRcvr->hashTemp=(uint8_t*)calloc(newRcvr->md->digestLen, sizeof(uint8_t));
     //newRcvr->column=calloc(getByteLenByBitLen(m), sizeof(uint8_t));
 
     AESRandom_Destroy(rnd);
@@ -129,7 +129,7 @@ int OTExtRcvr_ReInitialise(OTExtRcvr* rcvr, int32_t m, uint8_t* str, int32_t str
         BM_Destroy(rcvr->T);
         BM_Create(&rcvr->T, m, rcvr->k);
         for(int i=0;i<rcvr->k;i++){
-            uint8_t* ti = calloc(strByteLen, sizeof(uint8_t));
+            uint8_t* ti = (uint8_t*)calloc(strByteLen, sizeof(uint8_t));
             assert(ti!=NULL);
             AESRandom_NextBytes(rcvr->seededRnd[i][0], ti, rcvr->strByteLen);
             BM_SetColumn(rcvr->T, i, ti, strByteLen);
@@ -153,11 +153,11 @@ typedef struct rcvr_Rein_args{
 
 
 void* rcvr_rein_task(void* args){
-    rcvr_Rein_args* myArgs=args;
+    rcvr_Rein_args* myArgs=(rcvr_Rein_args*)args;
     
     if(myArgs->newMatrix){
         for(int i=myArgs->i;i<myArgs->bm->k;i+=myArgs->threadNum){
-            uint8_t* ti = calloc(myArgs->byteLen, sizeof(uint8_t));
+            uint8_t* ti = (uint8_t*)calloc(myArgs->byteLen, sizeof(uint8_t));
             assert(ti!=NULL);
             AESRandom_NextBytes(myArgs->seededRnd[i][0], ti, myArgs->byteLen);
             BM_SetColumn(myArgs->bm, i, ti, myArgs->byteLen);
@@ -195,11 +195,11 @@ int OTExtRcvr_ReInitialiseMT(OTExtRcvr* rcvr, int32_t m, uint8_t* str, int32_t s
     
     int cores= num_cores();
     pthread_t* rndThreads;
-    rndThreads=malloc(sizeof(pthread_t)*cores);
+    rndThreads=(pthread_t*)malloc(sizeof(pthread_t)*cores);
     assert(rndThreads!=NULL);
     
     for(int i=0;i<cores;i++){
-        rcvr_Rein_args * args = calloc(1, sizeof(rcvr_Rein_args));
+        rcvr_Rein_args * args = (rcvr_Rein_args*)calloc(1, sizeof(rcvr_Rein_args));
         args->bm=rcvr->T;
         args->byteLen=strByteLen;
         args->i=i;

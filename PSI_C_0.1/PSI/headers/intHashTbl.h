@@ -26,13 +26,13 @@ inline int intHash_init(CHTbl* htbl,int buckets){
 }
 
 inline int intHash_insert(CHTbl* htbl, int32_t e){
-    int32_t* data = malloc(sizeof(int32_t));
+    int32_t* data = (int32_t*)malloc(sizeof(int32_t));
     data[0]=e;
     return chtbl_insert(htbl, data);
 }
 
 inline int intHash_lookup(CHTbl* htbl, int32_t e){
-    int32_t* data = malloc(sizeof(int32_t));
+    int32_t* data = (int32_t*)malloc(sizeof(int32_t));
     data[0]=e;
     return chtbl_lookup(htbl, (void**)&data);
 }

@@ -57,10 +57,10 @@ uint8_t** readInputFromFile(const char* path,int32_t* num){
     
     int32_t n=size/4;
     
-    uint8_t** out =calloc(n, sizeof(uint8_t*));
+    uint8_t** out =(uint8_t**)calloc(n, sizeof(uint8_t*));
     
     for(int32_t i=0;i<n;i++){
-        uint8_t* e= calloc(4, sizeof(uint8_t));
+        uint8_t* e= (uint8_t*)calloc(4, sizeof(uint8_t));
         fread(e, 1, 4, f);
         out[i]=e;
     }
@@ -85,10 +85,10 @@ uint8_t** read2DByteArrayFromFile(const char* path,int32_t* num,int32_t colNum){
     
     int32_t colByteLen=size/colNum;
     
-    uint8_t** out =calloc(colNum, sizeof(uint8_t*));
+    uint8_t** out =(uint8_t**)calloc(colNum, sizeof(uint8_t*));
     
     for(int32_t i=0;i<colNum;i++){
-        uint8_t* e= calloc(colByteLen, sizeof(uint8_t));
+        uint8_t* e= (uint8_t*)calloc(colByteLen, sizeof(uint8_t));
         fread(e, 1, colByteLen, f);
         out[i]=e;
     }
@@ -99,7 +99,7 @@ uint8_t** read2DByteArrayFromFile(const char* path,int32_t* num,int32_t colNum){
 }
 
 int32_t* setToInt(uint8_t** set, int32_t n){
-    int32_t* out=calloc(n, sizeof(int32_t));
+    int32_t* out=(int32_t*)calloc(n, sizeof(int32_t));
     for(int i=0;i<n;i++){
         out[i]= *(int32_t*)set[i];
     }
@@ -114,10 +114,10 @@ uint8_t** randomIntSet(int32_t n){
     
     intHash_init(&htbl, n);
     
-    uint8_t** out = calloc(n, sizeof(uint8_t*));
+    uint8_t** out = (uint8_t**)calloc(n, sizeof(uint8_t*));
     assert(out!=NULL);
     for(int32_t i=0;i<n;i++){
-        uint8_t* e= calloc(4, sizeof(uint8_t));
+        uint8_t* e= (uint8_t*)calloc(4, sizeof(uint8_t));
         assert(e!=NULL);
         int32_t s=0;
         do{
@@ -144,7 +144,7 @@ int32_t* randomIntArray(int32_t n){
     
     intHash_init(&htbl, n);
     
-    int32_t* out = calloc(n, sizeof(int32_t));
+    int32_t* out = (int32_t*)calloc(n, sizeof(int32_t));
     assert(out!=NULL);
     for(int32_t i=0;i<n;i++){
         //uint8_t* e= calloc(4, sizeof(uint8_t));
@@ -219,15 +219,15 @@ void verifyInterSection(uint8_t** set,uint8_t** recved,int32_t setSize, List* L)
         abort();
     }
     
-    uint8_t** int1=calloc(list_size(L), sizeof(uint8_t*));
-    uint8_t** int2=calloc(list_size(&L2), sizeof(uint8_t*));
+    uint8_t** int1=(uint8_t**)calloc(list_size(L), sizeof(uint8_t*));
+    uint8_t** int2=(uint8_t**)calloc(list_size(&L2), sizeof(uint8_t*));
     
     ListElmt * e1 = L->head;
     ListElmt * e2= L2.head;
     
     for(int i=0;i<list_size(&L2);i++){
-        int1[i]=e1->data;
-        int2[i]=e2->data;
+        int1[i]=(uint8_t*)e1->data;
+        int2[i]=(uint8_t*)e2->data;
         e1=e1->next;
         e2=e2->next;
     }

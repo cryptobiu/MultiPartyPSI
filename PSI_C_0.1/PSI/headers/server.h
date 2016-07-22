@@ -27,7 +27,7 @@ typedef struct Server{
     int32_t n;
     int32_t secLev;
     uint8_t** set;
-    uint8_t** eHash;
+    uint8_t* masks;
     uint8_t** keys;
     RangeHash** hashFuncs;
     BFParameters* bfParam;

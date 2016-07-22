@@ -44,7 +44,7 @@ inline void RandomSource_Insert(RandomSource* rndSrc, row* rowData, int32_t i){
 };
 
 inline void RandomSource_Insert_Bytes(RandomSource* rndSrc, uint8_t* rowData, int32_t rowLen, int32_t i){
-    rndSrc->rndBytes[i]=malloc(sizeof(row));
+    rndSrc->rndBytes[i]=(row*)malloc(sizeof(row));
     rndSrc->rndBytes[i]->bytes= rowData;
     rndSrc->rndBytes[i]->length=rowLen;
 };

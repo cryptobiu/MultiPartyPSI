@@ -10,7 +10,7 @@
 #include "BitMatrix.h"
 
 int BM_Create(BitMatrix** bm, int32_t m, int32_t k){
-    BitMatrix * newBM=calloc(1,sizeof(BitMatrix));
+    BitMatrix * newBM=(BitMatrix *)calloc(1,sizeof(BitMatrix));
     
     assert(newBM!=NULL);
     
@@ -38,7 +38,7 @@ int BM_Create(BitMatrix** bm, int32_t m, int32_t k){
         newBM->leadingZeroesRow=8-r;
     }
     
-    newBM->data=calloc(k, sizeof(uint8_t*));
+    newBM->data=(uint8_t**)calloc(k, sizeof(uint8_t*));
     assert(newBM->data!=NULL);
     
     uint8_t mask=128;

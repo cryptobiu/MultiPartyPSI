@@ -14,7 +14,7 @@ void* Server_outputThread(void* args){
     
     int bunch =50;
     int total=bunch*GBFSigmaByteLen;
-    uint8_t* e=calloc(total, sizeof(uint8_t));
+    uint8_t* e=(uint8_t*)calloc(total, sizeof(uint8_t));
     for(int i=0;i<myArgs->size;i+=bunch){
         if(i+bunch>=myArgs->size){
             bunch=myArgs->size-i;
@@ -42,7 +42,7 @@ void* Server_outputThread(void* args){
 }
 
 void* Server_BuildGBF(void * args){
-    Server_BuildGBFArgs* myArgs=args;
+    Server_BuildGBFArgs* myArgs=(Server_BuildGBFArgs*)args;
     
     MTBuilder_GBF(myArgs->filter, myArgs->bfParam, myArgs->keys, myArgs->k, myArgs->keyByteLen, myArgs->set, myArgs->eByteLen, myArgs->eNum, myArgs->ehash, myArgs->rndSeedLen);
     return NULL;
@@ -92,8 +92,8 @@ void* Server_step3_2Task(void* args){
 void* Server_step3_3Task(void* args){
     Server_step3_3TaskArgs* myArgs=(Server_step3_3TaskArgs*)args;
     MessageDigest* H = getHashInstance(myArgs->sndr->k);
-    uint8_t* rowBuf= calloc(myArgs->Q->byteLenRow, sizeof(uint8_t));
-    uint8_t* hashBuf= calloc(H->digestLen, sizeof(uint8_t));
+    uint8_t* rowBuf= (uint8_t*)calloc(myArgs->Q->byteLenRow, sizeof(uint8_t));
+    uint8_t* hashBuf= (uint8_t*)calloc(H->digestLen, sizeof(uint8_t));
     
     for(int j=myArgs->i;j<myArgs->sndr->m;j+=myArgs->trdNum){
         

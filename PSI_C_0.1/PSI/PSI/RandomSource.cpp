@@ -14,12 +14,12 @@
 int RandomSource_Create(RandomSource** rndSrc, int32_t numRows, int32_t Blocksize){
     RandomSource * rnd;
     
-    rnd=malloc(sizeof(RandomSource));
+    rnd=(RandomSource *)malloc(sizeof(RandomSource));
     
     if(rnd==NULL)
         return 0;
     
-    rnd->rndBytes=calloc(numRows,sizeof(row*));
+    rnd->rndBytes=(row**)calloc(numRows,sizeof(row*));
     
     if(rnd->rndBytes==NULL)
         return 0;

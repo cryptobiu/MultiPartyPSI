@@ -41,12 +41,12 @@ int MTBuilder_GBF(GarbledBF*filter, BFParameters * param,uint8_t** hashKeys,int3
     
     //indexes array
     int32_t** indexes;
-    indexes = calloc(inputLen, sizeof(int32_t*));
+    indexes = (int32_t**)calloc(inputLen, sizeof(int32_t*));
     assert(indexes!=NULL);
     
     // prepare for the thread that adds element to the GBF
     indexArgs* iArgs;
-    iArgs= malloc(sizeof(indexArgs));
+    iArgs= (indexArgs*)malloc(sizeof(indexArgs));
     assert(iArgs!=NULL);
     
     iArgs->filter=filter;
@@ -68,16 +68,16 @@ int MTBuilder_GBF(GarbledBF*filter, BFParameters * param,uint8_t** hashKeys,int3
     
     //create thread for index and random gnereation
     pthread_t* idxThreads;
-    idxThreads=malloc(sizeof(pthread_t)*cores);
+    idxThreads=(pthread_t*)malloc(sizeof(pthread_t)*cores);
     assert(idxThreads!=NULL);
     
     pthread_t* rndThreads;
-    rndThreads=malloc(sizeof(pthread_t)*cores);
+    rndThreads=(pthread_t*)malloc(sizeof(pthread_t)*cores);
     assert(rndThreads!=NULL);
     
     for(int32_t i=0;i<cores;i++){
         GBFIdxProducerArgs* args;
-        args=malloc(sizeof(GBFIdxProducerArgs));
+        args=(GBFIdxProducerArgs*)malloc(sizeof(GBFIdxProducerArgs));
         assert(args!=NULL);
         args->dataLen=eLen;
         args->hashKeys=hashKeys;
@@ -92,7 +92,7 @@ int MTBuilder_GBF(GarbledBF*filter, BFParameters * param,uint8_t** hashKeys,int3
         pthread_create(&idxThreads[i], NULL, &GBFIndexProducer, args);
         
         rndProducerArgs* rndArgs;
-        rndArgs=malloc(sizeof(rndProducerArgs));
+        rndArgs=(rndProducerArgs*)malloc(sizeof(rndProducerArgs));
         assert(rndArgs!=NULL);
         rndArgs->i=i;
         rndArgs->rnd=rndSrc;
@@ -130,10 +130,10 @@ int MTBuilder_BF(BF* filter, BFParameters *param,uint8_t** hashKeys,int32_t hash
     
     pthread_t* threads;
     
-    threads=malloc(sizeof(pthread_t)*cores);
+    threads=(pthread_t*)malloc(sizeof(pthread_t)*cores);
     for(int i=0;i<cores;i++){
         BFProducerArgs* args;
-        args=malloc(sizeof(BFProducerArgs));
+        args=(BFProducerArgs*)malloc(sizeof(BFProducerArgs));
         assert(args!=NULL);
         
         args->dataLen=eLen;
@@ -249,7 +249,7 @@ int MTBuilder_BF(BF* filter, BFParameters *param,uint8_t** hashKeys,int32_t hash
 
 
 static void* startCollectingIndexes(void* args){
-    indexArgs* myArgs=args;
+    indexArgs* myArgs=(indexArgs*)args;
     for(int i=0;i<myArgs->inputNum;i++){
         while(myArgs->indexes[i]==NULL){
             usleep(1);

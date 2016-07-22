@@ -12,48 +12,48 @@
 int MD_Create(MessageDigest** md, int32_t strength){
     assert(strength==80||strength==128||strength==192||strength==256);
     
-    MessageDigest* newMd= malloc(sizeof(MessageDigest));
+    MessageDigest* newMd= (MessageDigest*)malloc(sizeof(MessageDigest));
     
     assert(newMd!=NULL);
     
     if(strength==80){
         //sha1
-        SHA_CTX* ctx=malloc(sizeof(SHA_CTX));
+        SHA_CTX* ctx=(SHA_CTX*)malloc(sizeof(SHA_CTX));
         assert(ctx!=NULL);
         
         newMd->ctx=ctx;
-        newMd->Init=&SHA1_Init;
-        newMd->update=&SHA1_Update;
-        newMd->Final=&SHA1_Final;
+        newMd->Init=(int (*)(void*))&SHA1_Init;
+        newMd->update=(int (*)(void*, const void*, size_t))&SHA1_Update;
+        newMd->Final=(int (*)(uint8_t*, void*))&SHA1_Final;
         newMd->digestLen=SHA_DIGEST_LENGTH;
     }else if(strength==128){
         //sha256
-        SHA256_CTX* ctx=malloc(sizeof(SHA256_CTX));
+        SHA256_CTX* ctx=(SHA256_CTX*)malloc(sizeof(SHA256_CTX));
         assert(ctx!=NULL);
         newMd->ctx=ctx;
-        newMd->Init=&SHA256_Init;
-        newMd->update=&SHA256_Update;
-        newMd->Final=&SHA256_Final;
+        newMd->Init=(int (*)(void*))&SHA256_Init;
+        newMd->update=(int (*)(void*, const void*, size_t))&SHA256_Update;
+        newMd->Final=(int (*)(uint8_t*, void*))&SHA256_Final;
         newMd->digestLen=SHA256_DIGEST_LENGTH;
         
     }else if(strength==192){
         //sha384
-        SHA512_CTX* ctx=malloc(sizeof(SHA512_CTX));
+        SHA512_CTX* ctx=(SHA512_CTX*)malloc(sizeof(SHA512_CTX));
         assert(ctx!=NULL);
         newMd->ctx=ctx;
-        newMd->Init=&SHA384_Init;
-        newMd->update=&SHA384_Update;
-        newMd->Final=&SHA384_Final;
+        newMd->Init=(int (*)(void*))&SHA384_Init;
+        newMd->update=(int (*)(void*, const void*, size_t))&SHA384_Update;
+        newMd->Final=(int (*)(uint8_t*, void*))&SHA384_Final;
         newMd->digestLen=SHA384_DIGEST_LENGTH;
         
     }else if(strength==256){
         //sha512
-        SHA512_CTX* ctx=malloc(sizeof(SHA512_CTX));
+        SHA512_CTX* ctx=(SHA512_CTX*)malloc(sizeof(SHA512_CTX));
         assert(ctx!=NULL);
         newMd->ctx=ctx;
-        newMd->Init=&SHA512_Init;
-        newMd->update=&SHA512_Update;
-        newMd->Final=&SHA512_Final;
+        newMd->Init=(int (*)(void*))&SHA512_Init;
+        newMd->update=(int (*)(void*, const void*, size_t))&SHA512_Update;
+        newMd->Final=(int (*)(uint8_t*, void*))&SHA512_Final;
         newMd->digestLen=SHA512_DIGEST_LENGTH;
     }
     *md=newMd;

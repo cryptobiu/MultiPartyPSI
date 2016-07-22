@@ -16,13 +16,13 @@
 
 int RangeHash_Create(RangeHash** hash,uint8_t *key, int32_t keyLen, int32_t m){
     RangeHash * newHash;
-    newHash = malloc(sizeof(RangeHash));
+    newHash = (RangeHash *)malloc(sizeof(RangeHash));
 
     if (newHash==NULL){
         return 0;
     }
     
-    if(!(newHash->ctx=malloc(sizeof(SHA_CTX))))
+    if(!(newHash->ctx=(SHA_CTX*)malloc(sizeof(SHA_CTX))))
         return 0;
     
     SHA1_Init(newHash->ctx);
@@ -50,7 +50,7 @@ int32_t RangeHash_Digest(RangeHash *H, uint8_t *data, int32_t dataLen){
     
     if(inputLen>RangeHash_DataBufLen){
         uint8_t *input;   
-        input=malloc(sizeof(uint8_t)*inputLen);
+        input=(uint8_t*)malloc(sizeof(uint8_t)*inputLen);
         
         //append data to the key
         memcpy(input, H->key, H->keyLen);

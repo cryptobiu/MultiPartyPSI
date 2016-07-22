@@ -5,23 +5,23 @@
 //  Created by Changyu Dong on 03/03/2013.
 //  Copyright (c) 2013 Changyu Dong. All rights reserved.
 //
-
-#include <stdio.h>
 #include "GarbledBF.h"
+#include <stdio.h>
+
 
 int GBF_Create(GarbledBF** filter, int32_t m, int32_t k){
     GarbledBF* gbf;
     
-    if(!(gbf=malloc(sizeof(GarbledBF)))){
+    if(!(gbf=(GarbledBF*)malloc(sizeof(GarbledBF)))){
         return 0;
     }
     gbf->m=m;
     gbf->k=k;
-    gbf->indexes=calloc(k, sizeof(int32_t));
+    gbf->indexes=(int32_t*)calloc(k, sizeof(int32_t));
     //gbf->MT=0;
     //gbf->bitmap=NULL;
     
-    if(!(gbf->data= calloc(m,sizeof(uint8_t*)))){
+    if(!(gbf->data= (uint8_t**)calloc(m,sizeof(uint8_t*)))){
         return 0;
     }
     
@@ -68,12 +68,12 @@ void GBF_Destroy(GarbledBF* filter){
     free(filter);
 }
 
-void GBF_add(GarbledBF*filter, RangeHash** hashes, int32_t hashNum, uint8_t* element,int32_t eLen, uint8_t* ehash,AESRandom* rnd){
+void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &hashes, int32_t hashNum, uint8_t* element,int32_t eLen, uint8_t* ehash,AESRandom* rnd){
     
     assert(filter->k == hashNum);
     
     uint8_t* finalShare;
-    finalShare =malloc(sizeof(uint8_t)*GBFSigmaByteLen);
+    finalShare =(uint8_t*)malloc(sizeof(uint8_t)*GBFSigmaByteLen);
     memcpy(finalShare, ehash, GBFSigmaByteLen);
     
     int emptySlot=-1;
@@ -84,7 +84,7 @@ void GBF_add(GarbledBF*filter, RangeHash** hashes, int32_t hashNum, uint8_t* ele
     for (int i = 0; i < hashNum; i++) {
         // hash to range [0,m-1], convert to index of array
         //int index = hashes[i].digest(element);
-        int index = RangeHash_Digest(hashes[i], element, eLen);
+        int index = RangeHash_Digest(hashes[i].get(), element, eLen);
         indHis[i] = index;
         if (!exists(index, indHis, i)) {
             // if the slot is empty, further check whether this is the first
@@ -101,7 +101,7 @@ void GBF_add(GarbledBF*filter, RangeHash** hashes, int32_t hashNum, uint8_t* ele
                     emptySlot = index;
                 } else {
                     uint8_t* bytes;
-                    bytes=calloc(GBFSigmaByteLen,sizeof(uint8_t));
+                    bytes=(uint8_t*)calloc(GBFSigmaByteLen,sizeof(uint8_t));
                     AESRandom_NextBytes(rnd, bytes, GBFSigmaByteLen);
                     filter->data[index] = bytes;
                     xorByteArray(finalShare, bytes, GBFSigmaByteLen);
@@ -122,7 +122,7 @@ void GBF_addMT(GarbledBF*filter, int32_t* indexes, int32_t hashNum,uint8_t* ehas
     assert(hashNum==filter->k);
     
     uint8_t* finalShare;
-    finalShare =malloc(sizeof(uint8_t)*GBFSigmaByteLen);
+    finalShare =(uint8_t*)malloc(sizeof(uint8_t)*GBFSigmaByteLen);
     memcpy(finalShare, ehash, GBFSigmaByteLen);
     
     int emptySlot=-1;
@@ -153,7 +153,7 @@ void GBF_addMT(GarbledBF*filter, int32_t* indexes, int32_t hashNum,uint8_t* ehas
 void GBF_doFinal(GarbledBF* filter,AESRandom* rnd){
     for (int i = 0; i < filter->m; i++) {
         if (filter->data[i] ==NULL) {
-            filter->data[i] = calloc(GBFSigmaByteLen,sizeof(uint8_t));
+            filter->data[i] = (uint8_t*)calloc(GBFSigmaByteLen,sizeof(uint8_t));
             AESRandom_NextBytes(rnd, filter->data[i], GBFSigmaByteLen);
         }
     }

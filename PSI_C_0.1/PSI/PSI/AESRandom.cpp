@@ -15,11 +15,11 @@ int AESRandom_Create(AESRandom** rnd,uint32_t seedLen){
     
     AESRandom *newRnd;
     
-    if(!(newRnd=malloc(sizeof(AESRandom)))){
+    if(!(newRnd=(AESRandom *)malloc(sizeof(AESRandom)))){
         return 0;
     }
     
-    if(!(newRnd->ctx=malloc(sizeof(EVP_CIPHER_CTX))))
+    if(!(newRnd->ctx=(EVP_CIPHER_CTX*)malloc(sizeof(EVP_CIPHER_CTX))))
         return 0;
     
     EVP_CIPHER_CTX_init(newRnd->ctx);
@@ -68,9 +68,9 @@ int AESRandom_Create_With_Seed(AESRandom** rnd,uint8_t* seed, uint32_t seedLen){
     
     AESRandom *newRnd;
     
-    newRnd=malloc(sizeof(AESRandom));
+    newRnd=(AESRandom *)malloc(sizeof(AESRandom));
     
-    if(!(newRnd->ctx=malloc(sizeof(EVP_CIPHER_CTX))))
+    if(!(newRnd->ctx=(EVP_CIPHER_CTX*)malloc(sizeof(EVP_CIPHER_CTX))))
         return 0;
     
     EVP_CIPHER_CTX_init(newRnd->ctx);
@@ -81,7 +81,7 @@ int AESRandom_Create_With_Seed(AESRandom** rnd,uint8_t* seed, uint32_t seedLen){
     if(seedLen==10){
         seedLen=16;
         //uint8_t* newSeed= calloc(seedLen, sizeof(uint8_t));
-        uint8_t* newSeed=calloc(16, sizeof(uint8_t));
+        uint8_t* newSeed=(uint8_t*)calloc(16, sizeof(uint8_t));
         memcpy(newSeed, seed, 10);
         
         
@@ -145,7 +145,7 @@ int AES_Setup(EVP_CIPHER_CTX** ctx, uint8_t* key, uint8_t* iv){
     RAND_bytes(key, EVP_MAX_KEY_LENGTH);
     RAND_bytes(iv, EVP_MAX_IV_LENGTH);
     
-    if(!(newCtx=malloc(sizeof(EVP_CIPHER_CTX))))
+    if(!(newCtx=(EVP_CIPHER_CTX*)malloc(sizeof(EVP_CIPHER_CTX))))
         return 0;
     
     EVP_CIPHER_CTX_init(newCtx);

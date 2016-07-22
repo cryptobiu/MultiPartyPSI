@@ -10,7 +10,7 @@
 #include "NPOTSndr.h"
 
 int NPOTSndr_Create(NPOTSndr** sndr, int32_t k, int32_t sendByteLen, uint8_t*** toSend, int32_t secLev){
-    NPOTSndr* newSndr = malloc(sizeof(NPOTSndr));
+    NPOTSndr* newSndr = (NPOTSndr*)malloc(sizeof(NPOTSndr));
     
     assert(newSndr!=NULL);
     
@@ -19,7 +19,7 @@ int NPOTSndr_Create(NPOTSndr** sndr, int32_t k, int32_t sendByteLen, uint8_t*** 
     newSndr->toSend=toSend;
     
     //newSndr->ctx=BN_CTX_new();
-    newSndr->md= malloc(sizeof(MessageDigest));
+    newSndr->md= (MessageDigest*)malloc(sizeof(MessageDigest));
     assert(newSndr->md!=NULL);
     
     MD_Create(&newSndr->md, secLev);
@@ -53,16 +53,16 @@ int NPOTSndr_Create(NPOTSndr** sndr, int32_t k, int32_t sendByteLen, uint8_t*** 
     
     newSndr->g=EC_POINT_dup(EC_GROUP_get0_generator(newSndr->curve),newSndr->curve);
     
-    newSndr->rs=malloc(sizeof(BIGNUM*)*newSndr->k);
+    newSndr->rs=(BIGNUM**)malloc(sizeof(BIGNUM*)*newSndr->k);
     assert(newSndr->rs!=NULL);
     
-    newSndr->cs=malloc(sizeof(EC_POINT*)*newSndr->k);
+    newSndr->cs=(EC_POINT**)malloc(sizeof(EC_POINT*)*newSndr->k);
     assert(newSndr->cs!=NULL);
     
-    newSndr->crs=malloc(sizeof(EC_POINT*)*newSndr->k);
+    newSndr->crs=(EC_POINT**)malloc(sizeof(EC_POINT*)*newSndr->k);
     assert(newSndr->crs!=NULL);
     
-    newSndr->grs=malloc(sizeof(EC_POINT*)*newSndr->k);
+    newSndr->grs=(EC_POINT**)malloc(sizeof(EC_POINT*)*newSndr->k);
     assert(newSndr->grs!=NULL);
 
     
@@ -140,21 +140,21 @@ EC_POINT* NPOTSndr_StepSingle(NPOTSndr* sndr,EC_POINT* PK0,int32_t i, uint8_t***
     
     EC_POINT_add(sndr->curve, pk1r, pk1r, sndr->crs[i], ctx);
     
-    uint8_t* buf=calloc(sndr->pointByteLen, sizeof(uint8_t));
+    uint8_t* buf=(uint8_t*)calloc(sndr->pointByteLen, sizeof(uint8_t));
     
     size_t len= EC_POINT_point2oct(sndr->curve, pk0r, POINT_CONVERSION_COMPRESSED, buf, sndr->pointByteLen, ctx);
     
     //printf("Point byte length: %zd\n",len);
     
 
-    uint8_t* digest=malloc(sizeof(uint8_t)*H->digestLen);
+    uint8_t* digest=(uint8_t*)malloc(sizeof(uint8_t)*H->digestLen);
     uint8_t zero =0;
     H->Init(H->ctx);
     H->update(H->ctx,buf,len);
     H->update(H->ctx,&zero,1);
     H->Final(digest,H->ctx);
     
-    encrypted[i][0]= malloc(sizeof(uint8_t)*sndr->sendByteLen);
+    encrypted[i][0]= (uint8_t*)malloc(sizeof(uint8_t)*sndr->sendByteLen);
     memcpy(encrypted[i][0], sndr->toSend[i][0], sndr->sendByteLen);
     
     xorByteArray(encrypted[i][0], digest, sndr->sendByteLen);
@@ -168,7 +168,7 @@ EC_POINT* NPOTSndr_StepSingle(NPOTSndr* sndr,EC_POINT* PK0,int32_t i, uint8_t***
     H->update(H->ctx,&one,1);
     H->Final(digest,H->ctx);
     
-    encrypted[i][1]= malloc(sizeof(uint8_t)*sndr->sendByteLen);
+    encrypted[i][1]= (uint8_t*)malloc(sizeof(uint8_t)*sndr->sendByteLen);
     memcpy(encrypted[i][1], sndr->toSend[i][1], sndr->sendByteLen);
     
     xorByteArray(encrypted[i][1], digest, sndr->sendByteLen);

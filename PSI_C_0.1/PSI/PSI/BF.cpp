@@ -14,7 +14,7 @@ extern void printByte(uint8_t b);
 
 int BF_GenerateParameters(BFParameters** param, int32_t n, int32_t p){
     BFParameters* newParam;
-    if(!(newParam=malloc(sizeof(BFParameters)))){
+    if(!(newParam=(BFParameters*)malloc(sizeof(BFParameters)))){
         return 0;
     };
     
@@ -47,7 +47,7 @@ int BF_Create(BF** filter, int32_t m){
     
     BF* bf;
     
-    bf=malloc(sizeof(BF));
+    bf=(BF*)malloc(sizeof(BF));
     
     if(bf==NULL){
         return 0;

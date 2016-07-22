@@ -28,9 +28,9 @@ uint8_t** receiveArrayOfByteStrings(int32_t sock, int32_t numOfStrings, int32_t 
 //        out[i]=keyStr+(i*strByteLen);
 //    }
 //    return  out;
-    uint8_t** out= calloc(numOfStrings, sizeof(uint8_t*));
+    uint8_t** out= (uint8_t**)calloc(numOfStrings, sizeof(uint8_t*));
     for(int i=0;i<numOfStrings;i++){
-        out[i]= calloc(strByteLen, sizeof(uint8_t));
+        out[i]= (uint8_t*)calloc(strByteLen, sizeof(uint8_t));
         receiveBulk(sock, strByteLen, out[i]);
     }
     return out;
@@ -42,7 +42,7 @@ void sendArrayOfByteStrings(int32_t sock, int32_t numOfStrings, int32_t strByteL
     
     int bunch =50;
     int total=bunch*strByteLen;
-    uint8_t* e=calloc(total, sizeof(uint8_t));
+    uint8_t* e=(uint8_t*)calloc(total, sizeof(uint8_t));
     for(int i=0;i<numOfStrings;i+=bunch){
         if(i+bunch>=numOfStrings){
             bunch=numOfStrings-i;
@@ -65,15 +65,15 @@ void sendArrayOfByteStrings(int32_t sock, int32_t numOfStrings, int32_t strByteL
 
 uint8_t*** receive3DBitArray(int32_t sock, int32_t size1D, int32_t size2D, int32_t size3D){
     int32_t total= size1D*size2D*size3D;
-    uint8_t* str=calloc(total, sizeof(uint8_t));
+    uint8_t* str=(uint8_t*)calloc(total, sizeof(uint8_t));
     assert(str!=NULL);
     
     receiveBulk(sock, total, str);
     
-    uint8_t*** out = calloc(size1D, sizeof(uint8_t**));
+    uint8_t*** out = (uint8_t***)calloc(size1D, sizeof(uint8_t**));
     
     for(int i=0;i<size1D;i++){
-        out[i]=calloc(size2D, sizeof(uint8_t*));
+        out[i]=(uint8_t**)calloc(size2D, sizeof(uint8_t*));
         for(int j=0;j<size2D;j++){
             out[i][j]=str+((i*size2D+j)*size3D);
         }
@@ -93,7 +93,7 @@ void send3DBitArray(int32_t sock, int32_t size1D, int32_t size2D, int32_t size3D
 
 void sendArrayOfECPoints(int32_t socket, int32_t numOfPoints, int32_t pointByteLen, EC_GROUP* curve, EC_POINT** points){
     BN_CTX* ctx = BN_CTX_new();
-    uint8_t* buf = calloc(pointByteLen, sizeof(uint8_t));
+    uint8_t* buf = (uint8_t*)calloc(pointByteLen, sizeof(uint8_t));
     int size;
     for(int i=0;i<numOfPoints;i++){
         size=(int32_t)EC_POINT_point2oct(curve, points[i], POINT_CONVERSION_COMPRESSED, buf, pointByteLen, ctx);
@@ -111,11 +111,11 @@ EC_POINT** receiveArrayOfECPoints(int32_t socket, int32_t numOfPoints, int32_t p
     BN_CTX* ctx = BN_CTX_new();
     
     int32_t totalByte= numOfPoints*pointByteLen;
-    uint8_t* buf= calloc(totalByte, sizeof(uint8_t));
+    uint8_t* buf= (uint8_t*)calloc(totalByte, sizeof(uint8_t));
     
     receiveBulk(socket, totalByte, buf);
     
-    EC_POINT** out = calloc(numOfPoints, sizeof(EC_POINT*));
+    EC_POINT** out = (EC_POINT**)calloc(numOfPoints, sizeof(EC_POINT*));
     
     for(int32_t i=0;i<numOfPoints;i++){
         EC_POINT* p= EC_POINT_new(curve);

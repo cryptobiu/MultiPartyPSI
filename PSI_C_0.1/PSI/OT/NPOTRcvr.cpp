@@ -11,21 +11,21 @@
 #include "NPOTRcvr.h"
 int NPOTRcvr_Create(NPOTRcvr** rcvr, uint8_t* str, int32_t strLen,int32_t LeadingZeroes, int32_t secLev){
     assert(secLev==80||secLev==128||secLev==192||secLev==256);
-    NPOTRcvr* newRcvr=malloc(sizeof(NPOTRcvr));
+    NPOTRcvr* newRcvr=(NPOTRcvr*)malloc(sizeof(NPOTRcvr));
     assert(newRcvr!=NULL);
     
     newRcvr->str=str;
     newRcvr->strByteLen=strLen;
     newRcvr->leadingZeroes=LeadingZeroes;
     newRcvr->strBitLen=strLen*8-LeadingZeroes;
-    newRcvr->ks= malloc(sizeof(BIGNUM*)*newRcvr->strBitLen);
+    newRcvr->ks= (BIGNUM**)malloc(sizeof(BIGNUM*)*newRcvr->strBitLen);
     
     //newRcvr->ctx=BN_CTX_new();
-    newRcvr->md= malloc(sizeof(MessageDigest));
+    newRcvr->md= (MessageDigest*)malloc(sizeof(MessageDigest));
     assert(newRcvr->md!=NULL);
     MD_Create(&newRcvr->md, secLev);
     
-    newRcvr->rnd=malloc(sizeof(AESRandom));
+    newRcvr->rnd=(AESRandom*)malloc(sizeof(AESRandom));
     assert(newRcvr->rnd!=NULL);
     
     if(secLev==80){
@@ -88,7 +88,7 @@ void NPOTRcvr_Destroy(NPOTRcvr* rcvr){
 }
 
 EC_POINT** NPOTRcvr_RStep1(NPOTRcvr* rcvr, EC_POINT** Cs,int32_t CsLen){
-    EC_POINT** PK= malloc(sizeof(EC_POINT*)*rcvr->strBitLen);
+    EC_POINT** PK= (EC_POINT**)malloc(sizeof(EC_POINT*)*rcvr->strBitLen);
     
     for(int32_t i=0;i<rcvr->strBitLen;i++){
         NPOTRcvr_RStep1Single(rcvr,Cs[i],i, PK);
@@ -112,7 +112,7 @@ void NPOTRcvr_RStep1Single(NPOTRcvr* rcvr, EC_POINT* C, int32_t i, EC_POINT** PK
 }
 
 uint8_t** NPOTRcvr_RStep2(NPOTRcvr* rcvr, uint8_t*** received, int32_t recLen, EC_POINT** grs){
-    uint8_t** result = malloc(sizeof(uint8_t*)*rcvr->strBitLen);
+    uint8_t** result = (uint8_t**)malloc(sizeof(uint8_t*)*rcvr->strBitLen);
     
     for(int i=0;i<rcvr->strBitLen;i++){
         NPOTRcvr_RStep2Single(rcvr,received[i],recLen,grs[i],i,rcvr->md,result);
@@ -125,13 +125,13 @@ void NPOTRcvr_RStep2Single(NPOTRcvr* rcvr, uint8_t** received,int32_t recLen,EC_
     BN_CTX* ctx= BN_CTX_new();
     EC_POINT_mul(rcvr->curve, pkr, NULL, gr, rcvr->ks[i], ctx);
     
-    uint8_t* buf = calloc(rcvr->pointByteLen,sizeof(uint8_t));
+    uint8_t* buf = (uint8_t*)calloc(rcvr->pointByteLen,sizeof(uint8_t));
     
     size_t len= EC_POINT_point2oct(rcvr->curve, pkr, POINT_CONVERSION_COMPRESSED, buf, rcvr->pointByteLen, ctx);
     
     H->Init(H->ctx);
     H->update(H->ctx,buf,len);
-    uint8_t* digest=malloc(sizeof(uint8_t)*H->digestLen);
+    uint8_t* digest=(uint8_t*)malloc(sizeof(uint8_t)*H->digestLen);
     if(getBit(rcvr->str, i, rcvr->leadingZeroes)){
         uint8_t one=1;
         H->update(H->ctx,&one,1);

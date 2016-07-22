@@ -12,7 +12,7 @@
 void* BFProducer(void* args){
     BFProducerArgs* myArgs= (BFProducerArgs*)args;
     RangeHash** hashes;
-    hashes=malloc(sizeof(RangeHash*)*myArgs->hashNum);
+    hashes=(RangeHash**)malloc(sizeof(RangeHash*)*myArgs->hashNum);
     
     //initialise rangeHashes
     for(uint32_t i=0;i<myArgs->hashNum;i++){
@@ -24,7 +24,7 @@ void* BFProducer(void* args){
     for(uint32_t i=myArgs->i;i<myArgs->max;i+=myArgs->threadNum){
         
         int32_t* result;
-        result=malloc(sizeof(int32_t)*myArgs->hashNum);
+        result=(int32_t*)malloc(sizeof(int32_t)*myArgs->hashNum);
         assert(result!=NULL);
         //produce indexes
         for(uint32_t j=0;j<myArgs->hashNum;j++){
@@ -49,7 +49,7 @@ void* BFProducer(void* args){
 void* GBFIndexProducer(void* args){
     GBFIdxProducerArgs* myArgs= (GBFIdxProducerArgs*)args;
     RangeHash** hashes;
-    hashes=malloc(sizeof(RangeHash*)*myArgs->hashNum);
+    hashes=(RangeHash**)malloc(sizeof(RangeHash*)*myArgs->hashNum);
     
     //initialise rangeHashes
     for(uint32_t i=0;i<myArgs->hashNum;i++){
@@ -61,7 +61,7 @@ void* GBFIndexProducer(void* args){
     for(uint32_t i=myArgs->i;i<myArgs->max;i+=myArgs->threadNum){
         
         int32_t* result;
-        result=malloc(sizeof(int32_t)*myArgs->hashNum);
+        result=(int32_t*)malloc(sizeof(int32_t)*myArgs->hashNum);
         assert(result!=NULL);
         //produce indexes
         for(uint32_t j=0;j<myArgs->hashNum;j++){
@@ -91,7 +91,7 @@ void* GBFRndProducer(void* args){
     
     for(int i=myArgs->i;i<myArgs->rnd->numRows;i+=myArgs->threadNum){
         uint8_t* rowBytes;
-        rowBytes = calloc(myArgs->rowLen, sizeof(uint8_t));
+        rowBytes = (uint8_t*)calloc(myArgs->rowLen, sizeof(uint8_t));
         AESRandom_NextBytes(rnd, rowBytes, myArgs->rowLen);
         RandomSource_Insert_Bytes(myArgs->rnd, rowBytes, myArgs->rowLen, i);
     }

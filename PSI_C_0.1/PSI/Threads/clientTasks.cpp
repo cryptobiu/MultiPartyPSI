@@ -14,7 +14,7 @@ void* Client_inputThread (void* args){
     Client_inputThreadArgs* myArgs= (Client_inputThreadArgs*)args;
     int32_t bunch=50;
     int32_t total=bunch*GBFSigmaByteLen;
-    uint8_t* e= calloc(((size_t)myArgs->size)*GBFSigmaByteLen, sizeof(uint8_t));
+    uint8_t* e= (uint8_t*)calloc(((size_t)myArgs->size)*GBFSigmaByteLen, sizeof(uint8_t));
     uint8_t* eStart=e;
     
     for(int32_t i=0;i<myArgs->size;i+=bunch){
@@ -27,7 +27,7 @@ void* Client_inputThread (void* args){
         
         for(int32_t j=0;j<bunch;j++){
             //myArgs->shared[i+j]=e+j*GBFSigmaByteLen;
-            uint8_t* ba=malloc(sizeof(uint8_t)*GBFSigmaByteLen);
+            uint8_t* ba=(uint8_t*)malloc(sizeof(uint8_t)*GBFSigmaByteLen);
             memcpy(ba, e+j*GBFSigmaByteLen, GBFSigmaByteLen);
             myArgs->shared[i+j]=ba;
         }
@@ -87,9 +87,9 @@ void* Client_Step4_2Task(void* args){
     
     MessageDigest* H= getHashInstance(myArgs->rcvr->secLev);
     
-    uint8_t* rowBuf= calloc(myArgs->rcvr->T->byteLenRow, sizeof(uint8_t));
+    uint8_t* rowBuf= (uint8_t*)calloc(myArgs->rcvr->T->byteLenRow, sizeof(uint8_t));
     uint8_t* selection= myArgs->rcvr->str;
-    uint8_t* hashBuf= calloc(H->digestLen, sizeof(uint8_t));
+    uint8_t* hashBuf= (uint8_t*)calloc(H->digestLen, sizeof(uint8_t));
     
     for(int j=myArgs->i;j<myArgs->rcvr->m;j+=myArgs->thrNum){
         while(myArgs->shared[j]==NULL){
@@ -114,7 +114,7 @@ void* Client_Step4_2Task(void* args){
 }
 
 void* Client_QueryTask(void* args){
-    Client_QueryTaskArgs* myArgs=args;
+    Client_QueryTaskArgs* myArgs=(Client_QueryTaskArgs*)args;
     
     for(int j=myArgs->i;j<myArgs->n;j+=myArgs->thrNum){
         if(GBF_query_With_Indexes(myArgs->filter, myArgs->indexes[j], myArgs->hashNum, myArgs->eHashes[j])){
