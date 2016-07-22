@@ -6,7 +6,7 @@
 
 #include "../Header Files/NaiveLeader.h"
 
-boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, uint8_t **leaderResults, uint32_t *binIds, uint32_t *perm, uint32_t numOfBins,
+boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, uint8_t **leaderResults, uint32_t *binIds, const boost::shared_ptr<uint32_t> &perm, uint32_t numOfBins,
                                                      const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize, std::map<uint32_t, CSocket*> parties,
                                                      uint32_t numOfHashFunctions) {
     if (strategy == Strategy::NAIVE_METHOD_SMALL_N) {

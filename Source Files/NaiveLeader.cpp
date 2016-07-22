@@ -74,7 +74,7 @@ bool NaiveLeader::isElementInAllSets(uint32_t index) {
 
     uint32_t newIndex = 0;
     for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if (m_perm[i] == index) {
+        if ((m_perm.get())[i] == index) {
             newIndex = i;
             break;
         }

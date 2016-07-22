@@ -171,7 +171,9 @@ void PsiParty::finishAndReportStatsToServer() {
 void PsiParty::runAsLeader() {
 
     uint8_t **leaderResults = new uint8_t*[m_numOfParties];
-    uint32_t *perm = (uint32_t*) calloc(m_setSize, sizeof(uint32_t));
+
+    boost::shared_ptr<uint32_t> perm(new uint32_t[m_setSize]);
+    memset(perm.get(),0,m_setSize);
 
     boost::shared_ptr<uint32_t> nelesinbin(new uint32_t[m_numOfBins]);
     memset(nelesinbin.get(),0,m_numOfBins);
@@ -182,7 +184,7 @@ void PsiParty::runAsLeader() {
     uint32_t outbitlen;
 
     hash_table.reset(cuckoo_hashing(m_eleptr, m_setSize, m_numOfBins, m_internal_bitlen, &outbitlen,
-                                nelesinbin.get(), perm, 1, &m_prfState, &bin_ids));
+                                nelesinbin.get(), perm.get(), 1, &m_prfState, &bin_ids));
 
     /*
     cout << "bin_ids: ";
