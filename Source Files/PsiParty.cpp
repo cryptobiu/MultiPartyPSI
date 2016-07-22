@@ -45,7 +45,7 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
     uint8_t* seed_buf = (uint8_t*) malloc(m_seedSize);
     m_serverSocket.Receive(seed_buf, m_seedSize*sizeof(uint8_t));
 
-    m_crypt = initializeCrypto(seed_buf);
+    m_crypt.reset(initializeCrypto(seed_buf));
 
     m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().statbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
 
@@ -56,7 +56,7 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
     if(m_elementSizeInBits > m_maskbitlen) {
         //Hash elements into a smaller domain
         m_eleptr = (uint8_t*) malloc(getMaskSizeInBytes() * m_setSize);
-        domain_hashing(m_setSize, m_elements, elebytelen, m_eleptr, getMaskSizeInBytes(), m_crypt);
+        domain_hashing(m_setSize, m_elements, elebytelen, m_eleptr, getMaskSizeInBytes(), m_crypt.get());
         m_internal_bitlen = m_maskbitlen;
     } else {
         m_eleptr = m_elements;
@@ -146,7 +146,7 @@ void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uin
     // RAND_bytes(seed_buf, m_seedSize);
     //m_crypt->gen_common_seed(&m_prfState, *party.second);
 
-    otpsi_client(m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
+    otpsi_client(m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt.get(),
                             party.second, 1, leaderResults, outbitlen, nelesinbin.get(), hash_table.get());
 
 
@@ -245,7 +245,7 @@ void PsiParty::runAsFollower(CSocket *leader) {
     uint8_t *hashed_elements;
     uint32_t* nelesinbin;
 
-    otpsi_server(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt, leader, 1,
+    otpsi_server(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt.get(), leader, 1,
                  &m_prfState, &hash_table, &masks, &hashed_elements, &nelesinbin);
 
 

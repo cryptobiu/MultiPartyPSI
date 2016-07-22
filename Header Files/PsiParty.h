@@ -55,7 +55,7 @@ private:
     uint32_t m_elementSizeInBits;
     boost::shared_ptr<uint8_t> m_secretShare;
     uint8_t *m_elements;
-    crypto* m_crypt;
+    boost::shared_ptr<crypto> m_crypt;
     uint32_t m_maskbitlen;
     struct statistics m_statistics;
     enum Strategy m_strategy;
