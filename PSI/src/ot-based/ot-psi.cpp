@@ -105,9 +105,8 @@ void receive_server_masks(uint32_t pneles, uint32_t maskbytelen, uint8_t** serve
 	}
 }
 
-void otpsi_client(uint32_t neles, uint32_t nbins, uint32_t pneles,
-		uint32_t elebitlen, uint32_t maskbitlen, crypto* crypt_env, CSocket* sock, uint32_t ntasks,
-		uint8_t **masks, uint32_t outbitlen, uint32_t* nelesinbin, uint8_t * const hash_table) {
+void otpsi_client(uint32_t neles, uint32_t nbins, uint32_t maskbitlen, crypto* crypt_env, CSocket* sock, uint32_t ntasks,
+		uint8_t *masks, uint32_t outbitlen, uint32_t* nelesinbin, uint8_t * const hash_table) {
 
 	pthread_t rcv_masks_thread;
 	pthread_t* query_map_thread = (pthread_t*) malloc(sizeof(pthread_t) * ntasks);
@@ -147,10 +146,9 @@ void otpsi_client(uint32_t neles, uint32_t nbins, uint32_t pneles,
 	print_bin_content(hash_table, nbins, ceil_divide(outbitlen, 8), NULL, false);
 #endif
 
-	*masks = (uint8_t*) malloc(neles * maskbytelen);
 	//Perform the OPRG execution
 	//cout << "otpsi client running ots" << endl;
-	oprg_client(hash_table, nbins, neles, nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, *masks);
+	oprg_client(hash_table, nbins, neles, nelesinbin, outbitlen, maskbitlen, crypt_env, sock, ntasks, masks);
 
 	if(DETAILED_TIMINGS) {
 		gettimeofday(&t_start, NULL);

@@ -35,7 +35,7 @@ private:
     void syncronize();
 
     void initializeCrypto();
-    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **leaderResults,
+    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t *leaderResults,
                                   const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table);
 
     uint32_t getMaskSizeInBytes() {

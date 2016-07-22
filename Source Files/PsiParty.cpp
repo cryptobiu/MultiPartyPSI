@@ -66,21 +66,21 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
 void PsiParty::initializeCrypto() {
 
-    uint8_t* seed_buf = (uint8_t*) malloc(m_seedSize);
-    m_serverSocket.Receive(seed_buf, m_seedSize*sizeof(uint8_t));
+    boost::shared_ptr<uint8_t> seed_buf(new uint8_t[m_seedSize]);
+    m_serverSocket.Receive(seed_buf.get(), m_seedSize*sizeof(uint8_t));
 
     uint64_t rnd;
 
-    uint8_t* seed = (uint8_t*) malloc(AES_BYTES);
+    boost::shared_ptr<uint8_t> seed(new uint8_t[AES_BYTES]);
 
-    memcpy(seed, const_seed, AES_BYTES);
-    seed[0] = static_cast<uint8_t>(m_partyId);
-    m_crypt.reset(new crypto(m_symsecbits, seed));
+    memcpy(seed.get(), const_seed, AES_BYTES);
+    (seed.get())[0] = static_cast<uint8_t>(m_partyId);
+    m_crypt.reset(new crypto(m_symsecbits, seed.get()));
 
     m_crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
     srand((unsigned)rnd+time(0));
 
-    m_crypt->init_prf_state(&m_prfState, seed_buf);
+    m_crypt->init_prf_state(&m_prfState, seed_buf.get());
 }
 
 void PsiParty::LoadConfiguration() {
@@ -136,7 +136,7 @@ void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
     std::cout << std::endl;
 }
 
-void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **leaderResults,
+void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t *leaderResults,
                                         const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table) {
 
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
@@ -145,7 +145,7 @@ void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uin
     // RAND_bytes(seed_buf, m_seedSize);
     //m_crypt->gen_common_seed(&m_prfState, *party.second);
 
-    otpsi_client(m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt.get(),
+    otpsi_client(m_setSize, m_numOfBins, m_maskbitlen, m_crypt.get(),
                             party.second, 1, leaderResults, outbitlen, nelesinbin.get(), hash_table.get());
 
 
@@ -213,7 +213,8 @@ void PsiParty::runAsLeader() {
 
 
     for (auto &party : m_parties) {
-        runLeaderAgainstFollower(party, &leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table);
+        leaderResults[party.first - 1] = (uint8_t*) malloc(m_setSize * getMaskSizeInBytes());
+        runLeaderAgainstFollower(party, leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table);
     }
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
