@@ -25,7 +25,7 @@ vector<uint32_t> NaiveLeader::run() {
 void NaiveLeader::receiveServerMasks() {
     vector<pthread_t> rcv_masks_threads;
 
-    mask_rcv_ctx *rcv_ctxs = new mask_rcv_ctx[m_parties.size()+1];
+    boost::shared_ptr<mask_rcv_ctx> rcv_ctxs(new mask_rcv_ctx[m_parties.size()+1]);
     for (auto &party : m_parties) {
         pthread_t rcv_masks_thread;
 
@@ -34,11 +34,11 @@ void NaiveLeader::receiveServerMasks() {
 
         //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
         //use a separate thread to receive the server's masks
-        rcv_ctxs[party.first - 1].rcv_buf = m_partiesResults[party.first - 1];
-        rcv_ctxs[party.first - 1].nmasks = NUM_HASH_FUNCTIONS * m_setSize;
-        rcv_ctxs[party.first - 1].maskbytelen = m_maskSizeInBytes;
-        rcv_ctxs[party.first - 1].sock = party.second;
-        if(pthread_create(&rcv_masks_thread, NULL, receive_masks, (void*) (&rcv_ctxs[party.first - 1]))) {
+        (rcv_ctxs.get())[party.first - 1].rcv_buf = m_partiesResults[party.first - 1];
+        (rcv_ctxs.get())[party.first - 1].nmasks = NUM_HASH_FUNCTIONS * m_setSize;
+        (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
+        (rcv_ctxs.get())[party.first - 1].sock = party.second;
+        if(pthread_create(&rcv_masks_thread, NULL, receive_masks, (void*) (&(rcv_ctxs.get())[party.first - 1]))) {
             cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
             exit(0);
         }
@@ -57,8 +57,6 @@ void NaiveLeader::receiveServerMasks() {
             exit(0);
         }
     }
-
-    free(rcv_ctxs);
 }
 
 bool NaiveLeader::isElementInAllSets(uint32_t index) {
