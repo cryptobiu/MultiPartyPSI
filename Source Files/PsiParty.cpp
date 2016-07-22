@@ -240,22 +240,24 @@ void PsiParty::runAsFollower(CSocket *leader) {
 
     // m_crypt->gen_common_seed(&m_prfState, *leader);
 
-    uint8_t *hash_table;
+    boost::shared_ptr<uint8_t> hash_table;
     uint8_t *masks;
     uint8_t *hashed_elements;
     boost::shared_ptr<uint32_t> nelesinbin(new uint32_t[sizeof(uint32_t) * m_numOfBins]);
 
-    otpsi_server(m_eleptr, m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt.get(), leader, 1,
-                 &m_prfState, &hash_table, &masks, &hashed_elements, nelesinbin.get());
+    uint32_t outbitlen;
+    hash_table.reset(simple_hashing(m_eleptr, m_setSize, m_internal_bitlen, &outbitlen, nelesinbin.get(), m_numOfBins, 1, &m_prfState, &hashed_elements));
+
+    otpsi_server(m_setSize, m_numOfBins, m_internal_bitlen, m_maskbitlen, m_crypt.get(), leader, 1,
+                 hash_table.get(), &masks, nelesinbin.get(), outbitlen);
 
 
-    struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table, nelesinbin.get(), m_numOfBins,
+    struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table.get(), nelesinbin.get(), m_numOfBins,
         NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes()};
 
     auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, *leader);
     follower->run();
 
-    free(hash_table);
     free(masks);
     free(hashed_elements);
 

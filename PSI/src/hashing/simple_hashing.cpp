@@ -73,7 +73,7 @@ uint8_t* simple_hashing(uint8_t* elements, uint32_t neles, uint32_t bitlen, uint
 	//bin_content = (uint8_t**) malloc(sizeof(uint8_t*) * nbins);
 	//*nelesinbin = (uint32_t*) malloc(sizeof(uint32_t) * nbins);
 
-	res_bins = (uint8_t*) malloc(neles * NUM_HASH_FUNCTIONS * hs.outbytelen);
+	res_bins = new uint8_t[neles * NUM_HASH_FUNCTIONS * hs.outbytelen];
 	bin_ptr = res_bins;
 
 
