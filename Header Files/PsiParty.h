@@ -39,7 +39,7 @@ private:
 
     crypto* initializeCrypto(uint8_t* seed_buf);
     void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **leaderResults,
-                                  uint32_t* nelesinbin, uint32_t outbitlen, uint8_t * const hash_table);
+                                  const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table);
 
     uint32_t getMaskSizeInBytes() {
         return ceil_divide(m_maskbitlen, 8);

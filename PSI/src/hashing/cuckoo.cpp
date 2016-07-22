@@ -100,7 +100,8 @@ cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, uint32_t bitle
 	perm_ptr = perm;
 
 #ifndef TEST_UTILIZATION
-	hash_table = (uint8_t*) calloc(nbins, hs.outbytelen);
+	hash_table = new uint8_t[nbins * hs.outbytelen];
+	memset(hash_table,0,nbins * hs.outbytelen);
 
 	*bin_ids = (uint32_t *) calloc(nbins, hs.outbytelen);
 	for(i = 0; i < nbins; i++) {

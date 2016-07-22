@@ -138,7 +138,7 @@ void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
 }
 
 void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uint8_t **leaderResults,
-                                        uint32_t* nelesinbin, uint32_t outbitlen, uint8_t * const hash_table) {
+                                        const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table) {
 
     PRINT_PARTY(m_partyId) << "run leader against party " << party.first << std::endl;
 
@@ -147,7 +147,7 @@ void PsiParty::runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, uin
     //m_crypt->gen_common_seed(&m_prfState, *party.second);
 
     otpsi_client(m_setSize, m_numOfBins, m_setSize, m_internal_bitlen, m_maskbitlen, m_crypt,
-                            party.second, 1, leaderResults, outbitlen, nelesinbin, hash_table);
+                            party.second, 1, leaderResults, outbitlen, nelesinbin.get(), hash_table.get());
 
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
@@ -171,17 +171,18 @@ void PsiParty::finishAndReportStatsToServer() {
 void PsiParty::runAsLeader() {
 
     uint8_t **leaderResults = new uint8_t*[m_numOfParties];
-
-    // it would written over each time but every run gives the same thing
-    uint32_t *bin_ids;
     uint32_t *perm = (uint32_t*) calloc(m_setSize, sizeof(uint32_t));
 
-    uint32_t* nelesinbin = (uint32_t*) calloc(m_numOfBins, sizeof(uint32_t));
-    uint32_t outbitlen;
-    uint8_t *hash_table;
+    boost::shared_ptr<uint32_t> nelesinbin(new uint32_t[m_numOfBins]);
+    memset(nelesinbin.get(),0,m_numOfBins);
 
-    hash_table = cuckoo_hashing(m_eleptr, m_setSize, m_numOfBins, m_internal_bitlen, &outbitlen,
-                                nelesinbin, perm, 1, &m_prfState, &bin_ids);
+    boost::shared_ptr<uint8_t> hash_table;
+
+    uint32_t *bin_ids;
+    uint32_t outbitlen;
+
+    hash_table.reset(cuckoo_hashing(m_eleptr, m_setSize, m_numOfBins, m_internal_bitlen, &outbitlen,
+                                nelesinbin.get(), perm, 1, &m_prfState, &bin_ids));
 
     /*
     cout << "bin_ids: ";
