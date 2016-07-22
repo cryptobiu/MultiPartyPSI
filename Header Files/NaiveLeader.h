@@ -10,7 +10,7 @@
 class NaiveLeader : public Leader {
 public:
     NaiveLeader(const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults, const boost::shared_ptr<uint32_t> &bin_ids, const boost::shared_ptr<uint32_t> &perm, uint32_t numOfBins,
-        const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize, std::map<uint32_t, CSocket*> parties,
+        const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize, const std::map<uint32_t, boost::shared_ptr<CSocket>> &parties,
         uint32_t numOfHashFunctions) :
             Leader(leaderResults, bin_ids, perm, numOfBins, secretShare, maskSizeInBytes, setSize, parties, numOfHashFunctions) {
     };

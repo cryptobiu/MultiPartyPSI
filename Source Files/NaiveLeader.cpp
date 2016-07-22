@@ -37,7 +37,7 @@ void NaiveLeader::receiveServerMasks() {
         (rcv_ctxs.get())[party.first - 1].rcv_buf = m_partiesResults[party.first].get();
         (rcv_ctxs.get())[party.first - 1].nmasks = NUM_HASH_FUNCTIONS * m_setSize;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
-        (rcv_ctxs.get())[party.first - 1].sock = party.second;
+        (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
         if(pthread_create(&rcv_masks_thread, NULL, receive_masks, (void*) (&(rcv_ctxs.get())[party.first - 1]))) {
             cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
             exit(0);

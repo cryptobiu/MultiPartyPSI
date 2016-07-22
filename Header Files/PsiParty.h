@@ -9,6 +9,7 @@
 #include "statistics.h"
 #include "../PSI/src/util/typedefs.h"
 #include "../PSI/src/util/crypto/crypto.h"
+#include "boost/shared_ptr.hpp"
 
 class PsiParty : public MultiPartyPlayer {
 public:
@@ -35,7 +36,7 @@ private:
     void syncronize();
 
     void initializeCrypto();
-    void runLeaderAgainstFollower(std::pair<uint32_t, CSocket*> party, const boost::shared_ptr<uint8_t> &leaderResults,
+    void runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_ptr<CSocket>> &party, const boost::shared_ptr<uint8_t> &leaderResults,
                                   const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table);
 
     uint32_t getMaskSizeInBytes() {

@@ -25,7 +25,7 @@ protected:
     std::map<uint32_t, boost::shared_ptr<SocketPartyData>> m_otherAddresses;
     std::map<uint32_t, boost::shared_ptr<CommPartyTCPSynced>> m_otherParties;
 
-    std::map<uint32_t, CSocket*> m_parties;
+    std::map<uint32_t, boost::shared_ptr<CSocket>> m_parties;
 
     string m_ipAddress;
     uint32_t m_basePortNumber;
