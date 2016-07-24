@@ -265,8 +265,8 @@ void PsiParty::runAsLeader() {
     m_statistics.afterOTs = clock();
 
     auto leader = LeaderFactory::getLeader(m_strategy, leaderResults, bin_ids, perm,
-                                             m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize, m_parties,
-                                             NUM_HASH_FUNCTIONS);
+                                             m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize,
+                                           m_eleptr, m_internal_bitlen, m_parties, NUM_HASH_FUNCTIONS);
 
     auto intersection = leader->run();
 

@@ -7,9 +7,9 @@
 GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderResults,
           const boost::shared_ptr <uint32_t> &bin_ids, const boost::shared_ptr <uint32_t> &perm, uint32_t numOfBins,
           const boost::shared_ptr <uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize,
-          const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties,
-          uint32_t numOfHashFunctions) :
-        Leader(leaderResults, bin_ids, perm, numOfBins, secretShare, maskSizeInBytes, setSize, parties,
+                     boost::shared_ptr<uint8_t> elements, uint32_t elementSize,
+          const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions) :
+        Leader(leaderResults, bin_ids, perm, numOfBins, secretShare, maskSizeInBytes, setSize, elements, elementSize, parties,
                numOfHashFunctions), GarbledBloomFilter(maskSizeInBytes, setSize) {
 
     for (auto &party : m_parties) {
@@ -26,7 +26,75 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
 };
 
 vector<uint32_t> GBFLeader::run() {
+    receiveGBFKeysAndFilters();
 
+    vector<uint32_t> intersection;
+    for (uint32_t i = 0; i < m_setSize; i++) {
+        if (isElementInAllSets(i)) {
+            // std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
+            intersection.push_back(i);
+            //intersection.push_back(*(uint32_t*)(&m_elements[i]));
+        }
+    }
+
+    return intersection;
+}
+
+bool GBFLeader::isElementInAllSets(uint32_t index) {
+
+    uint32_t binIndex = 0;
+    for (uint32_t i = 0; i < m_numOfBins; i++) {
+        if ((m_binIds.get())[i] == index + 1) {
+            // std::cout << "Element number " << index << " was found at " << i << std::endl;
+            binIndex = i;
+            break;
+        }
+    }
+
+    uint32_t newIndex = 0;
+    for (uint32_t i = 0; i < m_numOfBins; i++) {
+        if ((m_perm.get())[i] == index) {
+            newIndex = i;
+            break;
+        }
+    }
+
+    uint8_t* secret = &(m_secretShare.get()[binIndex*m_maskSizeInBytes]);
+
+    for (auto &party : m_parties) {
+        XOR(secret, m_leaderResults[party.first].get()+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
+        uint32_t hash_index = 0;
+        auto value = GBF_query(m_partiesFilters[party.first][hash_index],m_hashFuncs[party.first],
+                  &((m_elements.get())[index*m_elementSize]),m_elementSize);
+        XOR(secret, value.get(), m_maskSizeInBytes);
+    }
+
+    // 1 is always the leader Id
+    for (uint32_t i = 0; i < m_maskSizeInBytes; i++) {
+        if (secret[i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledBF> &filter, vector<boost::shared_ptr<RangeHash>> hashes,
+                                                uint8_t* element, int32_t eLen) {
+
+    boost::shared_ptr<uint8_t> recovered(new uint8_t[m_maskSizeInBytes]);
+    memset(recovered.get(), 0, m_maskSizeInBytes);
+    int32_t* indexes = filter->indexes;
+    //memset(indexes,0,hashNum);
+
+    for (int i = 0; i < hashes.size(); i++) {
+        int32_t index=RangeHash_Digest(hashes[i].get(), element, eLen);
+        indexes[i]=index;
+
+        if (!exists(index, indexes, i)) {
+            xorByteArray(recovered.get(), &filter->data[index*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
+        }
+    }
+    return recovered;
 }
 
 void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
@@ -50,7 +118,7 @@ void GBFLeader::receiveGBFKeysAndFilters() {
 
     boost::shared_ptr<filter_rcv_ctx> rcv_ctxs(new filter_rcv_ctx[m_parties.size()+1]);
     for (auto &party : m_parties) {
-        pthread_t rcv_masks_thread;
+        pthread_t rcv_filter_thread;
 
         //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
         //use a separate thread to receive the server's masks
@@ -60,14 +128,13 @@ void GBFLeader::receiveGBFKeysAndFilters() {
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].securityParameter = m_securityParameter;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
-        /*
-        if(pthread_create(&rcv_masks_thread, NULL, receive_masks, (void*) (&(rcv_ctxs.get())[party.first - 1]))) {
+
+        if(pthread_create(&rcv_filter_thread, NULL, GBFLeader::receiveKeysAndFilters, (void*) (&(rcv_ctxs.get())[party.first - 1]))) {
             cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
             exit(0);
         }
 
-        rcv_filters_threads.push_back(rcv_masks_thread);
-         */
+        rcv_filters_threads.push_back(rcv_filter_thread);
     }
 
     for (auto rcv_filters_thread : rcv_filters_threads) {
