@@ -24,7 +24,6 @@ void GBFFollower::buildGBF(){
 
     AESRandom_Create(&rnd, m_securityParameter/8);
 
-
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
         auto filter = GBF_Create();
         for (uint32_t j=0; j < m_followerSet.m_numOfElements; j++) {
@@ -38,12 +37,15 @@ void GBFFollower::buildGBF(){
     }
 
     AESRandom_Destroy(rnd);
+
 }
 
 void GBFFollower::generateHashKeys() {
     AESRandom* rnd;
-    AESRandom_Create(&rnd, 16);
+
     int32_t keyLen=m_securityParameter/8;
+
+    AESRandom_Create(&rnd, keyLen);
 
     for(int i=0;i<m_bfParam->k;i++){
         boost::shared_ptr<uint8_t> e(new uint8_t[keyLen]);

@@ -27,8 +27,8 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
 
 vector<uint32_t> GBFLeader::run() {
     receiveGBFKeysAndFilters();
-
     vector<uint32_t> intersection;
+
     for (uint32_t i = 0; i < m_setSize; i++) {
         if (isElementInAllSets(i)) {
             // std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
@@ -98,18 +98,21 @@ boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledB
 }
 
 void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
+
     filter_rcv_ctx* ctx = (filter_rcv_ctx*) ctx_tmp;
-    for (uint32_t i = 0; i < ctx->hashes.size(); i++) {
+
+    for (uint32_t i = 0; i < ctx->numHashes; i++) {
+
         uint32_t keySize = ctx->securityParameter/8;
         boost::shared_ptr<uint8_t > key(new uint8_t[keySize]);
         ctx->sock->Receive(key.get(), keySize);
-        RangeHash_Create(ctx->hashes[i].get(), key.get(), keySize, ctx->filterSize);
+        RangeHash_Create(ctx->hashes[i], key.get(), keySize, ctx->filterSize);
+
     }
 
     for (uint32_t i = 0; i < ctx->numOfHashFunction; i++) {
         ctx->sock->Receive(ctx->filters[i]->data, ctx->filterSize*ctx->maskbytelen);
     }
-
 }
 
 void GBFLeader::receiveGBFKeysAndFilters() {
@@ -122,14 +125,26 @@ void GBFLeader::receiveGBFKeysAndFilters() {
 
         //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
         //use a separate thread to receive the server's masks
-        (rcv_ctxs.get())[party.first - 1].filters = m_partiesFilters[party.first];
+        (rcv_ctxs.get())[party.first - 1].filters = new GarbledBF*[m_numOfHashFunctions];
+        for (uint32_t i =0; i < m_numOfHashFunctions; i++ ) {
+            (rcv_ctxs.get())[party.first - 1].filters[i] = m_partiesFilters[party.first][i].get();
+        }
+
+        (rcv_ctxs.get())[party.first - 1].hashes = new RangeHash*[m_bfParam->k];
+        for (uint32_t i =0; i < m_bfParam->k; i++ ) {
+            (rcv_ctxs.get())[party.first - 1].hashes[i] = m_hashFuncs[party.first][i].get();
+        }
+
         (rcv_ctxs.get())[party.first - 1].filterSize = m_bfParam->m;
         (rcv_ctxs.get())[party.first - 1].numOfHashFunction = m_numOfHashFunctions;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
+        (rcv_ctxs.get())[party.first - 1].numHashes = m_bfParam->k;
+
         (rcv_ctxs.get())[party.first - 1].securityParameter = m_securityParameter;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
 
-        if(pthread_create(&rcv_filter_thread, NULL, GBFLeader::receiveKeysAndFilters, (void*) (&(rcv_ctxs.get())[party.first - 1]))) {
+
+        if(pthread_create(&rcv_filter_thread, NULL, GBFLeader::receiveKeysAndFilters, (void*) (&(rcv_ctxs.get()[party.first - 1])))) {
             cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
             exit(0);
         }
@@ -137,7 +152,7 @@ void GBFLeader::receiveGBFKeysAndFilters() {
         rcv_filters_threads.push_back(rcv_filter_thread);
     }
 
-    for (auto rcv_filters_thread : rcv_filters_threads) {
+    for (auto &rcv_filters_thread : rcv_filters_threads) {
         //meanwhile generate the hash table
         //GHashTable* map = otpsi_create_hash_table(ceil_divide(inbitlen,8), masks, neles, maskbytelen, perm);
         //intersect_size = otpsi_find_intersection(eleptr, result, ceil_divide(inbitlen,8), masks, neles, server_masks,

@@ -3,6 +3,7 @@
 //
 
 #include "../Header Files/GarbledBloomFilter.h"
+#include <iostream>
 
 GarbledBloomFilter::GarbledBloomFilter(uint32_t maskSizeInBytes, uint32_t setSize) :
         m_maskSizeInBytesE(maskSizeInBytes), m_setSizeE(setSize), m_bfParam(new BFParameters()) {

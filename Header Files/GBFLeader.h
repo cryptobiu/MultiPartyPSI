@@ -16,12 +16,13 @@
 #include "GarbledBloomFilter.h"
 
 struct filter_rcv_ctx {
-    std::vector<boost::shared_ptr<GarbledBF>> filters;
-    vector<boost::shared_ptr<RangeHash>> hashes;
+    GarbledBF **filters;
+    RangeHash **hashes;
     uint32_t filterSize;
     uint32_t numOfHashFunction;
     uint32_t maskbytelen;
     uint32_t securityParameter;
+    uint32_t numHashes;
     CSocket* sock;
 };
 
@@ -54,7 +55,6 @@ private:
 
     uint32_t m_securityParameter;
 
-    boost::shared_ptr<BFParameters> m_bfParam;
     std::map<uint32_t , vector<boost::shared_ptr<RangeHash>>> m_hashFuncs;
     std::map<uint32_t , std::vector<boost::shared_ptr<GarbledBF>>> m_partiesFilters;
 };

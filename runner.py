@@ -33,6 +33,7 @@ strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Stra
 '''
 
 strategies = [Strategy.NAIVE_METHOD_SMALL_N,]
+#strategies = [Strategy.BLOOM_FILTER,]
 
 conf = open("/home/naor/libscapi/MultiPartyPSI/Config", "rb").read()
 config = ConfigParser.RawConfigParser(allow_no_value=True)
