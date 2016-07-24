@@ -14,28 +14,21 @@
 
 
 
-int RangeHash_Create(RangeHash** hash,uint8_t *key, int32_t keyLen, int32_t m){
-    RangeHash * newHash;
-    newHash = (RangeHash *)malloc(sizeof(RangeHash));
+int RangeHash_Create(RangeHash* hash,uint8_t *key, int32_t keyLen, int32_t m){
+    
+    if(!(hash->ctx=(SHA_CTX*)malloc(sizeof(SHA_CTX))))
+        return 0;
+    
+    SHA1_Init(hash->ctx);
 
-    if (newHash==NULL){
-        return 0;
-    }
-    
-    if(!(newHash->ctx=(SHA_CTX*)malloc(sizeof(SHA_CTX))))
-        return 0;
-    
-    SHA1_Init(newHash->ctx);
-    
-    newHash->m=m;
-    newHash->key=key;
-    newHash->keyLen=keyLen;
+    hash->m=m;
+    hash->key=key;
+    hash->keyLen=keyLen;
     
     if(keyLen<RangeHash_DataBufLen){
-        memcpy(newHash->dataBuf, key, keyLen);
+        memcpy(hash->dataBuf, key, keyLen);
     }
-    
-    *hash=newHash;
+
     return 1;
 }
 

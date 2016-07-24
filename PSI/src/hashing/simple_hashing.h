@@ -10,9 +10,15 @@
 
 #include "hashing_util.h"
 
+struct bin_hash_ctx {
+	uint32_t index;
+	uint32_t hashFunctionNum;
+};
+
 struct bin_ctx {
 	//hash-values of all elements mapped to this bin
 	uint8_t* values;
+	bin_hash_ctx* indexes;
 	//number of elements stored in this bin
 	uint32_t nvals;
 };
@@ -45,6 +51,7 @@ typedef struct simple_hash_output {
 	uint8_t *hashed_elements;
 	uint8_t *res_bins;
 	uint32_t *nelesinbin;
+	uint32_t *elements_to_hash_table;
 } simple_hash_output;
 
 //returns a cuckoo hash table with the first dimension being the bins and the second dimension being the pointer to the elements
@@ -55,6 +62,6 @@ void *gen_entries(void *ctx);
 void init_hash_table(sht_ctx* table, uint32_t nelements, hs_t* hs);
 void increase_max_bin_size(sht_ctx* table, uint32_t valbytelen);
 void free_hash_table(sht_ctx* table);
-inline void insert_element(sht_ctx* table, uint8_t* element, uint32_t* address, uint8_t* tmpbuf, hs_t* hs);
+inline void insert_element(uint32_t index, sht_ctx* table, uint8_t* element, uint32_t* address, uint8_t* tmpbuf, hs_t* hs);
 
 #endif /* SIMLE_HASHING_H_ */

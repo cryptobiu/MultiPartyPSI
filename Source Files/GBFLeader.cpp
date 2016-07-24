@@ -17,11 +17,30 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
         for (uint32_t i = 0; i < m_numOfHashFunctions; i++) {
             m_partiesFilters[party.first].push_back(GBF_Create());
         }
+        m_hashFuncs[party.first] = std::vector<boost::shared_ptr<RangeHash>>();
+        for (uint32_t i = 0; i < m_bfParam->k; i++) {
+            m_hashFuncs[party.first].push_back(boost::shared_ptr<RangeHash>(new RangeHash()));
+        }
     }
 
 };
 
 vector<uint32_t> GBFLeader::run() {
+
+}
+
+void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
+    filter_rcv_ctx* ctx = (filter_rcv_ctx*) ctx_tmp;
+    for (uint32_t i = 0; i < ctx->hashes.size(); i++) {
+        uint32_t keySize = ctx->securityParameter/8;
+        boost::shared_ptr<uint8_t > key(new uint8_t[keySize]);
+        ctx->sock->Receive(key.get(), keySize);
+        RangeHash_Create(ctx->hashes[i].get(), key.get(), keySize, ctx->filterSize);
+    }
+
+    for (uint32_t i = 0; i < ctx->numOfHashFunction; i++) {
+        ctx->sock->Receive(ctx->filters[i]->data, ctx->filterSize*ctx->maskbytelen);
+    }
 
 }
 
@@ -36,9 +55,10 @@ void GBFLeader::receiveGBFKeysAndFilters() {
         //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
         //use a separate thread to receive the server's masks
         (rcv_ctxs.get())[party.first - 1].filters = m_partiesFilters[party.first];
-        (rcv_ctxs.get())[party.first - 1].filterSizeInBytes = m_setSize;
+        (rcv_ctxs.get())[party.first - 1].filterSize = m_bfParam->m;
         (rcv_ctxs.get())[party.first - 1].numOfHashFunction = m_numOfHashFunctions;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
+        (rcv_ctxs.get())[party.first - 1].securityParameter = m_securityParameter;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
         /*
         if(pthread_create(&rcv_masks_thread, NULL, receive_masks, (void*) (&(rcv_ctxs.get())[party.first - 1]))) {

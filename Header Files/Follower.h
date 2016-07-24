@@ -15,6 +15,7 @@ struct FollowerSet {
     uint32_t m_numOfElements;
     uint32_t m_elementSizeInBytes;
     boost::shared_ptr<uint8_t> m_hashTable;
+    boost::shared_ptr<uint32_t> m_elements_to_hash_table;
     boost::shared_ptr<uint32_t> m_numOfElementsInBin;
     uint32_t m_numOfBins;
     uint32_t m_numOfHashFunctions;

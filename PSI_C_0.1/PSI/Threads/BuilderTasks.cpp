@@ -16,7 +16,8 @@ void* BFProducer(void* args){
     
     //initialise rangeHashes
     for(uint32_t i=0;i<myArgs->hashNum;i++){
-        RangeHash_Create(&(hashes[i]), myArgs->hashKeys[i], myArgs->keyLen, myArgs->m);
+        hashes[i] = (RangeHash *)malloc(sizeof(RangeHash));
+        RangeHash_Create(hashes[i], myArgs->hashKeys[i], myArgs->keyLen, myArgs->m);
     }
     
     //start from i up to the end
@@ -53,7 +54,8 @@ void* GBFIndexProducer(void* args){
     
     //initialise rangeHashes
     for(uint32_t i=0;i<myArgs->hashNum;i++){
-        RangeHash_Create(&(hashes[i]), myArgs->hashKeys[i], myArgs->keyLen, myArgs->m);
+        hashes[i] = (RangeHash *)malloc(sizeof(RangeHash));
+        RangeHash_Create(hashes[i], myArgs->hashKeys[i], myArgs->keyLen, myArgs->m);
     }
     
     //start from i up to the end

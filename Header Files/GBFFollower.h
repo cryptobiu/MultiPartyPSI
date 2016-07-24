@@ -24,16 +24,13 @@ public:
     void buildGBF();
 
     void initServer(uint32_t securityParameter, uint8_t** input, uint32_t setSize, uint8_t** masks);
+
 private:
-
-
-
-
     void generateHashKeys();
     vector<boost::shared_ptr<uint8_t>> m_keys;
     vector<boost::shared_ptr<RangeHash>> m_hashFuncs;
 
-    boost::shared_ptr<GarbledBF> m_filter;
+    vector<boost::shared_ptr<GarbledBF>> m_filters;
 
     COPY_CTR(GBFFollower);
     ASSIGN_OP(GBFFollower);

@@ -9,12 +9,11 @@
 GBFFollower::GBFFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader) :
         Follower(followerSet, secretShare, leader), GarbledBloomFilter(m_followerSet.m_maskSizeInBytes, m_followerSet.m_numOfElements) {
 
-    m_filter = GBF_Create();
     generateHashKeys();
 
     for(int i=0;i<m_bfParam->k;i++){
-        RangeHash* hashFunc;
-        RangeHash_Create(&hashFunc, m_keys[i].get(), m_securityParameter/8, m_bfParam->m);
+        boost::shared_ptr<RangeHash> hashFunc(new RangeHash());
+        RangeHash_Create(hashFunc.get(), m_keys[i].get(), m_securityParameter/8, m_bfParam->m);
         m_hashFuncs.push_back(boost::shared_ptr<RangeHash>(hashFunc));
     }
 };
@@ -24,18 +23,22 @@ void GBFFollower::buildGBF(){
     AESRandom* rnd;
 
     AESRandom_Create(&rnd, m_securityParameter/8);
-    for(int i=0;i<m_followerSet.m_numOfElements * m_followerSet.m_numOfHashFunctions;i++){
-        GBF_add(m_filter.get(), m_hashFuncs, m_bfParam->k,
-                m_followerSet.m_elements.get()+i*m_followerSet.m_elementSizeInBytes,
-                m_followerSet.m_elementSizeInBytes,
-                m_followerSet.m_masks.get()+i*m_followerSet.m_maskSizeInBytes, rnd);
 
+
+    for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
+        auto filter = GBF_Create();
+        for (uint32_t j=0; j < m_followerSet.m_numOfElements; j++) {
+            uint32_t index = m_followerSet.m_elements_to_hash_table.get()[j*m_followerSet.m_numOfHashFunctions+i];
+            GBF_add(filter.get(), m_hashFuncs, m_bfParam->k,
+                    m_followerSet.m_elements.get()+j*m_followerSet.m_elementSizeInBytes,
+                    m_followerSet.m_elementSizeInBytes,
+                    m_followerSet.m_masks.get()+index*m_followerSet.m_maskSizeInBytes, rnd);
+        }
+        m_filters.push_back(filter);
     }
-    //GBF_doFinal(sver->filter, rnd);
+
     AESRandom_Destroy(rnd);
 }
-
-
 
 void GBFFollower::generateHashKeys() {
     AESRandom* rnd;
@@ -54,10 +57,15 @@ void GBFFollower::run() {
     xor_masks(m_followerSet.m_hashTable.get(), m_followerSet.m_elements.get(), m_followerSet.m_numOfElements, m_followerSet.m_masks.get(), m_followerSet.m_elementSizeInBytes,
               m_followerSet.m_maskSizeInBytes, m_secretShare.get(), m_followerSet.m_numOfBins, m_followerSet.m_numOfElementsInBin.get());
 
-    //sendArrayOfByteStrings(sver->socket, sver->bfParam->k, sver->secLev/8, sver->keys);
+    for (auto &key : m_keys) {
+        m_leader.Send(key.get(),m_securityParameter/8);
+    }
+
     buildGBF();
 
     //send the masks to the receiver
-    send_masks(m_filter->data, m_bfParam->m,
-               m_followerSet.m_maskSizeInBytes, m_leader);
+    for (auto &filter : m_filters) {
+        send_masks(filter->data, m_bfParam->m,
+                   m_followerSet.m_maskSizeInBytes, m_leader);
+    }
 }

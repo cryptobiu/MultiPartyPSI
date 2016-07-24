@@ -29,7 +29,7 @@ typedef struct RangeHash{
 /*
  Create a RangeHash instance. The hash function is keyed with key and output an integer in[0,m-1].
  */
-int RangeHash_Create(RangeHash** hash, uint8_t *key, int32_t keyLen, int32_t m);
+int RangeHash_Create(RangeHash* hash, uint8_t *key, int32_t keyLen, int32_t m);
 
 
 void RangeHash_Destroy(RangeHash *hash);

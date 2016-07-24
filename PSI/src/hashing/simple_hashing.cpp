@@ -22,7 +22,7 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 	ctx = (sheg_ctx*) malloc(sizeof(sheg_ctx) * ntasks);
 	table = (sht_ctx*) malloc(sizeof(sht_ctx) * ntasks);
 
-
+	uint32_t  *elements_to_hash_table = new uint32_t[neles * NUM_HASH_FUNCTIONS];
 
 	for(i = 0; i < ntasks; i++) {
 		init_hash_table(table + i, ceil_divide(neles, ntasks), &hs);
@@ -73,6 +73,7 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 	res_bins = new uint8_t[neles * NUM_HASH_FUNCTIONS * hs.outbytelen];
 	bin_ptr = res_bins;
 
+	uint32_t progress = 0;
 
 	for(i = 0; i < hs.nbins; i++) {
 		nelesinbin[i] = 0;
@@ -80,8 +81,14 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 			tmpneles = (table +j)->bins[i].nvals;
 			nelesinbin[i] += tmpneles;
 			//bin_content[i] = (uint8_t*) malloc(nelesinbin[i] * table->outbytelen);
-			memcpy(bin_ptr, (table + j)->bins[i].values, tmpneles * hs.outbytelen);
-			bin_ptr += (tmpneles * hs.outbytelen);
+			memcpy(res_bins+progress*hs.outbytelen, (table + j)->bins[i].values, tmpneles * hs.outbytelen);
+
+			for (uint32_t l = 0; l < tmpneles; l++) {
+				bin_hash_ctx *c = (table +j)->bins[i].indexes + l;
+				elements_to_hash_table[NUM_HASH_FUNCTIONS*c->index+c->hashFunctionNum] = progress + l;
+			}
+
+			progress += tmpneles;
 		}
 		//right now only the number of elements in each bin is copied instead of the max bin size
 	}
@@ -100,6 +107,7 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 	output.hashed_elements = hashed_elements;
 	output.res_bins = res_bins;
 	output.nelesinbin = nelesinbin;
+	output.elements_to_hash_table = elements_to_hash_table;
 
 	return output;
 }
@@ -117,14 +125,14 @@ void *gen_entries(void *ctx_tmp) {
 	//}
 
 	for(i = ctx->startpos, eleptr=ctx->elements, inbytelen=ctx->hs->inbytelen; i < ctx->endpos; i++, eleptr+=inbytelen) {
-		insert_element(ctx->table, eleptr, address, tmpbuf, ctx->hs);
+		insert_element(i, ctx->table, eleptr, address, tmpbuf, ctx->hs);
 		memcpy(ctx->hashed_elements+(i-ctx->startpos)*ctx->hs->outbytelen, tmpbuf, ctx->hs->outbytelen*sizeof(uint8_t));
 	}
 	free(tmpbuf);
 	free(address);
 }
 
-inline void insert_element(sht_ctx* table, uint8_t* element, uint32_t* address, uint8_t* tmpbuf, hs_t* hs) {
+inline void insert_element(uint32_t index, sht_ctx* table, uint8_t* element, uint32_t* address, uint8_t* tmpbuf, hs_t* hs) {
 	uint32_t i, j;
 	bin_ctx* tmp_bin;
 
@@ -133,8 +141,11 @@ inline void insert_element(sht_ctx* table, uint8_t* element, uint32_t* address, 
 	for(i = 0; i < NUM_HASH_FUNCTIONS; i++) {
 
 		tmp_bin=table->bins + address[i];
+		bin_hash_ctx bhc{index, i};
 		//pthread_mutex_lock(locks + address[i]);
 		memcpy(tmp_bin->values + tmp_bin->nvals * hs->outbytelen, tmpbuf, hs->outbytelen);
+		tmp_bin->indexes[tmp_bin->nvals].index = index;
+		tmp_bin->indexes[tmp_bin->nvals].hashFunctionNum = i;
 		for(j = 0; j < i; j++) {
 			if(address[i] == address[j]) {
 				memset(tmp_bin->values + tmp_bin->nvals * hs->outbytelen, DUMMY_ENTRY_SERVER, hs->outbytelen);
@@ -173,6 +184,7 @@ void init_hash_table(sht_ctx* table, uint32_t nelements, hs_t* hs) {
 
 	for(i = 0; i < hs->nbins; i++) {
 		table->bins[i].values = (uint8_t*) malloc(table->maxbinsize * hs->outbytelen);
+		table->bins[i].indexes = (bin_hash_ctx*) malloc(table->maxbinsize * sizeof(bin_hash_ctx));
 	}
 }
 
@@ -182,6 +194,7 @@ void free_hash_table(sht_ctx* table) {
 	for(i = 0; i < table->nbins; i++) {
 		//if(table->bins[i].nvals > 0)
 			free(table->bins[i].values);
+			free(table->bins[i].indexes);
 	}
 	//2. free the bins
 	free(table->bins);
@@ -192,11 +205,16 @@ void free_hash_table(sht_ctx* table) {
 void increase_max_bin_size(sht_ctx* table, uint32_t valbytelen) {
 	uint32_t new_maxsize = table->maxbinsize * 2;
 	uint8_t* tmpvals;
+	bin_hash_ctx* tmpindexes;
 	for(uint32_t i = 0; i < table->nbins; i++) {
 		tmpvals = table->bins[i].values;
+		tmpindexes = table->bins[i].indexes;
 		table->bins[i].values = (uint8_t*) malloc(new_maxsize * valbytelen);
+		table->bins[i].indexes = (bin_hash_ctx*) malloc(new_maxsize * sizeof(bin_hash_ctx));
 		memcpy(table->bins[i].values, tmpvals, table->bins[i].nvals * valbytelen);
+		memcpy(table->bins[i].indexes, tmpindexes, table->bins[i].nvals * sizeof(bin_hash_ctx));
 		free(tmpvals);
+		free(tmpindexes);
 	}
 	table->maxbinsize = new_maxsize;
 }

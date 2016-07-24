@@ -17,9 +17,11 @@
 
 struct filter_rcv_ctx {
     std::vector<boost::shared_ptr<GarbledBF>> filters;
-    uint32_t filterSizeInBytes;
+    vector<boost::shared_ptr<RangeHash>> hashes;
+    uint32_t filterSize;
     uint32_t numOfHashFunction;
     uint32_t maskbytelen;
+    uint32_t securityParameter;
     CSocket* sock;
 };
 
@@ -33,11 +35,14 @@ public:
 
     virtual ~GBFLeader() { };
 
+
     virtual vector <uint32_t> run();
 
 private:
     COPY_CTR(GBFLeader);
     ASSIGN_OP(GBFLeader);
+
+    static void *receiveKeysAndFilters(void *ctx_tmp);
 
     void receiveGBFKeysAndFilters();
 
