@@ -231,8 +231,17 @@ void PsiParty::runAsLeader() {
     bin_ids.reset(new uint32_t[m_numOfBins * hs.outbytelen]);
     memset(bin_ids.get(),0,m_numOfBins * hs.outbytelen);
 
+    boost::shared_ptr<uint32_t> hashed_by(new uint32_t[m_numOfBins]);
+    memset(hashed_by.get(),0,m_numOfBins * sizeof(uint32_t));
+
     hash_table.reset(cuckoo_hashing(m_eleptr.get(), m_setSize, m_numOfBins, hs,
-                                nelesinbin.get(), perm.get(), 1, bin_ids.get()));
+                                nelesinbin.get(), perm.get(), 1, bin_ids.get(), hashed_by.get()));
+
+    cout << "hashed by: ";
+    for (uint32_t i = 0; i < m_numOfBins; i++) {
+        cout << hashed_by.get()[i] << " ";
+    }
+    cout << std::endl;
 
     free_hashing_state(&hs);
 
@@ -266,7 +275,7 @@ void PsiParty::runAsLeader() {
 
     auto leader = LeaderFactory::getLeader(m_strategy, leaderResults, bin_ids, perm,
                                              m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize,
-                                           m_eleptr, m_internal_bitlen, m_parties, NUM_HASH_FUNCTIONS);
+                                           m_eleptr, m_internal_bitlen, hashed_by, m_parties, NUM_HASH_FUNCTIONS);
 
     auto intersection = leader->run();
 

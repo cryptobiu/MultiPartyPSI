@@ -30,7 +30,7 @@ public:
     GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderResults,
               const boost::shared_ptr <uint32_t> &bin_ids, const boost::shared_ptr <uint32_t> &perm, uint32_t numOfBins,
               const boost::shared_ptr <uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize,
-              boost::shared_ptr<uint8_t> elements, uint32_t elementSize,
+              boost::shared_ptr<uint8_t> elements, uint32_t elementSize, const boost::shared_ptr<uint32_t> &hashed_by,
               const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions);
 
     virtual ~GBFLeader() { };

@@ -14,7 +14,7 @@ uint8_t*
 uint32_t
 #endif
 cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, hs_t &hs, uint32_t* nelesinbin,
-		uint32_t* perm,	uint32_t ntasks, uint32_t *bin_ids)
+		uint32_t* perm,	uint32_t ntasks, uint32_t *bin_ids, uint32_t *hashed_by)
 {
 	//The resulting hash table
 	uint8_t* hash_table;
@@ -102,8 +102,15 @@ cuckoo_hashing(uint8_t* elements, uint32_t neles, uint32_t nbins, hs_t &hs, uint
 	hash_table = new uint8_t[nbins * hs.outbytelen];
 	memset(hash_table,0,nbins * hs.outbytelen);
 
+
 	for(i = 0; i < nbins; i++) {
 		if(cuckoo_table[i] != NULL) {
+			for (j = 0; j < NUM_HASH_FUNCTIONS; j++) {
+				if (cuckoo_table[i]->address[j] == i) {
+					hashed_by[i] = j;
+					break;
+				}
+			}
 			memcpy(hash_table + i * hs.outbytelen, cuckoo_table[i]->val, hs.outbytelen);
 			//cout << "copying value: " << (hex) << (unsigned int) cuckoo_table[i]->val[cuckoo_table[i]->pos][0] << (dec) << endl;
 			*perm_ptr = cuckoo_table[i]->eleid;
