@@ -22,6 +22,11 @@ vector<uint32_t> NaiveLeader::run() {
     return intersection;
 }
 
+void *NaiveLeader::receiveMasks(void *ctx_tmp) {
+    mask_rcv_ctx* ctx = (mask_rcv_ctx*) ctx_tmp;
+    ctx->sock->Receive(ctx->rcv_buf, ctx->maskbytelen * ctx->nmasks);
+}
+
 void NaiveLeader::receiveServerMasks() {
     vector<pthread_t> rcv_masks_threads;
 
@@ -38,7 +43,7 @@ void NaiveLeader::receiveServerMasks() {
         (rcv_ctxs.get())[party.first - 1].nmasks = NUM_HASH_FUNCTIONS * m_setSize;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
-        if(pthread_create(&rcv_masks_thread, NULL, receive_masks, (void*) (&(rcv_ctxs.get())[party.first - 1]))) {
+        if(pthread_create(&rcv_masks_thread, NULL, NaiveLeader::receiveMasks, (void*) (&(rcv_ctxs.get())[party.first - 1]))) {
             cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
             exit(0);
         }

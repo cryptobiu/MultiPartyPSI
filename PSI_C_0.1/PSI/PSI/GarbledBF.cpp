@@ -8,46 +8,6 @@
 #include "GarbledBF.h"
 #include <stdio.h>
 
-
-int GBF_Create(GarbledBF** filter, int32_t m, int32_t k){
-    GarbledBF* gbf;
-    
-    if(!(gbf=(GarbledBF*)malloc(sizeof(GarbledBF)))){
-        return 0;
-    }
-    gbf->m=m;
-    gbf->k=k;
-    gbf->indexes=(int32_t*)calloc(k, sizeof(int32_t));
-    //gbf->MT=0;
-    //gbf->bitmap=NULL;
-    
-    if(!(gbf->data= (uint8_t**)calloc(m,sizeof(uint8_t*)))){
-        return 0;
-    }
-    
-    *filter=gbf;
-    return 1;
-}
-
-int GBF_CreateForMT(GarbledBF** filter,int32_t m, int32_t k){
-    GarbledBF* gbf;
-    
-    if(!GBF_Create(&gbf,m,k)){
-        return 0;
-    };
-    
-    //gbf->MT=1;
-   // gbf->bitMapByteLen=getByteLenByBitLen(gbf->m);
-    //gbf->bitMapLeadingZeroes=getLeadingZeroes(gbf->m);
-   // gbf->bitmap=calloc(gbf->bitMapByteLen,sizeof(uint8_t));
-    
-    //if(gbf->bitmap==NULL)
-   //     return 0;
-    
-    *filter=gbf;
-    return 1;
-}
-
 void GBF_Destroy(GarbledBF* filter){
     
     
@@ -73,8 +33,8 @@ void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &
     assert(filter->k == hashNum);
     
     uint8_t* finalShare;
-    finalShare =(uint8_t*)malloc(sizeof(uint8_t)*GBFSigmaByteLen);
-    memcpy(finalShare, ehash, GBFSigmaByteLen);
+    finalShare =(uint8_t*)malloc(sizeof(uint8_t)*filter->m_GBFSigmaByteLen);
+    memcpy(finalShare, ehash, filter->m_GBFSigmaByteLen);
     
     int emptySlot=-1;
     
@@ -101,20 +61,22 @@ void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &
                     emptySlot = index;
                 } else {
                     uint8_t* bytes;
-                    bytes=(uint8_t*)calloc(GBFSigmaByteLen,sizeof(uint8_t));
-                    AESRandom_NextBytes(rnd, bytes, GBFSigmaByteLen);
-                    filter->data[index] = bytes;
-                    xorByteArray(finalShare, bytes, GBFSigmaByteLen);
+                    bytes=(uint8_t*)calloc(filter->m_GBFSigmaByteLen,sizeof(uint8_t));
+                    AESRandom_NextBytes(rnd, bytes, filter->m_GBFSigmaByteLen);
+                    memcpy(&filter->data[index*filter->m_GBFSigmaByteLen] ,bytes, filter->m_GBFSigmaByteLen);
+                    xorByteArray(finalShare, bytes, filter->m_GBFSigmaByteLen);
+                    free(bytes);
                 }
             } else {
-                xorByteArray(finalShare, filter->data[index], GBFSigmaByteLen);
+                xorByteArray(finalShare, &filter->data[index*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
             }
         }
         
     }
     // last thing to do is to put finalShare into the first empty slot
-    
-    filter->data[emptySlot]=finalShare;
+
+    memcpy(&filter->data[emptySlot*filter->m_GBFSigmaByteLen] ,finalShare, filter->m_GBFSigmaByteLen);
+    free(finalShare);
 }
 
 
@@ -122,8 +84,8 @@ void GBF_addMT(GarbledBF*filter, int32_t* indexes, int32_t hashNum,uint8_t* ehas
     assert(hashNum==filter->k);
     
     uint8_t* finalShare;
-    finalShare =(uint8_t*)malloc(sizeof(uint8_t)*GBFSigmaByteLen);
-    memcpy(finalShare, ehash, GBFSigmaByteLen);
+    finalShare =(uint8_t*)malloc(sizeof(uint8_t)*filter->m_GBFSigmaByteLen);
+    memcpy(finalShare, ehash, filter->m_GBFSigmaByteLen);
     
     int emptySlot=-1;
     
@@ -136,15 +98,15 @@ void GBF_addMT(GarbledBF*filter, int32_t* indexes, int32_t hashNum,uint8_t* ehas
                     emptySlot = index;
                     //data[index]=new byte[this.sigma];
                 } else {
-                    filter->data[index] = RandomSource_Take(rndSrc);
-                    xorByteArray(finalShare, filter->data[index], GBFSigmaByteLen);
+                    memcpy(&filter->data[index*filter->m_GBFSigmaByteLen], RandomSource_Take(rndSrc), filter->m_GBFSigmaByteLen);
+                    xorByteArray(finalShare, &filter->data[index*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
                 }
             } else {
-                xorByteArray(finalShare, filter->data[index], GBFSigmaByteLen);
+                xorByteArray(finalShare, &filter->data[index*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
             }
         }
     }
-    filter->data[emptySlot] = finalShare;
+    memcpy(&filter->data[emptySlot*filter->m_GBFSigmaByteLen], finalShare, filter->m_GBFSigmaByteLen);
     //markt this slot is malloced.
    //setBit(filter->bitmap, emptySlot, filter->bitMapLeadingZeroes);
 }
@@ -153,8 +115,7 @@ void GBF_addMT(GarbledBF*filter, int32_t* indexes, int32_t hashNum,uint8_t* ehas
 void GBF_doFinal(GarbledBF* filter,AESRandom* rnd){
     for (int i = 0; i < filter->m; i++) {
         if (filter->data[i] ==NULL) {
-            filter->data[i] = (uint8_t*)calloc(GBFSigmaByteLen,sizeof(uint8_t));
-            AESRandom_NextBytes(rnd, filter->data[i], GBFSigmaByteLen);
+            AESRandom_NextBytes(rnd, &filter->data[i*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
         }
     }
 }
@@ -162,7 +123,7 @@ void GBF_doFinal(GarbledBF* filter,AESRandom* rnd){
 void GBF_doFinalMT(GarbledBF* filter,RandomSource* rnd){
     for (int i = 0; i < filter->m; i++) {
         if (filter->data[i] ==NULL) {
-            filter->data[i] = RandomSource_Take(rnd);
+            memcpy(&filter->data[i*filter->m_GBFSigmaByteLen], RandomSource_Take(rnd), filter->m_GBFSigmaByteLen);
         }
     }
 }
@@ -180,23 +141,23 @@ int GBF_query(GarbledBF* filter, RangeHash** hashes, int32_t hashNum, uint8_t* e
         indexes[i]=index;
 
         if (!exists(index, indexes, i)) {
-            xorByteArray(recovered, filter->data[index], GBFSigmaByteLen);
+            xorByteArray(recovered, &filter->data[index*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
         }
     }
-    return compareByteArray(recovered, ehash, GBFSigmaByteLen);
+    return compareByteArray(recovered, ehash, filter->m_GBFSigmaByteLen);
     
 }
 
 int GBF_query_With_Indexes(GarbledBF* filter,int32_t* indexes, int32_t hashNum,uint8_t* ehash){
-    uint8_t recovered[GBFSigmaByteLen]={0};
+    uint8_t *recovered=(uint8_t *)calloc(filter->m_GBFSigmaByteLen, sizeof(uint8_t));
     
     for(int32_t i=0;i<hashNum;i++){
         int32_t index =indexes[i];
         
         if(index>=0){
-            xorByteArray(recovered, filter->data[index],GBFSigmaByteLen);
+            xorByteArray(recovered, &filter->data[index*filter->m_GBFSigmaByteLen],filter->m_GBFSigmaByteLen);
         }
     }
-    return compareByteArray(recovered, ehash, GBFSigmaByteLen);
+    return compareByteArray(recovered, ehash, filter->m_GBFSigmaByteLen);
 }
 

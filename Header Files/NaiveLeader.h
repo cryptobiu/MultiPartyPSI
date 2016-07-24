@@ -21,11 +21,14 @@ private:
     COPY_CTR(NaiveLeader);
     ASSIGN_OP(NaiveLeader);
 
+    static void *receiveMasks(void *ctx_tmp);
     void receiveServerMasks();
 
     bool isElementInAllSets(uint32_t index);
 
     bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum);
+
+    map<uint32_t , boost::shared_ptr<uint8_t>> m_partiesResults;
 };
 
 

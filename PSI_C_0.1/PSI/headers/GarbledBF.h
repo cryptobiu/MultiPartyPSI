@@ -25,10 +25,11 @@
 
 
 typedef struct GarbledBF{
-    uint8_t** data;
+    uint8_t* data;
     int32_t m;
     int32_t k;
     int32_t* indexes;
+    uint32_t m_GBFSigmaByteLen;
     //int32_t MT;
     //uint8_t* bitmap;
     //int32_t bitMapLeadingZeroes;
@@ -47,14 +48,14 @@ void GBF_Destroy(GarbledBF* filter);
 //get the ith entry from the GBF. The entry is a sigma-bytes array.
 inline uint8_t* GBF_get(GarbledBF* filter,uint32_t i){
     assert(i<filter->m);
-    return filter->data[i];
+    return &filter->data[i*filter->m_GBFSigmaByteLen];
 };
 
 
 //set the ith entry
 inline void GBF_set(GarbledBF* filter,uint32_t i, uint8_t* entry){
     assert(i<filter->m);
-    filter->data[i]=entry;
+    memcpy(&filter->data[i*filter->m_GBFSigmaByteLen], entry, filter->m_GBFSigmaByteLen);
 };
 
 

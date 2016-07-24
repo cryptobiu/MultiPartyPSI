@@ -26,9 +26,10 @@ AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI/src/util UTIL_SOURCES
 AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI_C_0.1/PSI/PSI BF_SOURCES)
 AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI_C_0.1/PSI/OT BF_OT_SOURCES)
 AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI_C_0.1/PSI/Threads BF_THREADS_SOURCES)
+AUX_SOURCE_DIRECTORY("/home/naor/libscapi/MultiPartyPSI/Source Files" SOURCES)
 
-set(SOURCE_FILES "Source Files/main.cpp" "Source Files/GBFFollower.cpp" "Source Files/NaiveLeader.cpp" "Source Files/LeaderFactory.cpp" "Source Files/PsiParty.cpp" "Source Files/defs.cpp" "Source Files/MultiPartyPlayer.cpp" PRG/PRG.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/util/connection.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
-        "Source Files/NaiveFollower.cpp" "Source Files/FollowerFactory.cpp" ${MIRACLE_LIB_SOURCES} ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES})
+set(SOURCE_FILES ${SOURCES} "Source Files/GarbledBloomFilter.cpp" PRG/PRG.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
+        ${MIRACLE_LIB_SOURCES} ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES})
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI
