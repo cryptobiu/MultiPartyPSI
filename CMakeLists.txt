@@ -12,7 +12,8 @@ SET(SCAPI_ROOT /home/naor/libscapi/lib/)
 
 INCLUDE_DIRECTORIES(/usr/include/openssl ${SCAPI_ROOT} ${BOOST_INCLUDEDIR} /usr/include/glib-2.0/ /usr/lib/x86_64-linux-gnu/glib-2.0/include
         /home/naor/libscapi/MultiPartyPSI/PSI/src/externals/Miracl/include /home/naor/libscapi/MultiPartyPSI/PSI/src/externals/miracl_lib
-        /home/naor/libscapi/lib/OTExtensionBristol /home/naor/libscapi/MultiPartyPSI/PSI_C_0.1/PSI/headers)
+        /home/naor/libscapi/lib/OTExtensionBristol /home/naor/libscapi/MultiPartyPSI/PSI_C_0.1/PSI/headers /home/naor/libscapi/build/NTL/include
+        "/home/naor/libscapi/MultiPartyPSI/Header Files")
 link_directories(/usr/local/ssl/lib/ ${BOOST_LIBRARYDIR} PSI/src/util/crypto/ /home/naor/libscapi/install/lib/ /home/naor/libscapi/MultiPartyPSI/PSI/src/externals/miracl_lib/)
 
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY /home/naor/libscapi/MultiPartyPSI/bin)
@@ -35,6 +36,7 @@ add_executable(MultiPartyPSI ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(MultiPartyPSI
         /home/naor/libscapi/MultiPartyPSI/PSI/src/externals/miracl_lib/miracl.a
         /home/naor/libscapi/scapi.a
+        /home/naor/libscapi/install/lib/libntl.a
         /usr/local/ssl/lib/libcrypto.a
         /home/naor/libscapi/install/lib/libOTExtension.so
         boost_system boost_thread miracl pthread ssl crypto glib-2.0 dl gmpxx gmp z)
