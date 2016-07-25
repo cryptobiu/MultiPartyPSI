@@ -30,6 +30,8 @@ void PolynomialFollower::buildPolynomials(){
             masks.append(mask);
         }
         GF2EX polynomial = interpolate(inputs, masks);
+
+        //std::cout << "Polynomial " << i << " is " << polynomial << std::endl;
         m_polynomials.push_back(polynomial);
     }
 }
@@ -65,7 +67,7 @@ void PolynomialFollower::run() {
     for (auto &polynomial : m_polynomials) {
         vector<vector<uint8_t>> polynomialCoffBytes = getPolynomialCoffBytes(polynomial);
         for (auto &polynomialCoff : polynomialCoffBytes) {
-            send_masks(polynomialCoff.data(), m_followerSet.m_numOfElements,
+            send_masks(polynomialCoff.data(), 1,
                        m_followerSet.m_maskSizeInBytes, m_leader);
         }
     }

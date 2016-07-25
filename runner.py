@@ -32,8 +32,8 @@ strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Stra
                         Strategy.CUCKOO_HASH_BLOOM_FILTER, Strategy.CUCKOO_HASH_BINARY_HASH]
 '''
 
-strategies = [Strategy.NAIVE_METHOD_SMALL_N,Strategy.BLOOM_FILTER,]
-#strategies = [Strategy.POLYNOMIALS,]
+#strategies = [Strategy.NAIVE_METHOD_SMALL_N,Strategy.BLOOM_FILTER,]
+strategies = [Strategy.POLYNOMIALS,]
 
 conf = open("/home/naor/libscapi/MultiPartyPSI/Config", "rb").read()
 config = ConfigParser.RawConfigParser(allow_no_value=True)
