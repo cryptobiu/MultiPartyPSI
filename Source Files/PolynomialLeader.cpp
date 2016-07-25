@@ -6,6 +6,7 @@
 #include "PolynomialUtils.h"
 #include <vector>
 #include <NTL/GF2EX.h>
+#include <NTL/GF2XFactoring.h>
 
 PolynomialLeader::PolynomialLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderResults,
                  const boost::shared_ptr <uint32_t> &bin_ids, const boost::shared_ptr <uint32_t> &perm, uint32_t numOfBins,
@@ -14,6 +15,10 @@ PolynomialLeader::PolynomialLeader(const map <uint32_t, boost::shared_ptr<uint8_
                  const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions) :
         Leader(leaderResults,bin_ids,perm,numOfBins,secretShare,maskSizeInBytes,setSize,elements,
                elementSize,hashed_by,parties,numOfHashFunctions) {
+
+    uint32_t securityParameter = maskSizeInBytes*8;
+    GF2X irreduciblePolynomial = BuildSparseIrred_GF2X(securityParameter);
+    GF2E::init(irreduciblePolynomial);
 
 }
 
