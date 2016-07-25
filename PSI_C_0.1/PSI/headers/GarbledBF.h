@@ -26,6 +26,7 @@
 
 typedef struct GarbledBF{
     uint8_t* data;
+    uint8_t* bf;
     int32_t m;
     int32_t k;
     int32_t* indexes;

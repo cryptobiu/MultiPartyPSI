@@ -53,8 +53,6 @@ private:
 
     void receiveGBFKeysAndFilters();
 
-    uint32_t m_securityParameter;
-
     std::map<uint32_t , vector<boost::shared_ptr<RangeHash>>> m_hashFuncs;
     std::map<uint32_t , std::vector<boost::shared_ptr<GarbledBF>>> m_partiesFilters;
 };

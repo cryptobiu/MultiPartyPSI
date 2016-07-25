@@ -56,7 +56,7 @@ void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &
             
             // if the slot is not empty, just xor the content with
             // finalShare.
-            if (filter->data[index]==NULL) {
+            if (filter->bf[index]==0) {
                 if (emptySlot == -1) {
                     emptySlot = index;
                 } else {
@@ -66,6 +66,7 @@ void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &
                     memcpy(&filter->data[index*filter->m_GBFSigmaByteLen] ,bytes, filter->m_GBFSigmaByteLen);
                     xorByteArray(finalShare, bytes, filter->m_GBFSigmaByteLen);
                     free(bytes);
+                    filter->bf[index] = 1;
                 }
             } else {
                 xorByteArray(finalShare, &filter->data[index*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
@@ -76,6 +77,7 @@ void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &
     // last thing to do is to put finalShare into the first empty slot
 
     memcpy(&filter->data[emptySlot*filter->m_GBFSigmaByteLen] ,finalShare, filter->m_GBFSigmaByteLen);
+    filter->bf[emptySlot] = 1;
     free(finalShare);
 }
 

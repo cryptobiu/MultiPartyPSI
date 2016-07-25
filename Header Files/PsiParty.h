@@ -18,8 +18,6 @@ public:
 
     void run();
 
-    static void printHex(const uint8_t *arr, uint32_t size);
-    void printShares(const uint8_t *arr, uint32_t numOfShares);
 private:
 
     /**

@@ -21,6 +21,7 @@ struct FollowerSet {
     uint32_t m_numOfHashFunctions;
     boost::shared_ptr<uint8_t> m_masks;
     uint32_t m_maskSizeInBytes;
+    boost::shared_ptr<uint8_t> m_realElements;
 };
 
 class Follower {

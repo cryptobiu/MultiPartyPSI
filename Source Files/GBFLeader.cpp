@@ -64,8 +64,12 @@ bool GBFLeader::isElementInAllSets(uint32_t index) {
     for (auto &party : m_parties) {
         XOR(secret, m_leaderResults[party.first].get()+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
         uint32_t hash_index = m_hashedBy.get()[binIndex];
+        //std::cout << "Leader Real Value: ";
+        //printShares(&((m_elements.get())[index*m_elementSize]), 1,m_elementSize);
         auto value = GBF_query(m_partiesFilters[party.first][hash_index],m_hashFuncs[party.first],
-                  &((m_elements.get())[index*m_elementSize]),m_elementSize);
+                  m_elements.get()+index*m_elementSize,m_elementSize);
+        //std::cout << "Leader Query Result: ";
+        //printShares(value.get(), 1, m_maskSizeInBytes);
         XOR(secret, value.get(), m_maskSizeInBytes);
     }
 
@@ -101,11 +105,13 @@ void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
 
     filter_rcv_ctx* ctx = (filter_rcv_ctx*) ctx_tmp;
 
+    uint32_t keySize = ctx->securityParameter/8;
+    //std::cout << "keys size is : " << keySize << std::endl;
+    //std::cout << "Leader keys: " << std::endl;
     for (uint32_t i = 0; i < ctx->numHashes; i++) {
-
-        uint32_t keySize = ctx->securityParameter/8;
         boost::shared_ptr<uint8_t > key(new uint8_t[keySize]);
         ctx->sock->Receive(key.get(), keySize);
+        //printShares(key.get(),1,keySize);
         RangeHash_Create(ctx->hashes[i], key.get(), keySize, ctx->filterSize);
 
     }
@@ -140,6 +146,7 @@ void GBFLeader::receiveGBFKeysAndFilters() {
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].numHashes = m_bfParam->k;
 
+        std::cout << "security parameter is " << m_securityParameter << std::endl;
         (rcv_ctxs.get())[party.first - 1].securityParameter = m_securityParameter;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
 

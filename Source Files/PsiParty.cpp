@@ -166,20 +166,6 @@ void PsiParty::run() {
     finishAndReportStatsToServer();
 }
 
-void PsiParty::printHex(const uint8_t *arr, uint32_t size) {
-    for(uint32_t k = 0; k < size; k++) {
-        std::cout << setw(2) << setfill('0') << (hex) << (unsigned int) arr[k] << (dec);
-    }
-}
-
-void PsiParty::printShares(const uint8_t *arr, uint32_t numOfShares) {
-    for (uint32_t i = 0; i < numOfShares; i++) {
-        printHex(arr+i*getMaskSizeInBytes(), getMaskSizeInBytes());
-        std::cout << " ";
-    }
-    std::cout << std::endl;
-}
-
 void PsiParty::runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_ptr<CSocket>> &party, const boost::shared_ptr<uint8_t> &leaderResults,
                                         const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table) {
 
@@ -197,10 +183,10 @@ void PsiParty::runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_
 
     /*
     PRINT_PARTY(m_partyId) << "party " << party.first << " results: ";
-    printShares(*partyResult, NUM_HASH_FUNCTIONS * m_setSize);
+    printShares(*partyResult, NUM_HASH_FUNCTIONS * m_setSize, getMaskSizeInBytes());
 
     PRINT_PARTY(m_partyId) << "leader results: ";
-    printShares(*leaderResults, m_setSize);
+    printShares(*leaderResults, m_setSize, getMaskSizeInBytes());
     */
 
     PRINT_PARTY(m_partyId) << "done running leader against party " << party.first << std::endl;
@@ -238,11 +224,13 @@ void PsiParty::runAsLeader() {
     hash_table.reset(cuckoo_hashing(m_eleptr.get(), m_setSize, m_numOfBins, hs,
                                 nelesinbin.get(), perm.get(), 1, bin_ids.get(), hashed_by.get()));
 
+    /*
     cout << "hashed by: ";
     for (uint32_t i = 0; i < m_numOfBins; i++) {
         cout << hashed_by.get()[i] << " ";
     }
     cout << std::endl;
+    */
 
     free_hashing_state(&hs);
 
@@ -276,7 +264,7 @@ void PsiParty::runAsLeader() {
 
     auto leader = LeaderFactory::getLeader(m_strategy, leaderResults, bin_ids, perm,
                                              m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize,
-                                           m_eleptr, m_internal_bitlen, hashed_by, m_parties, NUM_HASH_FUNCTIONS);
+                                           m_eleptr, ceil_divide(m_internal_bitlen, 8), hashed_by, m_parties, NUM_HASH_FUNCTIONS);
 
     auto intersection = leader->run();
 
@@ -312,11 +300,13 @@ void PsiParty::runAsFollower(CSocket &leader) {
     nelesinbin.reset(output.nelesinbin);
     elements_to_hash_table.reset(output.elements_to_hash_table);
 
+    /*
     cout << "elements locations: ";
     for (uint32_t i = 0; i < m_setSize * NUM_HASH_FUNCTIONS; i++) {
         cout << elements_to_hash_table.get()[i] << " ";
     }
     cout << std::endl;
+     */
     free_hashing_state(&hs);
 
     masks.reset(new uint8_t[NUM_HASH_FUNCTIONS * m_setSize * getMaskSizeInBytes()]);
@@ -326,7 +316,7 @@ void PsiParty::runAsFollower(CSocket &leader) {
 
 
     struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table, elements_to_hash_table, nelesinbin, m_numOfBins,
-        NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes()};
+        NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes(), m_eleptr};
 
     auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, leader);
     follower->run();
@@ -394,7 +384,7 @@ void PsiParty::additiveSecretShare() {
 
         //string res(result.begin(),result.end());
         //PRINT_PARTY(m_partyId);
-        //printShares(reinterpret_cast<const uint8_t*>(res.data()), 2);
+        //printShares(reinterpret_cast<const uint8_t*>(res.data()), 2,getMaskSizeInBytes());
 
         XOR(m_secretShare.get(), result.data(), shareSize);
 
@@ -408,6 +398,6 @@ void PsiParty::additiveSecretShare() {
 
     /*
     PRINT_PARTY(m_partyId) << "my secret shares are: ";
-    printShares(m_secretShare, m_numOfBins);
+    printShares(m_secretShare, m_numOfBins,getMaskSizeInBytes());
     */
 }

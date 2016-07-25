@@ -26,6 +26,9 @@ public:
     void initServer(uint32_t securityParameter, uint8_t** input, uint32_t setSize, uint8_t** masks);
 
 private:
+    boost::shared_ptr<uint8_t> GBF_query(const boost::shared_ptr<GarbledBF> &filter, vector<boost::shared_ptr<RangeHash>> hashes,
+                                                      uint8_t* element, int32_t eLen);
+
     void generateHashKeys();
     vector<boost::shared_ptr<uint8_t>> m_keys;
     vector<boost::shared_ptr<RangeHash>> m_hashFuncs;

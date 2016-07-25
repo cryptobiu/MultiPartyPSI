@@ -12,7 +12,8 @@
 typedef __m128i block;
 
 void XOR(uint8_t *xoree1, uint8_t *xoree2, uint32_t size);
-
+void printHex(const uint8_t *arr, uint32_t size);
+void printShares(const uint8_t *arr, uint32_t numOfShares, uint32_t maxSizeInBytes);
 
 #define PRINT_PARTY(partyId) std::cout << "Party " << partyId << " "
 

@@ -32,5 +32,10 @@ boost::shared_ptr<GarbledBF> GarbledBloomFilter::GBF_Create(){
     if(!(filter->data= (uint8_t* )calloc(m_bfParam->m*filter->m_GBFSigmaByteLen,sizeof(uint8_t*)))){
         return 0;
     }
+
+    if(!(filter->bf= (uint8_t* )calloc(m_bfParam->m,sizeof(uint8_t*)))){
+        return 0;
+    }
+
     return filter;
 }
