@@ -24,18 +24,13 @@ PolynomialLeader::PolynomialLeader(const map <uint32_t, boost::shared_ptr<uint8_
 
 std::vector<uint32_t> PolynomialLeader::run() {
 
-    std::cout << "Receive all polynomials" << std::endl;
-
     receiveAllPolynomials();
 
     vector<uint32_t> intersection;
 
     for (uint32_t i = 0; i < m_setSize; i++) {
-        //std::cout << "is element " << i << " in set ?" << std::endl;
         if (isElementInAllSets(i)) {
-            // std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
             intersection.push_back(i);
-            //intersection.push_back(*(uint32_t*)(&m_elements[i]));
         }
     }
 
@@ -84,7 +79,6 @@ void PolynomialLeader::receiveAllPolynomials() {
         m_partiesPolynomials[party.first] = std::vector<boost::shared_ptr<GF2EX>>();
         NTL::GF2EX** polynoms = (rcv_ctxs.get())[party.first - 1].polynoms;
         for (uint32_t i=0; i < m_numOfHashFunctions; i++) {
-            //cout << "polynomial " << i << " of party " << party.first << " is " << *(polynoms[i]) << std::endl;
             m_partiesPolynomials[party.first].push_back(boost::shared_ptr<GF2EX>(polynoms[i]));
         }
     }
@@ -92,43 +86,21 @@ void PolynomialLeader::receiveAllPolynomials() {
 
 bool PolynomialLeader::isElementInAllSets(uint32_t index) {
 
-    uint32_t binIndex = 0;
-    for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if ((m_binIds.get())[i] == index + 1) {
-            // std::cout << "Element number " << index << " was found at " << i << std::endl;
-            binIndex = i;
-            break;
-        }
-    }
+    uint32_t binIndex = getBinIndex(index);
 
-    uint32_t newIndex = 0;
-    for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if ((m_perm.get())[i] == index) {
-            newIndex = i;
-            break;
-        }
-    }
+    uint32_t newIndex = getIndexInHashTable(index);
 
     uint8_t* secret = &(m_secretShare.get()[binIndex*m_maskSizeInBytes]);
 
     uint32_t hash_index = m_hashedBy.get()[binIndex];
 
-    //std::cout << "Hash index is " << hash_index << std::endl;
     for (auto &party : m_parties) {
         XOR(secret, m_leaderResults[party.first].get()+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
 
-        //std::cout << "Leader Real Value: ";
-        //printShares(&((m_elements.get())[index*m_elementSize]), 1,m_elementSize);
-        //std::cout << "Converting..." << std::endl;
         NTL::GF2E element = PolynomialUtils::convertBytesToGF2E(m_elements.get()+index*m_elementSize,m_elementSize);
-        //std::cout << "Evaling..." << std::endl;
         GF2E value = eval(*(m_partiesPolynomials[party.first][hash_index].get()),element);
-        //std::cout << "converting back " << value << std::endl;
-        //std::cout << "Leader Query Result: ";
-        //printShares(value.get(), 1, m_maskSizeInBytes);
         vector<uint8_t> arr = PolynomialUtils::convertElementToBytes(value);
-        //printShares(arr.data(), 1, m_maskSizeInBytes);
-        //std::cout << "XORING..." << std::endl;
+
         XOR(secret, arr.data(), m_maskSizeInBytes);
     }
 
@@ -149,11 +121,9 @@ void *PolynomialLeader::receivePolynomials(void *ctx_tmp) {
 
     for (uint32_t i = 0; i < ctx->numOfHashFunction; i++) {
         ctx->polynoms[i] = new NTL::GF2EX();
-        //std::cout << "set size is " << ctx->setSize << std::endl;
         for (uint32_t j=0; j < ctx->setSize; j++) {
             vector<uint8_t> coefficient(coefficientSize);
             ctx->sock->Receive(coefficient.data(), coefficientSize);
-            //printShares(coefficient.data(),1,coefficientSize);
             NTL::GF2E coeffElement = PolynomialUtils::convertBytesToGF2E(coefficient.data(), coefficientSize);
             SetCoeff(*ctx->polynoms[i], j, coeffElement);
         }

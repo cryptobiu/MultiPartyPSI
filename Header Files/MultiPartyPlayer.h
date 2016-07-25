@@ -10,7 +10,7 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/shared_ptr.hpp>
 #include "../../include/comm/Comm.hpp"
-#include "../PSI/src/util/socket.h"
+#include "socket.h"
 
 using boost::asio::io_service;
 using boost::shared_ptr;

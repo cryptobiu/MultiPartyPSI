@@ -2,7 +2,7 @@
 // Created by root on 7/24/16.
 //
 
-#include "../Header Files/GarbledBloomFilter.h"
+#include "GarbledBloomFilter.h"
 #include <iostream>
 
 GarbledBloomFilter::GarbledBloomFilter(uint32_t maskSizeInBytes, uint32_t setSize) :

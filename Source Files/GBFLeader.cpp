@@ -2,7 +2,7 @@
 // Created by root on 7/22/16.
 //
 
-#include "../Header Files/GBFLeader.h"
+#include "GBFLeader.h"
 
 GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderResults,
           const boost::shared_ptr <uint32_t> &bin_ids, const boost::shared_ptr <uint32_t> &perm, uint32_t numOfBins,
@@ -31,9 +31,7 @@ vector<uint32_t> GBFLeader::run() {
 
     for (uint32_t i = 0; i < m_setSize; i++) {
         if (isElementInAllSets(i)) {
-            // std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
             intersection.push_back(i);
-            //intersection.push_back(*(uint32_t*)(&m_elements[i]));
         }
     }
 
@@ -42,34 +40,17 @@ vector<uint32_t> GBFLeader::run() {
 
 bool GBFLeader::isElementInAllSets(uint32_t index) {
 
-    uint32_t binIndex = 0;
-    for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if ((m_binIds.get())[i] == index + 1) {
-            // std::cout << "Element number " << index << " was found at " << i << std::endl;
-            binIndex = i;
-            break;
-        }
-    }
+    uint32_t binIndex = getBinIndex(index);
 
-    uint32_t newIndex = 0;
-    for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if ((m_perm.get())[i] == index) {
-            newIndex = i;
-            break;
-        }
-    }
+    uint32_t newIndex = getIndexInHashTable(index);
 
     uint8_t* secret = &(m_secretShare.get()[binIndex*m_maskSizeInBytes]);
 
     for (auto &party : m_parties) {
         XOR(secret, m_leaderResults[party.first].get()+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
         uint32_t hash_index = m_hashedBy.get()[binIndex];
-        //std::cout << "Leader Real Value: ";
-        //printShares(&((m_elements.get())[index*m_elementSize]), 1,m_elementSize);
         auto value = GBF_query(m_partiesFilters[party.first][hash_index],m_hashFuncs[party.first],
                   m_elements.get()+index*m_elementSize,m_elementSize);
-        //std::cout << "Leader Query Result: ";
-        //printShares(value.get(), 1, m_maskSizeInBytes);
         XOR(secret, value.get(), m_maskSizeInBytes);
     }
 
@@ -106,12 +87,9 @@ void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
     filter_rcv_ctx* ctx = (filter_rcv_ctx*) ctx_tmp;
 
     uint32_t keySize = ctx->securityParameter/8;
-    //std::cout << "keys size is : " << keySize << std::endl;
-    //std::cout << "Leader keys: " << std::endl;
     for (uint32_t i = 0; i < ctx->numHashes; i++) {
         boost::shared_ptr<uint8_t > key(new uint8_t[keySize]);
         ctx->sock->Receive(key.get(), keySize);
-        //printShares(key.get(),1,keySize);
         RangeHash_Create(ctx->hashes[i], key.get(), keySize, ctx->filterSize);
 
     }

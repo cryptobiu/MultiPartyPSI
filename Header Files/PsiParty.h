@@ -7,8 +7,8 @@
 
 #include "MultiPartyPlayer.h"
 #include "statistics.h"
-#include "../PSI/src/util/typedefs.h"
-#include "../PSI/src/util/crypto/crypto.h"
+#include "typedefs.h"
+#include "crypto/crypto.h"
 #include "boost/shared_ptr.hpp"
 
 class PsiParty : public MultiPartyPlayer {

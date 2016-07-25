@@ -1,7 +1,7 @@
 //
 // Created by root on 6/20/16.
 //
-#include "../Header Files/defs.h"
+#include "defs.h"
 #include <iostream>
 #include <immintrin.h>
 #include <iomanip>

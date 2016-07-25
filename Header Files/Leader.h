@@ -7,7 +7,7 @@
 
 #include "defs.h"
 #include <map>
-#include "../PSI/src/util/socket.h"
+#include "socket.h"
 #include "boost/shared_ptr.hpp"
 
 class Leader {
@@ -25,6 +25,9 @@ public:
     virtual vector<uint32_t> run()=0;
 
 protected:
+    uint32_t getBinIndex(uint32_t index);
+    uint32_t getIndexInHashTable(uint32_t index);
+
     map<uint32_t , boost::shared_ptr<uint8_t>> m_leaderResults;
     boost::shared_ptr<uint32_t> m_binIds;
     boost::shared_ptr<uint32_t> m_perm;

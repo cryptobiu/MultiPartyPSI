@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include "defs.h"
-#include "../PSI/src/util/socket.h"
+#include "socket.h"
 #include "boost/shared_ptr.hpp"
 
 struct FollowerSet {

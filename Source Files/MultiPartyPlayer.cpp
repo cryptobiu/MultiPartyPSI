@@ -2,13 +2,13 @@
 // Created by root on 6/20/16.
 //
 
-#include "../Header Files/MultiPartyPlayer.h"
+#include "MultiPartyPlayer.h"
 #include <boost/bind.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/asio/io_service.hpp>
 #include "../../include/comm/Comm.hpp"
 #include <boost/make_shared.hpp>
-#include "../PSI/src/util/connection.h"
+#include "connection.h"
 
 using boost::asio::io_service;
 

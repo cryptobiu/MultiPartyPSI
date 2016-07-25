@@ -7,16 +7,16 @@
 #include "../../include/primitives/AES_PRG.hpp"
 #include "../../include/primitives/Prg.hpp"
 //#include "PRG/PRG.hpp"
-#include "../Header Files/defs.h"
+#include "defs.h"
 #include <immintrin.h>
-#include "../PSI/src/ot-based/ot-psi.h"
-#include "../PSI/src/hashing/hashing_util.h"
-#include "../Header Files/PsiParty.h"
-#include "../Header Files/Follower.h"
-#include "../Header Files/NaiveFollower.h"
-#include "../Header Files/FollowerFactory.h"
-#include "../Header Files/LeaderFactory.h"
-#include "../Header Files/NaiveLeader.h"
+#include "ot-psi.h"
+#include "hashing_util.h"
+#include "PsiParty.h"
+#include "Follower.h"
+#include "NaiveFollower.h"
+#include "FollowerFactory.h"
+#include "LeaderFactory.h"
+#include "NaiveLeader.h"
 #include <iomanip>
 
 #define KEY_SIZE 16
@@ -45,8 +45,6 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
     initializeCrypto();
 
     initializeMaskSize();
-
-    // PRINT_PARTY(m_partyId) << "Mask size in bytes is " << getMaskSizeInBytes() << std::endl;
 
     uint32_t elebytelen = ceil_divide(m_elementSizeInBits, 8);
 
@@ -148,8 +146,6 @@ void PsiParty::run() {
 
     additiveSecretShare();
 
-    //PRINT_PARTY(m_partyId) << "additive secret sharing completed" << std::endl;
-
     m_statistics.afterSharing = clock();
 
     uint leaderId = stoi(m_config.Value("General", "leaderId"));
@@ -180,14 +176,6 @@ void PsiParty::runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_
 
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
-
-    /*
-    PRINT_PARTY(m_partyId) << "party " << party.first << " results: ";
-    printShares(*partyResult, NUM_HASH_FUNCTIONS * m_setSize, getMaskSizeInBytes());
-
-    PRINT_PARTY(m_partyId) << "leader results: ";
-    printShares(*leaderResults, m_setSize, getMaskSizeInBytes());
-    */
 
     PRINT_PARTY(m_partyId) << "done running leader against party " << party.first << std::endl;
 }
@@ -300,13 +288,6 @@ void PsiParty::runAsFollower(CSocket &leader) {
     nelesinbin.reset(output.nelesinbin);
     elements_to_hash_table.reset(output.elements_to_hash_table);
 
-    /*
-    cout << "elements locations: ";
-    for (uint32_t i = 0; i < m_setSize * NUM_HASH_FUNCTIONS; i++) {
-        cout << elements_to_hash_table.get()[i] << " ";
-    }
-    cout << std::endl;
-     */
     free_hashing_state(&hs);
 
     masks.reset(new uint8_t[NUM_HASH_FUNCTIONS * m_setSize * getMaskSizeInBytes()]);
@@ -344,16 +325,12 @@ void PsiParty::additiveSecretShare() {
         RAND_bytes(share, KEY_SIZE);
         m_parties[i]->Send(share, KEY_SIZE);
         shares.push_back(boost::shared_ptr<byte>(share));
-        //printHex(share,KEY_SIZE);
-        //std::cout << std::endl;
     }
 
     for (uint i = 1; i <= m_partyId-1; i++) {
         byte *share = new byte[KEY_SIZE];
         m_parties[i]->Receive(share, KEY_SIZE);
         shares.push_back(boost::shared_ptr<byte>(share));
-        //printHex(share,KEY_SIZE);
-        //std::cout << std::endl;
     }
 
     m_secretShare.reset(new byte[shareSize]);
@@ -382,9 +359,6 @@ void PsiParty::additiveSecretShare() {
         vector<byte> result;
         prg.getPRGBytes(result, 0,shareSize);
 
-        //string res(result.begin(),result.end());
-        //PRINT_PARTY(m_partyId);
-        //printShares(reinterpret_cast<const uint8_t*>(res.data()), 2,getMaskSizeInBytes());
 
         XOR(m_secretShare.get(), result.data(), shareSize);
 

@@ -2,9 +2,9 @@
 // Created by root on 7/25/16.
 //
 
-#include "../Header Files/PolynomialFollower.h"
+#include "PolynomialFollower.h"
 #include "PolynomialUtils.h"
-#include "../PSI/src/ot-based/ot-psi.h"
+#include "ot-psi.h"
 
 PolynomialFollower::PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader) :
         Follower(followerSet, secretShare, leader) {
@@ -31,7 +31,6 @@ void PolynomialFollower::buildPolynomials(){
         }
         GF2EX polynomial = interpolate(inputs, masks);
 
-        //std::cout << "Polynomial " << i << " is " << polynomial << std::endl;
         m_polynomials.push_back(polynomial);
     }
 }

@@ -2,7 +2,7 @@
 // Created by root on 7/25/16.
 //
 
-#include "../Header Files/PolynomialUtils.h"
+#include "PolynomialUtils.h"
 
 NTL::GF2E PolynomialUtils::convertBytesToGF2E(uint8_t *elementByts, uint32_t size) {
 

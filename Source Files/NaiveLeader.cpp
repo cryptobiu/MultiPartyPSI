@@ -2,9 +2,9 @@
 // Created by root on 7/21/16.
 //
 
-#include "../Header Files/NaiveLeader.h"
-#include "../Header Files/defs.h"
-#include "../PSI/src/ot-based/ot-psi.h"
+#include "NaiveLeader.h"
+#include "defs.h"
+#include "ot-psi.h"
 
 vector<uint32_t> NaiveLeader::run() {
 
@@ -13,9 +13,7 @@ vector<uint32_t> NaiveLeader::run() {
     vector<uint32_t> intersection;
     for (uint32_t i = 0; i < m_setSize; i++) {
         if (isElementInAllSets(i)) {
-            // std::cout << "Input " << *(uint32_t*)(&m_elements[i]) << " is in the intersection" << std::endl;
             intersection.push_back(i);
-            //intersection.push_back(*(uint32_t*)(&m_elements[i]));
         }
     }
 
@@ -69,7 +67,6 @@ bool NaiveLeader::isElementInAllSets(uint32_t index) {
     uint32_t binIndex = 0;
     for (uint32_t i = 0; i < m_numOfBins; i++) {
         if ((m_binIds.get())[i] == index + 1) {
-            // std::cout << "Element number " << index << " was found at " << i << std::endl;
             binIndex = i;
             break;
         }
