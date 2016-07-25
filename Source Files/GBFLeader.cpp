@@ -25,19 +25,6 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
 
 };
 
-vector<uint32_t> GBFLeader::run() {
-    receiveGBFKeysAndFilters();
-    vector<uint32_t> intersection;
-
-    for (uint32_t i = 0; i < m_setSize; i++) {
-        if (isElementInAllSets(i)) {
-            intersection.push_back(i);
-        }
-    }
-
-    return intersection;
-}
-
 bool GBFLeader::isElementInAllSets(uint32_t index) {
 
     uint32_t binIndex = getBinIndex(index);
@@ -99,7 +86,7 @@ void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
     }
 }
 
-void GBFLeader::receiveGBFKeysAndFilters() {
+void GBFLeader::receiveServerData() {
 
     vector<pthread_t> rcv_filters_threads;
 

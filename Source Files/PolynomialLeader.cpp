@@ -22,22 +22,7 @@ PolynomialLeader::PolynomialLeader(const map <uint32_t, boost::shared_ptr<uint8_
 
 }
 
-std::vector<uint32_t> PolynomialLeader::run() {
-
-    receiveAllPolynomials();
-
-    vector<uint32_t> intersection;
-
-    for (uint32_t i = 0; i < m_setSize; i++) {
-        if (isElementInAllSets(i)) {
-            intersection.push_back(i);
-        }
-    }
-
-    return intersection;
-}
-
-void PolynomialLeader::receiveAllPolynomials() {
+void PolynomialLeader::receiveServerData() {
 
     vector<pthread_t> rcv_polynomials_threads;
 

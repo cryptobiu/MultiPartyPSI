@@ -22,9 +22,13 @@ public:
             m_hashedBy(hashed_by) {}
     virtual ~Leader() {};
 
-    virtual vector<uint32_t> run()=0;
+    virtual vector<uint32_t> run();
 
 protected:
+
+    virtual void receiveServerData()=0;
+    virtual bool isElementInAllSets(uint32_t index)=0;
+
     uint32_t getBinIndex(uint32_t index);
     uint32_t getIndexInHashTable(uint32_t index);
 

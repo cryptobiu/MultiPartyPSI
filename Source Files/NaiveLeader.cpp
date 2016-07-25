@@ -6,26 +6,12 @@
 #include "defs.h"
 #include "ot-psi.h"
 
-vector<uint32_t> NaiveLeader::run() {
-
-    receiveServerMasks();
-
-    vector<uint32_t> intersection;
-    for (uint32_t i = 0; i < m_setSize; i++) {
-        if (isElementInAllSets(i)) {
-            intersection.push_back(i);
-        }
-    }
-
-    return intersection;
-}
-
 void *NaiveLeader::receiveMasks(void *ctx_tmp) {
     mask_rcv_ctx* ctx = (mask_rcv_ctx*) ctx_tmp;
     ctx->sock->Receive(ctx->rcv_buf, ctx->maskbytelen * ctx->nmasks);
 }
 
-void NaiveLeader::receiveServerMasks() {
+void NaiveLeader::receiveServerData() {
     vector<pthread_t> rcv_masks_threads;
 
     boost::shared_ptr<mask_rcv_ctx> rcv_ctxs(new mask_rcv_ctx[m_parties.size()+1]);

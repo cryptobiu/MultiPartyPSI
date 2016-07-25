@@ -36,9 +36,6 @@ public:
 
     virtual ~GBFLeader() { };
 
-
-    virtual vector <uint32_t> run();
-
 private:
     COPY_CTR(GBFLeader);
     ASSIGN_OP(GBFLeader);
@@ -51,7 +48,7 @@ private:
 
     static void *receiveKeysAndFilters(void *ctx_tmp);
 
-    void receiveGBFKeysAndFilters();
+    void receiveServerData();
 
     std::map<uint32_t , vector<boost::shared_ptr<RangeHash>>> m_hashFuncs;
     std::map<uint32_t , std::vector<boost::shared_ptr<GarbledBF>>> m_partiesFilters;

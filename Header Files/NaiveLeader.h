@@ -16,14 +16,12 @@ public:
             Leader(leaderResults, bin_ids, perm, numOfBins, secretShare, maskSizeInBytes, setSize, elements, elementSize, hashed_by, parties, numOfHashFunctions) {
     };
     virtual ~NaiveLeader() {};
-
-    virtual vector<uint32_t> run();
 private:
     COPY_CTR(NaiveLeader);
     ASSIGN_OP(NaiveLeader);
 
     static void *receiveMasks(void *ctx_tmp);
-    void receiveServerMasks();
+    void receiveServerData();
 
     bool isElementInAllSets(uint32_t index);
 

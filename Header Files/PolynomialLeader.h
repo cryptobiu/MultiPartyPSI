@@ -27,15 +27,13 @@ public:
 
     virtual ~PolynomialLeader() { };
 
-    virtual vector <uint32_t> run();
-
 private:
 
     COPY_CTR(PolynomialLeader);
     ASSIGN_OP(PolynomialLeader);
 
     bool isElementInAllSets(uint32_t index);
-    void receiveAllPolynomials();
+    void receiveServerData();
 
     static void *receivePolynomials(void *ctx_tmp);
 
