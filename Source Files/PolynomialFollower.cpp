@@ -47,7 +47,7 @@ vector<vector<uint8_t>> PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & 
     vector<vector<uint8_t>> polynomBytes;
 
     uint32_t polyDeg = deg(polynomial);
-    
+
     //convert each coefficient polynomial to byte array and put it in the output array.
     for (int i = 0; i <= polyDeg; i++) {
         //get the coefficient polynomial

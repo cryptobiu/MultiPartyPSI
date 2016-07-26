@@ -11,7 +11,8 @@
 
 struct polynomial_rcv_ctx {
     NTL::GF2EX **polynoms;
-    uint32_t setSize;
+    uint32_t numPolynomPerHashFunc;
+    uint32_t polynomSize;
     uint32_t numOfHashFunction;
     uint32_t maskbytelen;
     CSocket* sock;

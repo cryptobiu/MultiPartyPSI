@@ -32,7 +32,8 @@ void PolynomialLeader::receiveServerData() {
         //use a separate thread to receive the server's masks
         (rcv_ctxs.get())[party.first - 1].polynoms = new NTL::GF2EX*[m_numOfHashFunctions];
 
-        (rcv_ctxs.get())[party.first - 1].setSize = m_setSize;
+        (rcv_ctxs.get())[party.first - 1].numPolynomPerHashFunc = 1;
+        (rcv_ctxs.get())[party.first - 1].polynomSize = m_setSize;
         (rcv_ctxs.get())[party.first - 1].numOfHashFunction = m_numOfHashFunctions;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
@@ -71,12 +72,14 @@ void *PolynomialLeader::receivePolynomials(void *ctx_tmp) {
     uint32_t coefficientSize = ctx->maskbytelen;
 
     for (uint32_t i = 0; i < ctx->numOfHashFunction; i++) {
-        ctx->polynoms[i] = new NTL::GF2EX();
-        for (uint32_t j=0; j < ctx->setSize; j++) {
-            vector<uint8_t> coefficient(coefficientSize);
-            ctx->sock->Receive(coefficient.data(), coefficientSize);
-            NTL::GF2E coeffElement = PolynomialUtils::convertBytesToGF2E(coefficient.data(), coefficientSize);
-            SetCoeff(*ctx->polynoms[i], j, coeffElement);
+        for (uint32_t k =0; k < ctx->numPolynomPerHashFunc; k++) {
+            ctx->polynoms[i*ctx->numPolynomPerHashFunc+k] = new NTL::GF2EX();
+            for (uint32_t j=0; j < ctx->polynomSize; j++) {
+                vector<uint8_t> coefficient(coefficientSize);
+                ctx->sock->Receive(coefficient.data(), coefficientSize);
+                NTL::GF2E coeffElement = PolynomialUtils::convertBytesToGF2E(coefficient.data(), coefficientSize);
+                SetCoeff(*ctx->polynoms[i*ctx->numPolynomPerHashFunc+k], j, coeffElement);
+            }
         }
     }
 }
