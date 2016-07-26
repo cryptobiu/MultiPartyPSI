@@ -50,21 +50,9 @@ void NaiveLeader::receiveServerData() {
 
 bool NaiveLeader::isElementInAllSets(uint32_t index) {
 
-    uint32_t binIndex = 0;
-    for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if ((m_binIds.get())[i] == index + 1) {
-            binIndex = i;
-            break;
-        }
-    }
+    uint32_t binIndex = m_hashInfo.get()[index].binIndex;
 
-    uint32_t newIndex = 0;
-    for (uint32_t i = 0; i < m_numOfBins; i++) {
-        if ((m_perm.get())[i] == index) {
-            newIndex = i;
-            break;
-        }
-    }
+    uint32_t newIndex = m_hashInfo.get()[index].tableIndex;
 
     uint8_t* secret = &(m_secretShare.get()[binIndex*m_maskSizeInBytes]);
 

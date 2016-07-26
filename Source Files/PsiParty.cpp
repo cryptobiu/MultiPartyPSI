@@ -248,11 +248,28 @@ void PsiParty::runAsLeader() {
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
 
+
+    boost::shared_ptr<CuckooHashInfo> hashInfo(new CuckooHashInfo[m_setSize]);
+
+    for (uint32_t i = 0; i < m_numOfBins; i++) {
+        // if bin is not empty
+        if (bin_ids.get()[i] != 0) {
+            uint32_t elementIndex = bin_ids.get()[i]-1;
+            hashInfo.get()[elementIndex].binIndex = i;
+            hashInfo.get()[elementIndex].hashedBy = hashed_by.get()[i];
+        }
+    }
+
+    for (uint32_t i = 0; i < m_setSize; i++) {
+        uint32_t elementIndex = perm.get()[i];
+        hashInfo.get()[elementIndex].tableIndex = i;
+    }
+
     m_statistics.afterOTs = clock();
 
-    auto leader = LeaderFactory::getLeader(m_strategy, leaderResults, bin_ids, perm,
+    auto leader = LeaderFactory::getLeader(m_strategy, leaderResults, hashInfo,
                                              m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize,
-                                           m_eleptr, ceil_divide(m_internal_bitlen, 8), hashed_by, m_parties, NUM_HASH_FUNCTIONS);
+                                           m_eleptr, ceil_divide(m_internal_bitlen, 8), m_parties, NUM_HASH_FUNCTIONS);
 
     auto intersection = leader->run();
 

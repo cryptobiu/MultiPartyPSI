@@ -12,14 +12,13 @@
 
 class Leader {
 public:
-    Leader(const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults, const boost::shared_ptr<uint32_t> &binIds, const boost::shared_ptr<uint32_t> &perm, uint32_t numOfBins,
+    Leader(const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults, const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins,
            const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize,
-           boost::shared_ptr<uint8_t> elements, uint32_t elementSize, const boost::shared_ptr<uint32_t> &hashed_by,
+           boost::shared_ptr<uint8_t> elements, uint32_t elementSize,
            const std::map<uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions):
-            m_leaderResults(leaderResults), m_binIds(binIds), m_perm(perm),
+            m_leaderResults(leaderResults), m_hashInfo(hashInfo),
             m_numOfBins(numOfBins), m_secretShare(secretShare), m_maskSizeInBytes(maskSizeInBytes), m_setSize(setSize),
-            m_parties(parties), m_numOfHashFunctions(numOfHashFunctions), m_elements(elements), m_elementSize(elementSize),
-            m_hashedBy(hashed_by) {}
+            m_parties(parties), m_numOfHashFunctions(numOfHashFunctions), m_elements(elements), m_elementSize(elementSize) {}
     virtual ~Leader() {};
 
     virtual vector<uint32_t> run();
@@ -29,12 +28,8 @@ protected:
     virtual void receiveServerData()=0;
     virtual bool isElementInAllSets(uint32_t index)=0;
 
-    uint32_t getBinIndex(uint32_t index);
-    uint32_t getIndexInHashTable(uint32_t index);
-
     map<uint32_t , boost::shared_ptr<uint8_t>> m_leaderResults;
-    boost::shared_ptr<uint32_t> m_binIds;
-    boost::shared_ptr<uint32_t> m_perm;
+    boost::shared_ptr<CuckooHashInfo> m_hashInfo;
     uint32_t m_numOfBins;
     boost::shared_ptr<uint8_t> m_secretShare;
     uint32_t m_maskSizeInBytes;
@@ -43,7 +38,6 @@ protected:
     uint32_t m_numOfHashFunctions;
     boost::shared_ptr<uint8_t> m_elements;
     uint32_t m_elementSize;
-    boost::shared_ptr<uint32_t> m_hashedBy;
 
 private:
     COPY_CTR(Leader);

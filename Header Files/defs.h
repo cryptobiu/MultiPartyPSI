@@ -20,7 +20,6 @@ void printShares(const uint8_t *arr, uint32_t numOfShares, uint32_t maxSizeInByt
 #define COPY_CTR(A) A(const A&)
 #define ASSIGN_OP(A) A &operator=(const A&)
 
-
 enum class Strategy : uint8_t {
     NAIVE_METHOD_SMALL_N = 0,
     NAIVE_METHOD_LARGE_N,
@@ -37,6 +36,12 @@ enum class Strategy : uint8_t {
 };
 
 extern Strategy strategies[12];
+
+struct CuckooHashInfo {
+    uint32_t binIndex;
+    uint32_t tableIndex;
+    uint32_t hashedBy;
+};
 
 #endif //MULTIPARTYPSI_DEFS_H
 
