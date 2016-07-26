@@ -44,7 +44,7 @@ private:
                                          vector<boost::shared_ptr<RangeHash>> hashes,
                                          uint8_t* element, int32_t eLen);
 
-    bool isElementInAllSets(uint32_t index);
+    bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
 
     static void *receiveKeysAndFilters(void *ctx_tmp);
 

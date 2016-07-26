@@ -13,6 +13,7 @@ NTL_CLIENT
 class PolynomialUtils {
 public:
     static NTL::GF2E convertBytesToGF2E(uint8_t *elementByts, uint32_t size);
+    static vector<uint8_t> convertGF2XToBytes(NTL::GF2X &element);
     static vector<uint8_t> convertElementToBytes(NTL::GF2E & element);
 };
 

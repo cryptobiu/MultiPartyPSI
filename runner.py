@@ -9,6 +9,9 @@ import struct
 import random
 import os
 
+# ssh naor@cybhead1.lnx.biu.ac.il
+# ssh cybnode11
+
 MAX_INT = 2**32-1
 MIN_INT = 0
 

@@ -32,7 +32,7 @@ private:
     COPY_CTR(PolynomialLeader);
     ASSIGN_OP(PolynomialLeader);
 
-    bool isElementInAllSets(uint32_t index);
+    bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
     void receiveServerData();
 
     static void *receivePolynomials(void *ctx_tmp);

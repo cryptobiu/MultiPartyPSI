@@ -18,17 +18,15 @@ PolynomialLeader::PolynomialLeader(const map <uint32_t, boost::shared_ptr<uint8_
 
     uint32_t securityParameter = maskSizeInBytes*8;
     GF2X irreduciblePolynomial = BuildSparseIrred_GF2X(securityParameter);
+    std::cout << "Leader irreducible Polynomial is " << irreduciblePolynomial << std::endl;
     GF2E::init(irreduciblePolynomial);
 
 }
 
 void PolynomialLeader::receiveServerData() {
 
-    vector<pthread_t> rcv_polynomials_threads;
-
     boost::shared_ptr<polynomial_rcv_ctx> rcv_ctxs(new polynomial_rcv_ctx[m_parties.size()+1]);
     for (auto &party : m_parties) {
-        pthread_t rcv_polynomial_thread;
 
         //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
         //use a separate thread to receive the server's masks
@@ -38,27 +36,9 @@ void PolynomialLeader::receiveServerData() {
         (rcv_ctxs.get())[party.first - 1].numOfHashFunction = m_numOfHashFunctions;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
-
-
-        if(pthread_create(&rcv_polynomial_thread, NULL, PolynomialLeader::receivePolynomials, (void*) (&(rcv_ctxs.get()[party.first - 1])))) {
-            cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
-            exit(0);
-        }
-
-        rcv_polynomials_threads.push_back(rcv_polynomial_thread);
     }
 
-    for (auto &rcv_filters_thread : rcv_polynomials_threads) {
-        //meanwhile generate the hash table
-        //GHashTable* map = otpsi_create_hash_table(ceil_divide(inbitlen,8), masks, neles, maskbytelen, perm);
-        //intersect_size = otpsi_find_intersection(eleptr, result, ceil_divide(inbitlen,8), masks, neles, server_masks,
-        //		neles * NUM_HASH_FUNCTIONS, maskbytelen, perm);
-        //wait for receiving thread
-        if(pthread_join(rcv_filters_thread, NULL)) {
-            cerr << "Error in joining pthread at cuckoo hashing!" << endl;
-            exit(0);
-        }
-    }
+    receiveServerDataInThreads<polynomial_rcv_ctx>(rcv_ctxs, &PolynomialLeader::receivePolynomials);
 
     for (auto &party : m_parties) {
         m_partiesPolynomials[party.first] = std::vector<boost::shared_ptr<GF2EX>>();
@@ -69,31 +49,19 @@ void PolynomialLeader::receiveServerData() {
     }
 }
 
-bool PolynomialLeader::isElementInAllSets(uint32_t index) {
-
-    uint32_t binIndex = m_hashInfo.get()[index].binIndex;
-    uint32_t newIndex = m_hashInfo.get()[index].tableIndex;
-    uint32_t hash_index = m_hashInfo.get()[index].hashedBy;
-
-    uint8_t* secret = &(m_secretShare.get()[binIndex*m_maskSizeInBytes]);
+bool PolynomialLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret) {
 
     for (auto &party : m_parties) {
-        XOR(secret, m_leaderResults[party.first].get()+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
+        XOR(secret, m_leaderResults[party.first].get()+tableIndex*m_maskSizeInBytes, m_maskSizeInBytes);
 
         NTL::GF2E element = PolynomialUtils::convertBytesToGF2E(m_elements.get()+index*m_elementSize,m_elementSize);
-        GF2E value = eval(*(m_partiesPolynomials[party.first][hash_index].get()),element);
+        GF2E value = eval(*(m_partiesPolynomials[party.first][hashFuncIndex].get()),element);
         vector<uint8_t> arr = PolynomialUtils::convertElementToBytes(value);
 
         XOR(secret, arr.data(), m_maskSizeInBytes);
     }
 
-    // 1 is always the leader Id
-    for (uint32_t i = 0; i < m_maskSizeInBytes; i++) {
-        if (secret[i] != 0) {
-            return false;
-        }
-    }
-    return true;
+    return isZero(secret, m_maskSizeInBytes);
 }
 
 void *PolynomialLeader::receivePolynomials(void *ctx_tmp) {

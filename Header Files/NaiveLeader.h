@@ -23,7 +23,7 @@ private:
     static void *receiveMasks(void *ctx_tmp);
     void receiveServerData();
 
-    bool isElementInAllSets(uint32_t index);
+    bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
 
     bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum);
 

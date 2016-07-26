@@ -39,6 +39,8 @@ void PolynomialFollower::generateIrreduciblePolynomial() {
 
     m_irreduciblePolynomial = BuildSparseIrred_GF2X(m_securityParameter);
     GF2E::init(m_irreduciblePolynomial);
+
+    std::cout << "Follower irreducible Polynomial is " << m_irreduciblePolynomial << std::endl;
 }
 
 vector<vector<uint8_t>> PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & polynomial) {
@@ -61,6 +63,9 @@ void PolynomialFollower::run() {
               m_followerSet.m_maskSizeInBytes, m_secretShare.get(), m_followerSet.m_numOfBins, m_followerSet.m_numOfElementsInBin.get());
 
     buildPolynomials();
+
+    //vector<uint8_t> irreduciblePolynomialBytes = PolynomialUtils::convertGF2XToBytes(m_irreduciblePolynomial);
+    //send_masks(irreduciblePolynomialBytes.data(),1,m_followerSet.m_maskSizeInBytes,m_leader);
 
     //send the masks to the receiver
     for (auto &polynomial : m_polynomials) {

@@ -43,3 +43,12 @@ void printShares(const uint8_t *arr, uint32_t numOfShares, uint32_t maxSizeInByt
     }
     std::cout << std::endl;
 }
+
+bool isZero(uint8_t *arr, uint32_t size) {
+    for (uint32_t i = 0; i < size; i++) {
+        if (arr[i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}

@@ -25,28 +25,16 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
 
 };
 
-bool GBFLeader::isElementInAllSets(uint32_t index) {
-
-    uint32_t binIndex = m_hashInfo.get()[index].binIndex;
-    uint32_t newIndex = m_hashInfo.get()[index].tableIndex;
-    uint32_t hash_index = m_hashInfo.get()[index].hashedBy;
-
-    uint8_t* secret = &(m_secretShare.get()[binIndex*m_maskSizeInBytes]);
+bool GBFLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret) {
 
     for (auto &party : m_parties) {
-        XOR(secret, m_leaderResults[party.first].get()+newIndex*m_maskSizeInBytes, m_maskSizeInBytes);
-        auto value = GBF_query(m_partiesFilters[party.first][hash_index],m_hashFuncs[party.first],
+        XOR(secret, m_leaderResults[party.first].get()+tableIndex*m_maskSizeInBytes, m_maskSizeInBytes);
+        auto value = GBF_query(m_partiesFilters[party.first][hashFuncIndex],m_hashFuncs[party.first],
                   m_elements.get()+index*m_elementSize,m_elementSize);
         XOR(secret, value.get(), m_maskSizeInBytes);
     }
-
-    // 1 is always the leader Id
-    for (uint32_t i = 0; i < m_maskSizeInBytes; i++) {
-        if (secret[i] != 0) {
-            return false;
-        }
-    }
-    return true;
+    
+    return isZero(secret, m_maskSizeInBytes);
 }
 
 boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledBF> &filter, vector<boost::shared_ptr<RangeHash>> hashes,
@@ -87,21 +75,17 @@ void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
 
 void GBFLeader::receiveServerData() {
 
-    vector<pthread_t> rcv_filters_threads;
-
     boost::shared_ptr<filter_rcv_ctx> rcv_ctxs(new filter_rcv_ctx[m_parties.size()+1]);
     for (auto &party : m_parties) {
-        pthread_t rcv_filter_thread;
-
         //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
         //use a separate thread to receive the server's masks
-        (rcv_ctxs.get())[party.first - 1].filters = new GarbledBF*[m_numOfHashFunctions];
-        for (uint32_t i =0; i < m_numOfHashFunctions; i++ ) {
+        (rcv_ctxs.get())[party.first - 1].filters = new GarbledBF *[m_numOfHashFunctions];
+        for (uint32_t i = 0; i < m_numOfHashFunctions; i++) {
             (rcv_ctxs.get())[party.first - 1].filters[i] = m_partiesFilters[party.first][i].get();
         }
 
-        (rcv_ctxs.get())[party.first - 1].hashes = new RangeHash*[m_bfParam->k];
-        for (uint32_t i =0; i < m_bfParam->k; i++ ) {
+        (rcv_ctxs.get())[party.first - 1].hashes = new RangeHash *[m_bfParam->k];
+        for (uint32_t i = 0; i < m_bfParam->k; i++) {
             (rcv_ctxs.get())[party.first - 1].hashes[i] = m_hashFuncs[party.first][i].get();
         }
 
@@ -110,28 +94,9 @@ void GBFLeader::receiveServerData() {
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].numHashes = m_bfParam->k;
 
-        std::cout << "security parameter is " << m_securityParameter << std::endl;
         (rcv_ctxs.get())[party.first - 1].securityParameter = m_securityParameter;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
-
-
-        if(pthread_create(&rcv_filter_thread, NULL, GBFLeader::receiveKeysAndFilters, (void*) (&(rcv_ctxs.get()[party.first - 1])))) {
-            cerr << "Error in creating new pthread at cuckoo hashing!" << endl;
-            exit(0);
-        }
-
-        rcv_filters_threads.push_back(rcv_filter_thread);
     }
 
-    for (auto &rcv_filters_thread : rcv_filters_threads) {
-        //meanwhile generate the hash table
-        //GHashTable* map = otpsi_create_hash_table(ceil_divide(inbitlen,8), masks, neles, maskbytelen, perm);
-        //intersect_size = otpsi_find_intersection(eleptr, result, ceil_divide(inbitlen,8), masks, neles, server_masks,
-        //		neles * NUM_HASH_FUNCTIONS, maskbytelen, perm);
-        //wait for receiving thread
-        if(pthread_join(rcv_filters_thread, NULL)) {
-            cerr << "Error in joining pthread at cuckoo hashing!" << endl;
-            exit(0);
-        }
-    }
+    receiveServerDataInThreads<filter_rcv_ctx>(rcv_ctxs, &GBFLeader::receiveKeysAndFilters);
 }
