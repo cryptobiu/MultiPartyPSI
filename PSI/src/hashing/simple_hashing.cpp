@@ -11,7 +11,7 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 		uint32_t ntasks, hs_t &hs) {
 	sht_ctx* table;
 	//uint8_t** bin_content;
-	uint8_t *eleptr, *bin_ptr, *result, *res_bins;
+	uint8_t *res_bins;
 	uint32_t i, j, tmpneles;
 	sheg_ctx* ctx;
 	pthread_t* entry_gen_tasks;
@@ -71,7 +71,6 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 	//*nelesinbin = (uint32_t*) malloc(sizeof(uint32_t) * nbins);
 
 	res_bins = new uint8_t[neles * NUM_HASH_FUNCTIONS * hs.outbytelen];
-	bin_ptr = res_bins;
 
 	uint32_t progress = 0;
 

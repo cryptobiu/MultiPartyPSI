@@ -33,7 +33,7 @@ bool GBFLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t t
                   m_elements.get()+index*m_elementSize,m_elementSize);
         XOR(secret, value.get(), m_maskSizeInBytes);
     }
-    
+
     return isZero(secret, m_maskSizeInBytes);
 }
 

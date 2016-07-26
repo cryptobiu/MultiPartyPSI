@@ -26,7 +26,7 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 {
     LoadConfiguration();
 
-    m_numOfBins = ceil(EPSILON * m_setSize);
+    setBinsParameters();
 
     m_elements.reset(new uint8_t[m_setSize*sizeof(uint32_t)]);
 
@@ -60,6 +60,16 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
     syncronize();
 
+}
+
+void PsiParty::setBinsParameters() {
+
+    m_numOfBins = ceil(EPSILON * m_setSize);
+
+    if(ceil_divide(m_setSize, m_numOfBins) < 3)
+        m_maxBinSize = 3*max(ceil_log2(m_setSize),3);
+    else
+        m_maxBinSize = 6*max((int) ceil_divide(m_setSize, m_numOfBins), 3);
 }
 
 void PsiParty::initializeMaskSize() {

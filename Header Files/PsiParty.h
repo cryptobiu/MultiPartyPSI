@@ -35,6 +35,7 @@ private:
 
     void initializeMaskSize();
     void initializeCrypto();
+    void setBinsParameters();
     void runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_ptr<CSocket>> &party, const boost::shared_ptr<uint8_t> &leaderResults,
                                   const boost::shared_ptr<uint32_t> &nelesinbin, uint32_t outbitlen, const boost::shared_ptr<uint8_t> &hash_table);
 
@@ -50,6 +51,7 @@ private:
 
     uint32_t m_setSize;
     uint32_t m_elementSizeInBits;
+    uint32_t m_maxBinSize;
     boost::shared_ptr<uint8_t> m_secretShare;
     boost::shared_ptr<uint8_t> m_elements;
     boost::shared_ptr<crypto> m_crypt;
