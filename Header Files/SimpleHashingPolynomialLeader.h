@@ -5,9 +5,26 @@
 #ifndef MULTIPARTYPSI_SIMPLEHASHINGPOLYNOMIALLEADER_H
 #define MULTIPARTYPSI_SIMPLEHASHINGPOLYNOMIALLEADER_H
 
+#include "Leader.h"
+#include "PolynomialLeader.h"
 
-class SimpleHashingPolynomialLeader {
+class SimpleHashingPolynomialLeader : public PolynomialLeader {
+public:
+    SimpleHashingPolynomialLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderResults,
+                     const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins,
+                     const boost::shared_ptr <uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize,
+                     boost::shared_ptr<uint8_t> elements, uint32_t elementSize,
+                     const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions, uint32_t maxBinSize) :
+            PolynomialLeader(leaderResults,hashInfo,numOfBins,secretShare,maskSizeInBytes,setSize,elements,elementSize,parties,numOfHashFunctions),
+            m_maxBinSize(maxBinSize) {}
+private:
+    COPY_CTR(SimpleHashingPolynomialLeader);
+    ASSIGN_OP(SimpleHashingPolynomialLeader);
 
+    uint32_t m_maxBinSize;
+
+    virtual bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
+    virtual void receiveServerData();
 };
 
 
