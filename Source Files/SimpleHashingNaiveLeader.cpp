@@ -6,17 +6,15 @@
 #include "SimpleHashingNaiveLeader.h"
 
 void SimpleHashingNaiveLeader::receiveServerData() {
-    vector<pthread_t> rcv_masks_threads;
-
     boost::shared_ptr<mask_rcv_ctx> rcv_ctxs(new mask_rcv_ctx[m_parties.size()+1]);
     for (auto &party : m_parties) {
         //receive server masks
-        m_partiesResults[party.first] = boost::shared_ptr<uint8_t>(new uint8_t[NUM_HASH_FUNCTIONS * m_numOfBins * m_maxBinSize]);
+        m_partiesResults[party.first] = boost::shared_ptr<uint8_t>(new uint8_t[m_numOfBins * m_maxBinSize]);
 
         //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
         //use a separate thread to receive the server's masks
         (rcv_ctxs.get())[party.first - 1].rcv_buf = m_partiesResults[party.first].get();
-        (rcv_ctxs.get())[party.first - 1].nmasks = NUM_HASH_FUNCTIONS * m_numOfBins * m_maxBinSize;
+        (rcv_ctxs.get())[party.first - 1].nmasks = m_numOfBins * m_maxBinSize;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
     }

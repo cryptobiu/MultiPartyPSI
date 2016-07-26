@@ -12,8 +12,6 @@ void *NaiveLeader::receiveMasks(void *ctx_tmp) {
 }
 
 void NaiveLeader::receiveServerData() {
-    vector<pthread_t> rcv_masks_threads;
-
     boost::shared_ptr<mask_rcv_ctx> rcv_ctxs(new mask_rcv_ctx[m_parties.size()+1]);
     for (auto &party : m_parties) {
         //receive server masks
