@@ -6,10 +6,11 @@
 #include "SimpleHashingNaiveLeader.h"
 
 void SimpleHashingNaiveLeader::receiveServerData() {
+    std::cout << "Start receiving..." << std::endl;
     boost::shared_ptr<mask_rcv_ctx> rcv_ctxs(new mask_rcv_ctx[m_parties.size()+1]);
     for (auto &party : m_parties) {
         //receive server masks
-        m_partiesResults[party.first] = boost::shared_ptr<uint8_t>(new uint8_t[m_numOfBins * m_maxBinSize]);
+        m_partiesResults[party.first] = boost::shared_ptr<uint8_t>(new uint8_t[m_numOfBins * m_maxBinSize* m_maskSizeInBytes]);
 
         //receive_masks(server_masks, NUM_HASH_FUNCTIONS * neles, maskbytelen, sock[0]);
         //use a separate thread to receive the server's masks

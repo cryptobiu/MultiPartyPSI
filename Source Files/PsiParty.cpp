@@ -213,8 +213,8 @@ void PsiParty::runAsLeader() {
     init_hashing_state(&hs, m_setSize, m_internal_bitlen, m_numOfBins, &m_prfState);
     uint32_t outbitlen = hs.outbitlen;
 
-    bin_ids.reset(new uint32_t[m_numOfBins * hs.outbytelen]);
-    memset(bin_ids.get(),0,m_numOfBins * hs.outbytelen);
+    bin_ids.reset(new uint32_t[m_numOfBins]);
+    memset(bin_ids.get(),0,m_numOfBins*sizeof(uint32_t));
 
     boost::shared_ptr<uint32_t> hashed_by(new uint32_t[m_numOfBins]);
     memset(hashed_by.get(),0,m_numOfBins * sizeof(uint32_t));
