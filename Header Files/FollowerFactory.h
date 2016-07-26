@@ -15,7 +15,8 @@ public:
     FollowerFactory();
     virtual ~FollowerFactory() {};
 
-    static boost::shared_ptr<Follower> getFollower(enum Strategy strategy, const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader);
+    static boost::shared_ptr<Follower> getFollower(enum Strategy strategy, const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare,
+                                                   CSocket &leader, uint32_t maxBinSize);
 private:
     COPY_CTR(FollowerFactory);
     ASSIGN_OP(FollowerFactory);

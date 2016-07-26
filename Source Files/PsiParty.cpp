@@ -326,7 +326,7 @@ void PsiParty::runAsFollower(CSocket &leader) {
     struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table, elements_to_hash_table, nelesinbin, m_numOfBins,
         NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes(), m_eleptr};
 
-    auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, leader);
+    auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, leader, m_maxBinSize);
     follower->run();
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;

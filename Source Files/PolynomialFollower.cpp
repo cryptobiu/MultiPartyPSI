@@ -46,13 +46,21 @@ void PolynomialFollower::generateIrreduciblePolynomial() {
 vector<vector<uint8_t>> PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & polynomial) {
     vector<vector<uint8_t>> polynomBytes;
 
+    uint32_t polyDeg = deg(polynomial);
+    
     //convert each coefficient polynomial to byte array and put it in the output array.
-    for (int i = 0; i < m_followerSet.m_numOfElements; i++) {
+    for (int i = 0; i <= polyDeg; i++) {
         //get the coefficient polynomial
         NTL::GF2E coefficient = coeff(polynomial, i);
 
         //get the bytes of the coefficient.
-        polynomBytes.push_back(PolynomialUtils::convertElementToBytes(coefficient));
+        vector<uint8_t> bytes = PolynomialUtils::convertElementToBytes(coefficient);
+        if (bytes.size() < m_followerSet.m_maskSizeInBytes) {
+            for (uint32_t j = 0; j < (m_followerSet.m_maskSizeInBytes-bytes.size());j++) {
+                bytes.push_back(0);
+            }
+        }
+        polynomBytes.push_back(bytes);
     }
 
     return polynomBytes;
@@ -71,8 +79,12 @@ void PolynomialFollower::run() {
     for (auto &polynomial : m_polynomials) {
         vector<vector<uint8_t>> polynomialCoffBytes = getPolynomialCoffBytes(polynomial);
         for (auto &polynomialCoff : polynomialCoffBytes) {
+            if (polynomialCoff.size() != m_followerSet.m_maskSizeInBytes) {
+                std::cout << "coefficient size is not correct !!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+                std::cout << polynomialCoff.size() << std::endl;
+            }
             send_masks(polynomialCoff.data(), 1,
-                       m_followerSet.m_maskSizeInBytes, m_leader);
+                       polynomialCoff.size(), m_leader);
         }
     }
 }
