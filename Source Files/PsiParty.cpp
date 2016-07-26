@@ -302,6 +302,7 @@ void PsiParty::runAsFollower(CSocket &leader) {
     boost::shared_ptr<uint8_t> hashed_elements;
     boost::shared_ptr<uint32_t> nelesinbin;
     boost::shared_ptr<uint32_t> elements_to_hash_table;
+    boost::shared_ptr<uint32_t> bin_to_elements_to_hash_table;
 
     hs_t hs;
 
@@ -314,6 +315,7 @@ void PsiParty::runAsFollower(CSocket &leader) {
     hashed_elements.reset(output.hashed_elements);
     nelesinbin.reset(output.nelesinbin);
     elements_to_hash_table.reset(output.elements_to_hash_table);
+    bin_to_elements_to_hash_table.reset(output.bin_to_elements_to_hash_table);
 
     free_hashing_state(&hs);
 
@@ -323,8 +325,8 @@ void PsiParty::runAsFollower(CSocket &leader) {
                  hash_table.get(), masks.get(), nelesinbin.get(), outbitlen);
 
 
-    struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), hash_table, elements_to_hash_table, nelesinbin, m_numOfBins,
-        NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes(), m_eleptr};
+    struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), elements_to_hash_table, nelesinbin, m_numOfBins,
+        NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes(), m_eleptr, bin_to_elements_to_hash_table};
 
     auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, leader, m_maxBinSize);
     follower->run();

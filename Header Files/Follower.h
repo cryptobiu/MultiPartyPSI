@@ -14,7 +14,6 @@ struct FollowerSet {
     boost::shared_ptr<uint8_t> m_elements;
     uint32_t m_numOfElements;
     uint32_t m_elementSizeInBytes;
-    boost::shared_ptr<uint8_t> m_hashTable;
     boost::shared_ptr<uint32_t> m_elements_to_hash_table;
     boost::shared_ptr<uint32_t> m_numOfElementsInBin;
     uint32_t m_numOfBins;
@@ -22,6 +21,7 @@ struct FollowerSet {
     boost::shared_ptr<uint8_t> m_masks;
     uint32_t m_maskSizeInBytes;
     boost::shared_ptr<uint8_t> m_realElements;
+    boost::shared_ptr<uint32_t> m_binToElementsToHashTable;
 };
 
 class Follower {

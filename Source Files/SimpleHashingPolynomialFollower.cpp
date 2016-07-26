@@ -15,21 +15,27 @@ void SimpleHashingPolynomialFollower::buildPolynomials(){
             vec_GF2E masks;
 
             uint32_t numOfElementsInBin = m_followerSet.m_numOfElementsInBin.get()[k];
+            uint32_t numOfElementsOfHashInBin = 0;
             for (uint32_t j=elementIndex; j < elementIndex+numOfElementsInBin; j++) {
-                uint32_t index = m_followerSet.m_elements_to_hash_table.get()[j*m_followerSet.m_numOfHashFunctions+i];
+                if ((m_followerSet.m_binToElementsToHashTable.get()[j] % m_followerSet.m_numOfHashFunctions) != i) {
+                    continue;
+                }
+                numOfElementsOfHashInBin++;
 
-                NTL::GF2E input = PolynomialUtils::convertBytesToGF2E(m_followerSet.m_realElements.get()+j*m_followerSet.m_elementSizeInBytes, m_followerSet.m_elementSizeInBytes);
+                uint32_t elementIndex = m_followerSet.m_binToElementsToHashTable.get()[j] / m_followerSet.m_numOfHashFunctions;
+
+                NTL::GF2E input = PolynomialUtils::convertBytesToGF2E(m_followerSet.m_realElements.get()+elementIndex*m_followerSet.m_elementSizeInBytes, m_followerSet.m_elementSizeInBytes);
                 inputs.append(input);
 
-                NTL::GF2E mask = PolynomialUtils::convertBytesToGF2E(m_followerSet.m_masks.get()+index*m_followerSet.m_maskSizeInBytes, m_followerSet.m_maskSizeInBytes);
+                NTL::GF2E mask = PolynomialUtils::convertBytesToGF2E(m_followerSet.m_masks.get()+j*m_followerSet.m_maskSizeInBytes, m_followerSet.m_maskSizeInBytes);
                 masks.append(mask);
             }
 
-            if (numOfElementsInBin > m_maxBinSize) {
+            if (numOfElementsOfHashInBin > m_maxBinSize) {
                 std::cout << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!";
             }
 
-            uint32_t numOfRandomElements = m_maxBinSize-numOfElementsInBin;
+            uint32_t numOfRandomElements = m_maxBinSize-numOfElementsOfHashInBin;
             for (uint32_t j=0; j < numOfRandomElements; j++) {
                 inputs.append(random_GF2E());
                 masks.append(random_GF2E());

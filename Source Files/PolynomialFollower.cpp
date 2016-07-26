@@ -40,7 +40,7 @@ void PolynomialFollower::generateIrreduciblePolynomial() {
     m_irreduciblePolynomial = BuildSparseIrred_GF2X(m_securityParameter);
     GF2E::init(m_irreduciblePolynomial);
 
-    std::cout << "Follower irreducible Polynomial is " << m_irreduciblePolynomial << std::endl;
+    // std::cout << "Follower irreducible Polynomial is " << m_irreduciblePolynomial << std::endl;
 }
 
 vector<vector<uint8_t>> PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & polynomial) {
@@ -55,8 +55,9 @@ vector<vector<uint8_t>> PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & 
 
         //get the bytes of the coefficient.
         vector<uint8_t> bytes = PolynomialUtils::convertElementToBytes(coefficient);
-        if (bytes.size() < m_followerSet.m_maskSizeInBytes) {
-            for (uint32_t j = 0; j < (m_followerSet.m_maskSizeInBytes-bytes.size());j++) {
+        uint32_t numBytes = bytes.size();
+        if (numBytes < m_followerSet.m_maskSizeInBytes) {
+            for (uint32_t j = 0; j < (m_followerSet.m_maskSizeInBytes-numBytes);j++) {
                 bytes.push_back(0);
             }
         }
@@ -67,8 +68,7 @@ vector<vector<uint8_t>> PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & 
 }
 
 void PolynomialFollower::run() {
-    xor_masks(m_followerSet.m_hashTable.get(), m_followerSet.m_elements.get(), m_followerSet.m_numOfElements, m_followerSet.m_masks.get(), m_followerSet.m_elementSizeInBytes,
-              m_followerSet.m_maskSizeInBytes, m_secretShare.get(), m_followerSet.m_numOfBins, m_followerSet.m_numOfElementsInBin.get());
+    xor_masks(m_followerSet.m_masks.get(), m_followerSet.m_maskSizeInBytes, m_secretShare.get(), m_followerSet.m_numOfBins, m_followerSet.m_numOfElementsInBin.get());
 
     buildPolynomials();
 

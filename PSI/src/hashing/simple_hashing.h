@@ -52,6 +52,7 @@ typedef struct simple_hash_output {
 	uint8_t *res_bins;
 	uint32_t *nelesinbin;
 	uint32_t *elements_to_hash_table;
+	uint32_t *bin_to_elements_to_hash_table;
 } simple_hash_output;
 
 //returns a cuckoo hash table with the first dimension being the bins and the second dimension being the pointer to the elements

@@ -39,9 +39,8 @@ bool SimpleHashingPolynomialLeader::isElementInAllSets(uint32_t index, uint32_t 
         XOR(secret, m_leaderResults[party.first].get()+tableIndex*m_maskSizeInBytes, m_maskSizeInBytes);
 
         NTL::GF2E element = PolynomialUtils::convertBytesToGF2E(m_elements.get()+index*m_elementSize,m_elementSize);
-        GF2E value = eval(*(m_partiesPolynomials[party.first][hashFuncIndex*m_numOfHashFunctions+binIndex].get()),element);
+        GF2E value = eval(*(m_partiesPolynomials[party.first][hashFuncIndex*m_numOfBins+binIndex].get()),element);
         vector<uint8_t> arr = PolynomialUtils::convertElementToBytes(value);
-
         XOR(secret, arr.data(), m_maskSizeInBytes);
     }
 

@@ -23,6 +23,7 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 	table = (sht_ctx*) malloc(sizeof(sht_ctx) * ntasks);
 
 	uint32_t  *elements_to_hash_table = new uint32_t[neles * NUM_HASH_FUNCTIONS];
+	uint32_t  *bin_to_elements_to_hash_table = new uint32_t[neles * NUM_HASH_FUNCTIONS];
 
 	for(i = 0; i < ntasks; i++) {
 		init_hash_table(table + i, ceil_divide(neles, ntasks), &hs);
@@ -85,6 +86,7 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 			for (uint32_t l = 0; l < tmpneles; l++) {
 				bin_hash_ctx *c = (table +j)->bins[i].indexes + l;
 				elements_to_hash_table[NUM_HASH_FUNCTIONS*c->index+c->hashFunctionNum] = progress + l;
+				bin_to_elements_to_hash_table[progress + l]=NUM_HASH_FUNCTIONS*c->index+c->hashFunctionNum;
 			}
 
 			progress += tmpneles;
@@ -107,6 +109,7 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 	output.res_bins = res_bins;
 	output.nelesinbin = nelesinbin;
 	output.elements_to_hash_table = elements_to_hash_table;
+	output.bin_to_elements_to_hash_table = bin_to_elements_to_hash_table;
 
 	return output;
 }

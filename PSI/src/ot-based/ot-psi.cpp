@@ -260,8 +260,7 @@ bool Equal(uint8_t *el1, uint8_t *el2, uint32_t numBytes) {
 };
 
 
-void xor_masks(uint8_t *hash_table, uint8_t *elements, uint32_t neles, uint8_t *masks,
-			   uint32_t elebyetelen, uint32_t maskbytelen, uint8_t *secretShare, uint32_t nbins, uint32_t* nelesinbin) {
+void xor_masks(uint8_t *masks, uint32_t maskbytelen, uint8_t *secretShare, uint32_t nbins, uint32_t* nelesinbin) {
 
 	/*
 

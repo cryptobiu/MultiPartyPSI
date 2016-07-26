@@ -18,7 +18,7 @@ PolynomialLeader::PolynomialLeader(const map <uint32_t, boost::shared_ptr<uint8_
 
     uint32_t securityParameter = maskSizeInBytes*8;
     GF2X irreduciblePolynomial = BuildSparseIrred_GF2X(securityParameter);
-    std::cout << "Leader irreducible Polynomial is " << irreduciblePolynomial << std::endl;
+    //std::cout << "Leader irreducible Polynomial is " << irreduciblePolynomial << std::endl;
     GF2E::init(irreduciblePolynomial);
 
 }
