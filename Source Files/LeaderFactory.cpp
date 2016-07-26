@@ -7,6 +7,7 @@
 #include "GBFLeader.h"
 #include "PolynomialLeader.h"
 #include "SimpleHashingPolynomialLeader.h"
+#include "SimpleHashingNaiveLeader.h"
 
 boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults,
                                                    const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins, const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes,
@@ -25,6 +26,9 @@ boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, const
         case Strategy::POLYNOMIALS_SIMPLE_HASH:
             return boost::shared_ptr<Leader>(new SimpleHashingPolynomialLeader(leaderResults, hashInfo, numOfBins,
                                                                   secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, maxBinSize));
+        case Strategy ::SIMPLE_HASH:
+            return boost::shared_ptr<Leader>(new SimpleHashingNaiveLeader(leaderResults, hashInfo, numOfBins,
+                                                                          secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, maxBinSize));
         default:
             break;
     }

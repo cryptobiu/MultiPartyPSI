@@ -16,18 +16,18 @@ public:
             Leader(leaderResults, hashInfo, numOfBins, secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions) {
     };
     virtual ~NaiveLeader() {};
-private:
-    COPY_CTR(NaiveLeader);
-    ASSIGN_OP(NaiveLeader);
-
+protected:
     static void *receiveMasks(void *ctx_tmp);
-    void receiveServerData();
+    virtual void receiveServerData();
 
     bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
 
-    bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum);
+    virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t binIndex);
 
     map<uint32_t , boost::shared_ptr<uint8_t>> m_partiesResults;
+private:
+    COPY_CTR(NaiveLeader);
+    ASSIGN_OP(NaiveLeader);
 };
 
 

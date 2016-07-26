@@ -31,7 +31,9 @@ AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI_C_0.1/PSI/Threads BF_
 AUX_SOURCE_DIRECTORY("/home/naor/libscapi/MultiPartyPSI/Source Files" SOURCES)
 
 set(SOURCE_FILES ${SOURCES} "Source Files/Leader.cpp" "Source Files/SimpleHashingPolynomialFollower.cpp"
-        "Source Files/SimpleHashingPolynomialLeader.cpp" "Source Files/SimpleHashingNaiveFollower.cpp" "Source Files/GarbledBloomFilter.cpp" PRG/PRG.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
+        "Source Files/SimpleHashingPolynomialLeader.cpp" "Source Files/SimpleHashingNaiveFollower.cpp"
+        "Source Files/SimpleHashingNaiveLeader.cpp"
+        "Source Files/GarbledBloomFilter.cpp" PRG/PRG.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
         ${MIRACLE_LIB_SOURCES} ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES})
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
