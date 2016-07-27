@@ -37,7 +37,7 @@ strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Stra
 
 strategies = [Strategy.NAIVE_METHOD_SMALL_N,Strategy.SIMPLE_HASH,Strategy.BLOOM_FILTER,Strategy.POLYNOMIALS,Strategy.POLYNOMIALS_SIMPLE_HASH,]
 
-conf = open("/home/naor/libscapi/MultiPartyPSI/Config", "rb").read()
+conf = open("Config", "rb").read()
 config = ConfigParser.RawConfigParser(allow_no_value=True)
 config.readfp(io.BytesIO(conf))
 
@@ -54,10 +54,10 @@ seedSizeInBytes=int(config.get("General", "seedSizeInBytes"))
 def startPrograms(processes):
     if config.get("General", "debug") == "True":
         for i in xrange(2,numOfParties+1):
-            processes.append(Popen(['bin/MultiPartyPSI', str(i)]))
+            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config']))
     else:
         for i in xrange(1,numOfParties+1):
-            processes.append(Popen(['bin/MultiPartyPSI', str(i)]))
+            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config']))
 
 def runMPPSI(strategy):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

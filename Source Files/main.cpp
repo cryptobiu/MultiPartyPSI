@@ -16,12 +16,13 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     uint partyId = atoi(argv[1]);
+    char *configPath = argv[2];
 
     boost::asio::io_service io_service;
     boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service));
 
     // read the file as config file
-    ConfigFile cf("/home/naor/libscapi/MultiPartyPSI/Config");
+    ConfigFile cf(configPath);
 
     PRINT_PARTY(partyId) << "initialize PsiParty" << std::endl;
 
