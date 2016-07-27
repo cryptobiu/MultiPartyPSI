@@ -380,14 +380,12 @@ void PsiParty::additiveSecretShare() {
         std::cout << std::endl;
         */
 
+        SecretKey key(share.get(), KEY_SIZE, "prgFromOpenSSLAES");
+        prgFromOpenSSLAES prg(shareSize/16);
 
-        SecretKey key(share.get(), KEY_SIZE, "RC4");
-
-        OpenSSLRC4 prg;
         prg.setKey(key);
         vector<byte> result;
         prg.getPRGBytes(result, 0,shareSize);
-
 
         XOR(m_secretShare.get(), result.data(), shareSize);
 
