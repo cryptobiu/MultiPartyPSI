@@ -65,7 +65,13 @@ def runMPPSI(strategy):
     s.listen(numOfParties)
 
     processes = []
-    thread.start_new_thread(startPrograms, (processes,))
+    if config.get("General", "remote") == "False":
+        thread.start_new_thread(startPrograms, (processes,))
+    else:
+        for i in xrange(1,numOfParties+1):
+            os.system('sshpass -p "305151094" scp ./Config naor@cybnode1%d:Config' % i)
+            os.system('sshpass -p "305151094" scp ./bin/MultiPartyPSI naor@cybnode1%d:MultiPartyPSI' % i)
+            os.system('sshpass -p "305151094" ssh naor@cybnode1%d "./MultiPartyPSI &"' % i)
 
     parties = {}
     for _ in xrange(numOfParties):

@@ -6,6 +6,7 @@ seedSizeInBytes=16
 elementSizeInBits=32
 leaderId=1
 debug=False
+remote=False
 [server]
 ip=127.0.0.1
 port=5000
