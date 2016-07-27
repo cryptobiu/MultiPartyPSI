@@ -325,9 +325,9 @@ void PsiParty::runAsFollower(CSocket &leader) {
     oprg_server(hash_table.get(), m_numOfBins, m_setSize * NUM_HASH_FUNCTIONS, nelesinbin.get(), outbitlen, m_maskbitlen, m_crypt.get(), &leader, 1, masks.get());
 
     struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), elements_to_hash_table, nelesinbin, m_numOfBins,
-        NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes(), m_eleptr, bin_to_elements_to_hash_table};
+        NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes(), m_eleptr, bin_to_elements_to_hash_table, m_maxBinSize};
 
-    auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, leader, m_maxBinSize, m_parameters);
+    auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, leader, m_parameters);
     follower->run();
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;

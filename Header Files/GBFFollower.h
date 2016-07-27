@@ -24,8 +24,6 @@ public:
     void buildGBF();
 
 private:
-    boost::shared_ptr<uint8_t> GBF_query(const boost::shared_ptr<GarbledBF> &filter, vector<boost::shared_ptr<RangeHash>> hashes,
-                                                      uint8_t* element, int32_t eLen);
 
     void generateHashKeys();
     vector<boost::shared_ptr<uint8_t>> m_keys;

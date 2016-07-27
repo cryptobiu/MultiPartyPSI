@@ -31,11 +31,11 @@ void SimpleHashingPolynomialFollower::buildPolynomials(){
                 masks.append(mask);
             }
 
-            if (numOfElementsOfHashInBin > m_maxBinSize) {
+            if (numOfElementsOfHashInBin > m_followerSet.m_maxBinSize) {
                 std::cout << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!";
             }
 
-            uint32_t numOfRandomElements = m_maxBinSize-numOfElementsOfHashInBin;
+            uint32_t numOfRandomElements = m_followerSet.m_maxBinSize-numOfElementsOfHashInBin;
             for (uint32_t j=0; j < numOfRandomElements; j++) {
                 inputs.append(random_GF2E());
                 masks.append(random_GF2E());

@@ -10,7 +10,7 @@
 #include "SimpleHashingNaiveFollower.h"
 
 boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy, const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare,
-                                                         CSocket &leader, uint32_t maxBinSize, const secParameters &parameters) {
+                                                         CSocket &leader, const secParameters &parameters) {
     switch(strategy) {
         case Strategy::NAIVE_METHOD_SMALL_N:
             return boost::shared_ptr<Follower>(new NaiveFollower(followerSet, secretShare, leader, parameters));
@@ -19,9 +19,9 @@ boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy,
         case Strategy::POLYNOMIALS:
             return boost::shared_ptr<Follower>(new PolynomialFollower(followerSet, secretShare, leader, parameters));
         case Strategy::POLYNOMIALS_SIMPLE_HASH:
-            return boost::shared_ptr<Follower>(new SimpleHashingPolynomialFollower(followerSet, secretShare, leader, parameters, maxBinSize));
+            return boost::shared_ptr<Follower>(new SimpleHashingPolynomialFollower(followerSet, secretShare, leader, parameters));
         case Strategy::SIMPLE_HASH:
-            return boost::shared_ptr<Follower>(new SimpleHashingNaiveFollower(followerSet, secretShare, leader, parameters, maxBinSize));
+            return boost::shared_ptr<Follower>(new SimpleHashingNaiveFollower(followerSet, secretShare, leader, parameters));
         default:
             break;
     }

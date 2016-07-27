@@ -22,6 +22,7 @@ struct FollowerSet {
     uint32_t m_maskSizeInBytes;
     boost::shared_ptr<uint8_t> m_realElements;
     boost::shared_ptr<uint32_t> m_binToElementsToHashTable;
+    uint32_t m_maxBinSize;
 };
 
 class Follower {

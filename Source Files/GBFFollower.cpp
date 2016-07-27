@@ -19,25 +19,6 @@ GBFFollower::GBFFollower(const FollowerSet& followerSet, const boost::shared_ptr
     }
 };
 
-boost::shared_ptr<uint8_t> GBFFollower::GBF_query(const boost::shared_ptr<GarbledBF> &filter, vector<boost::shared_ptr<RangeHash>> hashes,
-                                                uint8_t* element, int32_t eLen) {
-
-    boost::shared_ptr<uint8_t> recovered(new uint8_t[m_followerSet.m_maskSizeInBytes]);
-    memset(recovered.get(), 0, m_followerSet.m_maskSizeInBytes);
-    int32_t* indexes = filter->indexes;
-    //memset(indexes,0,hashNum);
-
-    for (int i = 0; i < hashes.size(); i++) {
-        int32_t index=RangeHash_Digest(hashes[i].get(), element, eLen);
-        indexes[i]=index;
-
-        if (!exists(index, indexes, i)) {
-            xorByteArray(recovered.get(), &filter->data[index*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
-        }
-    }
-    return recovered;
-}
-
 void GBFFollower::buildGBF(){
 
     AESRandom* rnd;
