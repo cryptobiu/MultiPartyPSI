@@ -36,12 +36,19 @@ enum class Strategy : uint8_t {
     CUCKOO_HASH_BINARY_HASH,
 };
 
+uint32_t getStrategy(Strategy strategy);
+
 extern Strategy strategies[12];
 
 struct CuckooHashInfo {
     uint32_t binIndex;
     uint32_t tableIndex;
     uint32_t hashedBy;
+};
+
+struct secParameters {
+    uint32_t m_symSecParameter;
+    uint32_t m_statSecParameter;
 };
 
 #endif //MULTIPARTYPSI_DEFS_H

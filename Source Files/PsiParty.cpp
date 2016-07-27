@@ -34,7 +34,7 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
 
     m_elementSizeInBits = sizeof(uint32_t) * 8;
 
-    PRINT_PARTY(m_partyId) << "is executing strategy " << (m_strategy == Strategy::NAIVE_METHOD_SMALL_N) << std::endl;
+    PRINT_PARTY(m_partyId) << "is executing strategy " << getStrategy(m_strategy) << std::endl;
 
     PRINT_PARTY(m_partyId) << "is receiving elements" << std::endl;
 
@@ -76,40 +76,40 @@ void PsiParty::initializeMaskSize() {
     // m_crypt->get_seclvl().statbits or m_crypt->get_seclvl().symbits
     switch(m_strategy) {
         case Strategy::NAIVE_METHOD_SMALL_N:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
             break;
         case Strategy::NAIVE_METHOD_LARGE_N:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits + (m_numOfParties-1)*m_setSize, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*m_setSize, 8);
             break;
         case Strategy::SIMPLE_HASH:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
             break;
         case Strategy::CUCKOO_HASH:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits + (m_numOfParties-1)*(m_crypt->get_seclvl().statbits/ceil_log2(m_setSize)+2), 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*(m_parameters.m_statSecParameter/ceil_log2(m_setSize)+2), 8);
             break;
         case Strategy::POLYNOMIALS:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
             break;
         case Strategy::BLOOM_FILTER:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
             break;
         case Strategy::BINARY_HASH:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
             break;
         case Strategy::POLYNOMIALS_SIMPLE_HASH:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
             break;
         case Strategy::BINARY_HASH_SIMPLE_HASH:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
             break;
         case Strategy::CUCKOO_HASH_POLYNOMIALS:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits + (m_numOfParties-1)*3, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*3, 8);
             break;
         case Strategy::CUCKOO_HASH_BLOOM_FILTER:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits + (m_numOfParties-1)*3, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*3, 8);
             break;
         case Strategy::CUCKOO_HASH_BINARY_HASH:
-            m_maskbitlen = pad_to_multiple(m_crypt->get_seclvl().symbits + (m_numOfParties-1)*3, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*3, 8);
             break;
         default:
             throw system_error();
@@ -127,8 +127,9 @@ void PsiParty::initializeCrypto() {
 
     memcpy(seed.get(), const_seed, AES_BYTES);
     (seed.get())[0] = static_cast<uint8_t>(m_partyId);
-    m_crypt.reset(new crypto(m_symsecbits, seed.get()));
+    m_crypt.reset(new crypto(m_parameters.m_symSecParameter, seed.get()));
 
+    m_parameters.m_statSecParameter = m_crypt->get_seclvl().statbits;
     m_crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
     srand((unsigned)rnd+time(0));
 
@@ -139,7 +140,7 @@ void PsiParty::LoadConfiguration() {
     m_setSize = stoi(m_config.Value("General", "setSize"));
     m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
 
-    m_symsecbits=stoi(m_config.Value("General", "securityParameter"));
+    m_parameters.m_symSecParameter=stoi(m_config.Value("General", "symSecurityParameter"));
     m_seedSize=stoi(m_config.Value("General", "seedSizeInBytes"));
 }
 
@@ -279,7 +280,7 @@ void PsiParty::runAsLeader() {
 
     auto leader = LeaderFactory::getLeader(m_strategy, leaderResults, hashInfo,
                                              m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize,
-                                           m_eleptr, ceil_divide(m_internal_bitlen, 8), m_parties, NUM_HASH_FUNCTIONS, m_maxBinSize);
+                                           m_eleptr, ceil_divide(m_internal_bitlen, 8), m_parties, NUM_HASH_FUNCTIONS, m_maxBinSize, m_parameters);
 
     auto intersection = leader->run();
 
@@ -326,7 +327,7 @@ void PsiParty::runAsFollower(CSocket &leader) {
     struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), elements_to_hash_table, nelesinbin, m_numOfBins,
         NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes(), m_eleptr, bin_to_elements_to_hash_table};
 
-    auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, leader, m_maxBinSize);
+    auto follower = FollowerFactory::getFollower(m_strategy,set, m_secretShare, leader, m_maxBinSize, m_parameters);
     follower->run();
 
     PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;

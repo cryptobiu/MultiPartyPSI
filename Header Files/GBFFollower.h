@@ -16,14 +16,12 @@
 
 class GBFFollower : public Follower, public GarbledBloomFilter {
 public:
-    GBFFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader);
+    GBFFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters);
     virtual ~GBFFollower() {};
 
     virtual void run();
 
     void buildGBF();
-
-    void initServer(uint32_t securityParameter, uint8_t** input, uint32_t setSize, uint8_t** masks);
 
 private:
     boost::shared_ptr<uint8_t> GBF_query(const boost::shared_ptr<GarbledBF> &filter, vector<boost::shared_ptr<RangeHash>> hashes,

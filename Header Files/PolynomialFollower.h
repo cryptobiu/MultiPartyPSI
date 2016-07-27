@@ -18,7 +18,7 @@ NTL_CLIENT
 
 class PolynomialFollower : public Follower {
 public:
-    PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader);
+    PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters);
     virtual ~PolynomialFollower() {};
 
     virtual void run();
@@ -31,8 +31,6 @@ protected:
 
     GF2X m_irreduciblePolynomial;
     vector<GF2EX> m_polynomials;
-
-    uint32_t m_securityParameter;
 private:
     COPY_CTR(PolynomialFollower);
     ASSIGN_OP(PolynomialFollower);

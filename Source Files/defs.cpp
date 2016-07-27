@@ -52,3 +52,34 @@ bool isZero(uint8_t *arr, uint32_t size) {
     }
     return true;
 }
+
+uint32_t getStrategy(Strategy strategy) {
+    switch (strategy) {
+        case Strategy::NAIVE_METHOD_SMALL_N:
+            return 0;
+        case Strategy::NAIVE_METHOD_LARGE_N:
+            return 1;
+        case Strategy::SIMPLE_HASH:
+            return 2;
+        case Strategy::CUCKOO_HASH:
+            return 3;
+        case Strategy::POLYNOMIALS:
+            return 4;
+        case Strategy::BLOOM_FILTER:
+            return 5;
+        case Strategy::BINARY_HASH:
+            return 6;
+        case Strategy::POLYNOMIALS_SIMPLE_HASH:
+            return 7;
+        case Strategy::BINARY_HASH_SIMPLE_HASH:
+            return 8;
+        case Strategy::CUCKOO_HASH_POLYNOMIALS:
+            return 9;
+        case Strategy::CUCKOO_HASH_BLOOM_FILTER:
+            return 10;
+        case Strategy::CUCKOO_HASH_BINARY_HASH:
+            return 11;
+        default:
+            return 20;
+    }
+}

@@ -10,8 +10,8 @@
 class SimpleHashingNaiveFollower : public Follower {
 public:
     SimpleHashingNaiveFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare,
-                               CSocket &leader, uint32_t maxBinSize) :
-            Follower(followerSet, secretShare, leader), m_maxBinSize(maxBinSize) {};
+                               CSocket &leader, const secParameters &parameters, uint32_t maxBinSize) :
+            Follower(followerSet, secretShare, leader, parameters), m_maxBinSize(maxBinSize) {};
     virtual ~SimpleHashingNaiveFollower() {};
 
     virtual void run();

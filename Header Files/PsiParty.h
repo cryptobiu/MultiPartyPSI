@@ -61,7 +61,7 @@ private:
     uint32_t m_numOfBins;
     prf_state_ctx m_prfState;
 
-    uint32_t m_symsecbits;
+    secParameters m_parameters;
 
     boost::shared_ptr<uint8_t> m_eleptr;
 

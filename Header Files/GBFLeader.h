@@ -21,7 +21,7 @@ struct filter_rcv_ctx {
     uint32_t filterSize;
     uint32_t numOfHashFunction;
     uint32_t maskbytelen;
-    uint32_t securityParameter;
+    uint32_t symSecurityParameter;
     uint32_t numHashes;
     CSocket* sock;
 };
@@ -32,7 +32,7 @@ public:
               const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins,
               const boost::shared_ptr <uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize,
               boost::shared_ptr<uint8_t> elements, uint32_t elementSize,
-              const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions);
+              const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions, const secParameters &parameters);
 
     virtual ~GBFLeader() { };
 

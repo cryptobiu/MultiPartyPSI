@@ -15,14 +15,15 @@
 
 class GarbledBloomFilter {
 protected:
-    GarbledBloomFilter(uint32_t maskSizeInBytes, uint32_t setSize);
+    GarbledBloomFilter(uint32_t maskSizeInBytes, uint32_t statSecurityParameter, uint32_t setSize);
 
     boost::shared_ptr<GarbledBF> GBF_Create();
     void BF_GenerateParameters();
 
     uint32_t m_setSizeE;
     uint32_t m_maskSizeInBytesE;
-    uint32_t m_securityParameter;
+    uint32_t m_statSecurityParameter;
+
     boost::shared_ptr<BFParameters> m_bfParam;
 };
 

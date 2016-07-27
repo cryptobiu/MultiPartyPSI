@@ -6,10 +6,8 @@
 #include "PolynomialUtils.h"
 #include "ot-psi.h"
 
-PolynomialFollower::PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader) :
-        Follower(followerSet, secretShare, leader) {
-
-    m_securityParameter = m_followerSet.m_maskSizeInBytes*8;
+PolynomialFollower::PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters) :
+        Follower(followerSet, secretShare, leader, parameters) {
 
     generateIrreduciblePolynomial();
 
@@ -37,7 +35,7 @@ void PolynomialFollower::buildPolynomials(){
 
 void PolynomialFollower::generateIrreduciblePolynomial() {
 
-    m_irreduciblePolynomial = BuildSparseIrred_GF2X(m_securityParameter);
+    m_irreduciblePolynomial = BuildSparseIrred_GF2X(m_parameters.m_statSecParameter);
     GF2E::init(m_irreduciblePolynomial);
 
     // std::cout << "Follower irreducible Polynomial is " << m_irreduciblePolynomial << std::endl;

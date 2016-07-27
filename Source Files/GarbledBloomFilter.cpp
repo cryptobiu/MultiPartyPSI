@@ -5,16 +5,15 @@
 #include "GarbledBloomFilter.h"
 #include <iostream>
 
-GarbledBloomFilter::GarbledBloomFilter(uint32_t maskSizeInBytes, uint32_t setSize) :
-        m_maskSizeInBytesE(maskSizeInBytes), m_setSizeE(setSize), m_bfParam(new BFParameters()) {
-    m_securityParameter = m_maskSizeInBytesE * 8;
+GarbledBloomFilter::GarbledBloomFilter(uint32_t maskSizeInBytes, uint32_t statSecurityParameter, uint32_t setSize) :
+        m_maskSizeInBytesE(maskSizeInBytes), m_statSecurityParameter(statSecurityParameter), m_setSizeE(setSize), m_bfParam(new BFParameters()) {
     BF_GenerateParameters();
 }
 
 void GarbledBloomFilter::BF_GenerateParameters() {
     m_bfParam->n=m_setSizeE;
-    m_bfParam->k=m_securityParameter;
-    m_bfParam->m=ceil(m_setSizeE*m_securityParameter*log2e);
+    m_bfParam->k=m_statSecurityParameter;
+    m_bfParam->m=ceil(m_setSizeE*m_statSecurityParameter*log2e);
     if (m_bfParam->m%8!=0)
         m_bfParam->m=ceil(m_bfParam->m/8.0)*8;
 }

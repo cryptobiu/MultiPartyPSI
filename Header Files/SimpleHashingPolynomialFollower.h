@@ -10,8 +10,8 @@
 class SimpleHashingPolynomialFollower : public PolynomialFollower {
 public:
     SimpleHashingPolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader,
-                                    uint32_t maxBinSize) :
-    PolynomialFollower(followerSet,secretShare,leader), m_maxBinSize(maxBinSize) {}
+                                    const secParameters &parameters, uint32_t maxBinSize) :
+    PolynomialFollower(followerSet,secretShare,leader, parameters), m_maxBinSize(maxBinSize) {}
 private:
     virtual void buildPolynomials() override;
 

@@ -26,8 +26,8 @@ struct FollowerSet {
 
 class Follower {
 public:
-    Follower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader) :
-            m_followerSet(followerSet), m_secretShare(secretShare), m_leader(leader) {};
+    Follower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters) :
+            m_followerSet(followerSet), m_secretShare(secretShare), m_leader(leader), m_parameters(parameters) {};
     virtual ~Follower() {};
 
     virtual void run()=0;
@@ -35,6 +35,7 @@ protected:
     const FollowerSet &m_followerSet;
     boost::shared_ptr<uint8_t> m_secretShare;
     CSocket &m_leader;
+    secParameters m_parameters;
 private:
     COPY_CTR(Follower);
     ASSIGN_OP(Follower);

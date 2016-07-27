@@ -8,9 +8,9 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
                      const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins,
           const boost::shared_ptr <uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize,
                      boost::shared_ptr<uint8_t> elements, uint32_t elementSize,
-          const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions) :
+          const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions, const secParameters &parameters) :
         Leader(leaderResults, hashInfo, numOfBins, secretShare, maskSizeInBytes, setSize, elements, elementSize, parties,
-               numOfHashFunctions), GarbledBloomFilter(maskSizeInBytes, setSize) {
+               numOfHashFunctions, parameters), GarbledBloomFilter(maskSizeInBytes, m_parameters.m_statSecParameter, setSize) {
 
     for (auto &party : m_parties) {
         m_partiesFilters[party.first] = std::vector<boost::shared_ptr<GarbledBF>>();
@@ -60,7 +60,7 @@ void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
 
     filter_rcv_ctx* ctx = (filter_rcv_ctx*) ctx_tmp;
 
-    uint32_t keySize = ctx->securityParameter/8;
+    uint32_t keySize = ctx->symSecurityParameter/8;
     for (uint32_t i = 0; i < ctx->numHashes; i++) {
         boost::shared_ptr<uint8_t > key(new uint8_t[keySize]);
         ctx->sock->Receive(key.get(), keySize);
@@ -94,7 +94,7 @@ void GBFLeader::receiveServerData() {
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].numHashes = m_bfParam->k;
 
-        (rcv_ctxs.get())[party.first - 1].securityParameter = m_securityParameter;
+        (rcv_ctxs.get())[party.first - 1].symSecurityParameter = m_parameters.m_symSecParameter;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
     }
 
