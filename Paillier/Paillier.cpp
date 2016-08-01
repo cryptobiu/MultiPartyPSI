@@ -53,7 +53,15 @@ PaillierParty::PaillierParty(uint32_t partyId, ConfigFile &config, boost::asio::
     m_delta = factorial(m_numOfParties);
 
     ZZ_p::init(m_field);
+    PRINT_PARTY(m_partyId) << "n is " << m_n << std::endl;
+    PRINT_PARTY(m_partyId) << "a is " << m_a << std::endl;
+    PRINT_PARTY(m_partyId) << "b is " << m_b << std::endl;
+
+    PRINT_PARTY(m_partyId) << "b^n is " << rep(powerZZ(m_b,m_n)) << std::endl;
+    PRINT_PARTY(m_partyId) << "(1+n)^a is " << rep(powerZZ(1+m_n, m_a)) << std::endl;
     m_g = rep(powerZZ(1+m_n, m_a)*powerZZ(m_b,m_n));
+
+    PRINT_PARTY(m_partyId) << "g is " << m_g << std::endl;
 
     for (auto &party : m_parties) {
         double j = party.first;
@@ -118,12 +126,27 @@ void PaillierParty::secretShare() {
     }
 
     m_share = rep(s_i);
+
+    ZZ_p::init(m_n);
+    ZZ_p pubKey;
+    pubKey.init(m_a*beta*m_m);
+    m_pubKey = rep(pubKey);
 }
 
 ZZ PaillierParty::encrypt(const ZZ& plain) {
+    std::cout << "n is " << m_n << std::endl;
     ZZ_p::init(m_n);
+    std::cout << "get random" << std::endl;
     ZZ x = rep(random_ZZ_p());
+    std::cout << "field is " << m_field << std::endl;
     ZZ_p::init(m_field);
+    std::cout << "calculating rep" << std::endl;
+
+    std::cout << "g is " << m_g << std::endl;
+    std::cout << "plain is " << plain << std::endl;
+    std::cout << "x is " << x << std::endl;
+    std::cout << "n is " << m_n << std::endl;
+
     return rep(powerZZ(m_g, plain)*powerZZ(x,m_n));
 }
 
@@ -133,19 +156,19 @@ ZZ PaillierParty::partialDecrypt(const ZZ& cipher) {
 }
 
 ZZ PaillierParty::decrypt(const std::map<uint32_t,ZZ> &partialCiphers,
-                          const std::map<uint32_t,ZZ> &shares) {
-    ZZ_p::init(m_n*m_m);
+                          const std::vector<ZZ> &pubKeys) {
+    ZZ_p::init(m_n);
 
-    vec_ZZ_p xs;
-    vec_ZZ_p ys;
-    for (auto &share : shares) {
-        xs.append(ZZ_p(share.first));
-        ZZ_p val;
-        val.init(share.second);
-        ys.append(val);
+    ZZ_p sum(0);
+    for (auto &pubKey : pubKeys) {
+        ZZ_p value;
+        value.init(pubKey);
+        sum = sum + value;
     }
-    ZZ_pX polynomial = interpolate(xs, ys);
-    ZZ phi = m_a*rep(eval(polynomial,ZZ_p(0)));
+
+    ZZ_p a;
+    a.init(m_a);
+    ZZ phi = rep(a*sum);
 
     ZZ_p::init(m_field);
     ZZ_p prod(1);

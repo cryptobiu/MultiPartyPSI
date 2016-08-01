@@ -10,7 +10,10 @@
 
 #include <boost/thread/thread.hpp>
 #include "../Header Files/PsiParty.h"
-#include "../Paillier/Paillier.h"
+#include "../Paillier/KissnerParty.h"
+#include <NTL/ZZ.h>
+
+NTL_CLIENT
 
 using namespace std;
 
@@ -27,7 +30,11 @@ int main(int argc, char *argv[])
 
     PRINT_PARTY(partyId) << "initialize PaillierParty" << std::endl;
 
-    PaillierParty party(partyId, cf, io_service);
+    KissnerParty party(partyId, cf, io_service);
+
+    PRINT_PARTY(partyId) << "is connected" << std::endl;
+
+    party.run();
 
     PRINT_PARTY(partyId) << "done !" << std::endl;
 

@@ -30,7 +30,7 @@ AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI_C_0.1/PSI/OT BF_OT_SO
 AUX_SOURCE_DIRECTORY(/home/naor/libscapi/MultiPartyPSI/PSI_C_0.1/PSI/Threads BF_THREADS_SOURCES)
 AUX_SOURCE_DIRECTORY("/home/naor/libscapi/MultiPartyPSI/Source Files" SOURCES)
 
-set(SOURCE_FILES ${SOURCES} "Paillier/Paillier.cpp" "Source Files/Leader.cpp" "Source Files/SimpleHashingPolynomialFollower.cpp"
+set(SOURCE_FILES ${SOURCES} "Paillier/Paillier.cpp" "Paillier/KissnerParty.cpp" "Source Files/Leader.cpp" "Source Files/SimpleHashingPolynomialFollower.cpp"
         "Source Files/SimpleHashingPolynomialLeader.cpp" "Source Files/SimpleHashingNaiveFollower.cpp"
         "Source Files/SimpleHashingNaiveLeader.cpp"
         "Source Files/GarbledBloomFilter.cpp" PRG/PRG.cpp /home/naor/libscapi/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp

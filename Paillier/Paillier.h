@@ -13,14 +13,22 @@ NTL_CLIENT
 class PaillierParty : public MultiPartyPlayer {
 public:
     PaillierParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService);
+
+protected:
     ZZ encrypt(const ZZ& plain);
     ZZ partialDecrypt(const ZZ& cipher);
     ZZ decrypt(const std::map<uint32_t,ZZ> &partialCiphers,
-               const std::map<uint32_t,ZZ> &shares);
+               const std::vector<ZZ> &pubKeys);
+    ZZ getPubKey() {
+        return m_pubKey;
+    }
+    static void sendZZTo(const ZZ& element, const boost::shared_ptr<CSocket> &socket);
+    static void receiveZZFrom(ZZ& element, const boost::shared_ptr<CSocket> &socket);
 private:
+    COPY_CTR(PaillierParty);
+    ASSIGN_OP(PaillierParty);
 
-    void sendZZTo(const ZZ& element, const boost::shared_ptr<CSocket> &socket);
-    void receiveZZFrom(ZZ& element, const boost::shared_ptr<CSocket> &socket);
+
     void secretShare();
     uint32_t factorial(uint32_t n);
     ZZ_p powerZZ(const ZZ &base, const ZZ &exponent);
@@ -35,6 +43,7 @@ private:
     ZZ m_a;
     ZZ m_b;
     ZZ m_g;
+    ZZ m_pubKey;
     std::map<uint32_t, ZZ> m_lagrangeBasis;
 };
 
