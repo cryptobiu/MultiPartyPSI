@@ -1,5 +1,5 @@
 [General]
-numOfParties=3
+numOfParties=2
 setSize=100
 symSecurityParameter=128
 seedSizeInBytes=16
