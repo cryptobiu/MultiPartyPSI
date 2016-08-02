@@ -25,6 +25,10 @@ protected:
     static void sendZZTo(const ZZ& element, const boost::shared_ptr<CSocket> &socket);
     static void receiveZZFrom(ZZ& element, const boost::shared_ptr<CSocket> &socket);
 private:
+    ZZ_p getRandomZp(const ZZ& divisor1);
+    ZZ_p getRandomZp(const ZZ& divisor1, const ZZ& divisor2);
+    ZZ_p getRandomZp(const ZZ& divisor1, const ZZ& divisor2,const ZZ& divisor3,const ZZ& divisor4);
+
     COPY_CTR(PaillierParty);
     ASSIGN_OP(PaillierParty);
 
@@ -35,6 +39,10 @@ private:
     ZZ L_function(const ZZ& value);
 
 
+    ZZ m_pTag;
+    ZZ m_qTag;
+    ZZ m_p;
+    ZZ m_q;
     ZZ m_n;
     ZZ m_m;
     ZZ m_field;

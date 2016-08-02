@@ -12,6 +12,7 @@
 #include "../Header Files/PsiParty.h"
 #include "../Paillier/KissnerParty.h"
 #include <NTL/ZZ.h>
+#include <NTL/ZZ_p.h>
 
 NTL_CLIENT
 
@@ -37,6 +38,8 @@ int main(int argc, char *argv[])
     party.run();
 
     PRINT_PARTY(partyId) << "done !" << std::endl;
+
+    ZZ_p::init(ZZ(6));
 
     /*
     PRINT_PARTY(partyId) << "initialize PsiParty" << std::endl;
