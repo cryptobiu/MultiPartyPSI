@@ -16,6 +16,8 @@ public:
 private:
     COPY_CTR(KissnerParty);
     ASSIGN_OP(KissnerParty);
+
+    boost::shared_ptr<uint8_t> m_elements;
 };
 
 

@@ -78,7 +78,6 @@ def runMPPSI(strategy):
         conn, addr = s.accept()
         partyId = struct.unpack("<I",conn.recv(4))[0]
         parties[partyId] = conn
-        parties[partyId].send(struct.pack("B",strategy))
 
     # make elements to each party and send to them
     intersection = []
@@ -109,6 +108,9 @@ def runMPPSI(strategy):
     seed = os.urandom(seedSizeInBytes)
     for i in xrange(numOfParties):
         parties[i+1].send(seed)
+
+    for i in xrange(numOfParties):
+        parties[i+1].send(struct.pack("B",strategy))
 
     print "syncronizing... "
 
