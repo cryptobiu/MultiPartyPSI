@@ -21,6 +21,11 @@ bool isZero(uint8_t *arr, uint32_t size);
 #define COPY_CTR(A) A(const A&)
 #define ASSIGN_OP(A) A &operator=(const A&)
 
+enum class ProgramType : uint32_t {
+    OT_MPSI = 0,
+    KISSNER_MPSI,
+};
+
 enum class Strategy : uint8_t {
     NAIVE_METHOD_SMALL_N = 0,
     NAIVE_METHOD_LARGE_N,

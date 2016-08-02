@@ -8,7 +8,7 @@
 #include <NTL/ZZ_pX.h>
 #include <vector>
 
-PaillierParty::PaillierParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService) : MultiPartyPlayer(partyId,config,ioService) {
+PaillierParty::PaillierParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService) : BaseMPSIParty(partyId,config,ioService) {
     uint32_t symSecurityParameter = stoi(m_config.Value("General", "symSecurityParameter"));
     uint32_t bitSize;
     switch(symSecurityParameter) {

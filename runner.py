@@ -14,6 +14,7 @@ import os
 
 MAX_INT = 2**32-1
 MIN_INT = 0
+PROGRAM_TYPE = 0
 
 class Strategy:
     NAIVE_METHOD_SMALL_N = 0
@@ -54,10 +55,10 @@ seedSizeInBytes=int(config.get("General", "seedSizeInBytes"))
 def startPrograms(processes):
     if config.get("General", "debug") == "True":
         for i in xrange(2,numOfParties+1):
-            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config']))
+            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
     else:
         for i in xrange(1,numOfParties+1):
-            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config']))
+            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
 
 def runMPPSI(strategy):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -123,30 +124,34 @@ def runMPPSI(strategy):
 
     print "syncronized !"
 
-    try:
-        for i in xrange(1,numOfParties+1):
-            partyId = struct.unpack("<i", parties[i].recv(4))[0]
-            beginTime = struct.unpack("<f", parties[i].recv(4))[0]
-            afterSharing = struct.unpack("<f", parties[i].recv(4))[0]
-            afterOTs = struct.unpack("<f", parties[i].recv(4))[0]
-            afterAll = struct.unpack("<f", parties[i].recv(4))[0]
-            intersectionSize = struct.unpack("<i", parties[i].recv(4))[0]
+    if PROGRAM_TYPE == 0:
+        try:
+            for i in xrange(1,numOfParties+1):
+                partyId = struct.unpack("<i", parties[i].recv(4))[0]
+                beginTime = struct.unpack("<f", parties[i].recv(4))[0]
+                afterSharing = struct.unpack("<f", parties[i].recv(4))[0]
+                afterOTs = struct.unpack("<f", parties[i].recv(4))[0]
+                afterAll = struct.unpack("<f", parties[i].recv(4))[0]
+                intersectionSize = struct.unpack("<i", parties[i].recv(4))[0]
 
-            #calculations
-            timeForPhase1 = (afterSharing - beginTime)/CLOCKS_PER_SEC
-            timeForPhase2 = (afterOTs - afterSharing)/CLOCKS_PER_SEC
-            timeForPhase3 = (afterAll - afterOTs)/CLOCKS_PER_SEC
+                #calculations
+                timeForPhase1 = (afterSharing - beginTime)/CLOCKS_PER_SEC
+                timeForPhase2 = (afterOTs - afterSharing)/CLOCKS_PER_SEC
+                timeForPhase3 = (afterAll - afterOTs)/CLOCKS_PER_SEC
 
-            print "party id: %d" % partyId
-            print "time for phase 1: %f" % timeForPhase1
-            print "time for phase 2: %f" % timeForPhase2
-            print "time for phase 3: %f" % timeForPhase3
-            if i == leaderId:
-                print "intersection size is: %d" % intersectionSize
-    finally:
-        for process in processes:
-            process.wait()
-            print "return code is " + str(process.returncode)
+                print "party id: %d" % partyId
+                print "time for phase 1: %f" % timeForPhase1
+                print "time for phase 2: %f" % timeForPhase2
+                print "time for phase 3: %f" % timeForPhase3
+                if i == leaderId:
+                    print "intersection size is: %d" % intersectionSize
+        except:
+            pass
+
+
+    for process in processes:
+        process.wait()
+        print "return code is " + str(process.returncode)
 
 if __name__ == "__main__":
     for strategy in strategies:

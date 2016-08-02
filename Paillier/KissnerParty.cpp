@@ -2,6 +2,7 @@
 // Created by root on 8/1/16.
 //
 
+#include <NTL/ZZ_pE.h>
 #include "KissnerParty.h"
 
 KissnerParty::KissnerParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService) :
@@ -10,39 +11,191 @@ KissnerParty::KissnerParty(uint32_t partyId, ConfigFile &config, boost::asio::io
 }
 
 void KissnerParty::run() {
+
+    vector<ZZ> encCoefficients = getEncryptedCoefficients();
+    vector<ZZ> sharedPolynomial = makeSharedPolynomial(encCoefficients);
+
     uint32_t leaderId = stoi(m_config.Value("General", "leaderId"));
 
+
+
     if (m_partyId != leaderId) {
-
-        ZZ message = getRandomInNStar(m_n);
-        PRINT_PARTY(m_partyId) << "encrypting message " << message << std::endl;
-        ZZ cipher = encrypt(message);
-
-        sendZZTo(cipher,m_parties[leaderId]);
-
-        sendZZTo(getPubKey(),m_parties[leaderId]);
-
-        ZZ dec = partialDecrypt(cipher);
-
-        sendZZTo(dec,m_parties[leaderId]);
+        makeDecryptedPolynomialAsFollower(sharedPolynomial,leaderId);
     }
     else {
-        ZZ cipher;
-        receiveZZFrom(cipher,m_parties[2]);
+        vector<ZZ> decryptedPoly = makeDecryptedPolynomialAsLeader(sharedPolynomial);
+        ZZ_p::init(m_n);
+        ZZ_pX poly;
+        for (uint32_t i=0; i <= 2*m_setSize; i++) {
+            SetCoeff(poly,i,conv<ZZ_p>(decryptedPoly[i]));
+        }
+        vec_ZZ_p values = eval(poly,m_roots);
+        uint32_t intersectionSize=0;
+        for (auto &value : values) {
+            if (value==0) {
+                intersectionSize++;
+            }
+            std::cout << "intersection size is " << intersectionSize << std::endl;
+        }
+    }
+}
 
-        vector<ZZ> pubKeys;
-        pubKeys.push_back(getPubKey());
+void KissnerParty::makeDecryptedPolynomialAsFollower(const vector<ZZ>& sharedPoly, uint32_t leaderId) {
+    uint32_t prevParty = m_partyId-1;
+    uint32_t nextParty = m_partyId%m_numOfParties+1;
+
+    vector<ZZ> prevPoly;
+    for (uint32_t i=0; i<=2*m_setSize; i++) {
+        ZZ coeff;
+        sendZZTo(coeff,m_parties[prevParty]);
+        prevPoly.push_back(coeff);
+    }
+
+    vector<ZZ> nextPoly = addEncPolys(prevPoly,sharedPoly);
+
+    for (auto &coeff : nextPoly) {
+        sendZZTo(coeff,m_parties[nextParty]);
+    }
+
+    sendZZTo(getPubKey(),m_parties[leaderId]);
+
+    for (uint32_t i=0; i<=2*m_setSize; i++) {
+        ZZ cipher;
+        receiveZZFrom(cipher,m_parties[leaderId]);
+        ZZ dec = partialDecrypt(cipher);
+        sendZZTo(dec,m_parties[leaderId]);
+    }
+}
+
+vector<ZZ> KissnerParty::makeDecryptedPolynomialAsLeader(const vector<ZZ>& sharedPoly) {
+
+    uint32_t prevParty = m_partyId-1;
+    uint32_t nextParty = m_partyId%m_numOfParties+1;
+
+    for (auto &coeff : sharedPoly) {
+        sendZZTo(coeff,m_parties[nextParty]);
+    }
+
+    if (prevParty==0) {
+        prevParty = m_numOfParties;
+    }
+    vector<ZZ> finalPoly;
+    for (uint32_t i=0; i<=2*m_setSize; i++) {
+        ZZ coeff;
+        sendZZTo(coeff,m_parties[prevParty]);
+        finalPoly.push_back(coeff);
+    }
+
+    vector<ZZ> pubKeys;
+    pubKeys.push_back(getPubKey());
+    for (auto &party: m_parties) {
         ZZ pubKey;
-        receiveZZFrom(pubKey,m_parties[2]);
+        receiveZZFrom(pubKey,party.second);
         pubKeys.push_back(pubKey);
+    }
+
+    vector<ZZ> decryptedPoly;
+    for (auto &cipher : finalPoly) {
+        for (auto &party: m_parties) {
+            sendZZTo(cipher,party.second);
+        }
 
         map<uint32_t,ZZ> decs;
         decs[m_partyId]=partialDecrypt(cipher);
-        ZZ dec;
-        receiveZZFrom(dec,m_parties[2]);
-        decs[2]=dec;
-
-        ZZ decryption = decrypt(decs,pubKeys);
-        PRINT_PARTY(m_partyId) << "decrypted value is " << decryption << std::endl;
+        for (auto &party: m_parties) {
+            ZZ dec;
+            receiveZZFrom(dec,party.second);
+            decs[party.first]=dec;
+        }
+        decryptedPoly.push_back(decrypt(decs,pubKeys));
     }
+
+    return decryptedPoly;
+}
+
+vector<ZZ> KissnerParty::getEncryptedCoefficients() {
+    ZZ_p::init(m_n);
+    uint32_t elementSizeInBytes = ceil_divide(m_elementSizeInBits, 8);
+    for (uint32_t i=0; i < m_setSize; i++) {
+        m_roots.append(conv<ZZ_p>(ZZFromBytes(m_elements.get()+i*elementSizeInBytes,elementSizeInBytes)));
+    }
+    ZZ_pX polynomial = BuildFromRoots(m_roots);
+
+    uint32_t polyDeg = deg(polynomial);
+
+    vector<ZZ> coefficients;
+    for (uint32_t i = 0; i <= m_setSize; i++) {
+        ZZ_p coeff;
+        GetCoeff(coeff, polynomial, i);
+        coefficients.push_back(conv<ZZ>(coeff));
+    }
+
+    vector<ZZ> encCoefficients;
+
+    for (auto &coeff : coefficients) {
+        encCoefficients.push_back(encrypt(coeff));
+    }
+
+    return encCoefficients;
+}
+
+vector<ZZ> KissnerParty::addEncPolys(const vector<ZZ> poly1, const vector<ZZ> poly2) {
+    uint32_t polySize = poly1.size();
+
+    vector<ZZ> coefficients;
+    for (uint32_t i = 0; i < polySize; i++) {
+        coefficients.push_back(MulMod(poly1[i],poly2[i],m_field));
+    }
+    return coefficients;
+}
+
+vector<ZZ> KissnerParty::mulEncPolyByPoly(const vector<ZZ> encPoly, const vector<ZZ> poly) {
+    uint32_t polySize = encPoly.size();
+
+    vector<ZZ> coefficients;
+    for (uint32_t i = 0; i <= 2*polySize; i++) {
+        ZZ prod(1);
+        for (uint32_t j=0; j<=i; j++) {
+            prod=MulMod(prod,PowerMod(encPoly[j],poly[i-j],m_field),m_field);
+        }
+        coefficients.push_back(prod);
+    }
+    return coefficients;
+}
+
+vector<ZZ> KissnerParty::makeSharedPolynomial(const vector<ZZ>& encPoly) {
+    for (uint i = m_partyId+1; i <= m_numOfParties; i++) {
+        for (auto &encCoeff : encPoly) {
+            sendZZTo(encCoeff,m_parties[i]);
+        }
+    }
+
+    boost::shared_ptr<vector<ZZ>> receivedPolys(new vector<ZZ>[m_partyId]);
+    for (uint32_t i = 1; i <= m_partyId-1; i++) {
+        for (uint32_t j=0; j<=m_setSize; j++) {
+            ZZ encCoeff;
+            receiveZZFrom(encCoeff,m_parties[i]);
+            (receivedPolys.get()+i)->push_back(encCoeff);
+        }
+    }
+
+    *(receivedPolys.get()+m_partyId-1)=encPoly;
+
+    vector<ZZ> sumPoly;
+
+    for (uint32_t i = 0; i < m_partyId; i++) {
+        vector<ZZ> randomPoly;
+        for (uint32_t j=0; j <= m_setSize; j++) {
+            randomPoly.push_back(getRandomInNStar(m_field));
+        }
+        vector<ZZ> prodPoly = mulEncPolyByPoly(*(receivedPolys.get()+i),randomPoly);
+        if (sumPoly.empty()) {
+            sumPoly = prodPoly;
+        }
+        else {
+            sumPoly = addEncPolys(sumPoly,prodPoly);
+        }
+    }
+
+    return sumPoly;
 }

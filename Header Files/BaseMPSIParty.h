@@ -12,6 +12,7 @@ class BaseMPSIParty : public MultiPartyPlayer {
 public:
     BaseMPSIParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService);
     virtual ~BaseMPSIParty() {};
+    virtual void run()=0;
     void syncronize();
 protected:
     uint32_t m_setSize;

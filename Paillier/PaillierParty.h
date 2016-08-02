@@ -6,11 +6,12 @@
 #define MULTIPARTYPSI_PAILLIER_H
 
 #include "MultiPartyPlayer.h"
+#include "BaseMPSIParty.h"
 #include <NTL/ZZ.h>
 
 NTL_CLIENT
 
-class PaillierParty : public MultiPartyPlayer {
+class PaillierParty : public BaseMPSIParty {
 public:
     PaillierParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService);
 

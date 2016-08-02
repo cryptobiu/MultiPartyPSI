@@ -20,8 +20,9 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    uint partyId = atoi(argv[1]);
+    uint32_t partyId = static_cast<uint32_t>(atoi(argv[1]));
     char *configPath = argv[2];
+    ProgramType programType =  static_cast<ProgramType>(atoi(argv[3]));
 
     boost::asio::io_service io_service;
     boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service));
@@ -29,13 +30,25 @@ int main(int argc, char *argv[])
     // read the file as config file
     ConfigFile cf(configPath);
 
-    PRINT_PARTY(partyId) << "initialize PsiParty" << std::endl;
+    boost::shared_ptr<BaseMPSIParty> party;
+    switch(programType) {
+        case ProgramType::OT_MPSI:
+            party.reset(new PsiParty(partyId, cf, io_service));
+            break;
+        case ProgramType::KISSNER_MPSI:
+            party.reset(new KissnerParty(partyId, cf, io_service));
+            break;
+        default:
+            throw(system_error());
+    }
 
-    PsiParty party(partyId, cf, io_service);
-    party.syncronize();
+    PRINT_PARTY(partyId) << "Party is initialized" << std::endl;
+
+    party->syncronize();
+
     PRINT_PARTY(partyId) << "is connected" << std::endl;
 
-    party.run();
+    party->run();
 
     return 0;
 }
