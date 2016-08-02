@@ -110,8 +110,9 @@ def runMPPSI(strategy):
     for i in xrange(numOfParties):
         parties[i+1].send(seed)
 
-    for i in xrange(numOfParties):
-        parties[i+1].send(struct.pack("B",strategy))
+    if strategy is not None:
+        for i in xrange(numOfParties):
+            parties[i+1].send(struct.pack("B",strategy))
 
     print "syncronizing... "
 
@@ -154,5 +155,8 @@ def runMPPSI(strategy):
         print "return code is " + str(process.returncode)
 
 if __name__ == "__main__":
-    for strategy in strategies:
-        runMPPSI(strategy)
+    if PROGRAM_TYPE == 0:
+        for strategy in strategies:
+            runMPPSI(strategy)
+    else:
+        runMPPSI(None)
