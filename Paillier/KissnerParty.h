@@ -5,7 +5,7 @@
 #ifndef MULTIPARTYPSI_KISSNERPARTY_H
 #define MULTIPARTYPSI_KISSNERPARTY_H
 
-#include "Paillier.h"
+#include "PaillierParty.h"
 
 class KissnerParty : public PaillierParty {
 public:

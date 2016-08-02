@@ -24,18 +24,13 @@ protected:
     }
     static void sendZZTo(const ZZ& element, const boost::shared_ptr<CSocket> &socket);
     static void receiveZZFrom(ZZ& element, const boost::shared_ptr<CSocket> &socket);
-private:
-    ZZ_p getRandomZp(const ZZ& divisor1);
-    ZZ_p getRandomZp(const ZZ& divisor1, const ZZ& divisor2);
-    ZZ_p getRandomZp(const ZZ& divisor1, const ZZ& divisor2,const ZZ& divisor3,const ZZ& divisor4);
-
+    static ZZ getRandomInNStar(const ZZ& mod);
+protected:
     COPY_CTR(PaillierParty);
     ASSIGN_OP(PaillierParty);
 
-
     void secretShare();
     uint32_t factorial(uint32_t n);
-    ZZ_p powerZZ(const ZZ &base, const ZZ &exponent);
     ZZ L_function(const ZZ& value);
 
 
