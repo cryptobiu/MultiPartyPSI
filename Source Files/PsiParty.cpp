@@ -4,8 +4,7 @@
 
 
 #include <boost/thread/thread.hpp>
-#include "../../include/primitives/AES_PRG.hpp"
-#include "../../include/primitives/Prg.hpp"
+#include "primitives/Prg.hpp"
 //#include "PRG/PRG.hpp"
 #include "defs.h"
 #include <immintrin.h>

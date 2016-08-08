@@ -6,7 +6,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/asio/io_service.hpp>
-#include "../../include/comm/Comm.hpp"
+#include "comm/Comm.hpp"
 #include <boost/make_shared.hpp>
 #include "connection.h"
 

@@ -5,11 +5,11 @@
 #ifndef MULTIPARTYPSI_MULTIPSIPARTY_H
 #define MULTIPARTYPSI_MULTIPSIPARTY_H
 
-#include "../../include/infra/ConfigFile.hpp"
+#include "infra/ConfigFile.hpp"
 #include "defs.h"
 #include <boost/asio/io_service.hpp>
 #include <boost/shared_ptr.hpp>
-#include "../../include/comm/Comm.hpp"
+#include "comm/Comm.hpp"
 #include "socket.h"
 
 using boost::asio::io_service;
