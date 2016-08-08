@@ -8,6 +8,7 @@
 #include "PolynomialFollower.h"
 #include "SimpleHashingPolynomialFollower.h"
 #include "SimpleHashingNaiveFollower.h"
+#include <system_error>
 
 boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy, const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare,
                                                          CSocket &leader, const secParameters &parameters) {
@@ -25,5 +26,5 @@ boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy,
         default:
             break;
     }
-    throw(system_error());
+    throw(std::system_error());
 }

@@ -4,8 +4,6 @@
 
 
 #include <boost/thread/thread.hpp>
-#include "primitives/Prg.hpp"
-//#include "PRG/PRG.hpp"
 #include "defs.h"
 #include <immintrin.h>
 #include "ot-psi.h"
@@ -17,6 +15,7 @@
 #include "LeaderFactory.h"
 #include "NaiveLeader.h"
 #include <iomanip>
+#include "primitives/Prg.hpp"
 
 #define KEY_SIZE 16
 
@@ -329,8 +328,8 @@ void PsiParty::additiveSecretShare() {
         std::cout << std::endl;
         */
 
-        SecretKey key(share.get(), KEY_SIZE, "prgFromOpenSSLAES");
-        prgFromOpenSSLAES prg(shareSize/16);
+        SecretKey key(share.get(), KEY_SIZE, "PrgFromOpenSSLAES");
+        PrgFromOpenSSLAES prg(shareSize/16);
 
         prg.setKey(key);
         vector<byte> result;

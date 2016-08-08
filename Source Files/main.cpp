@@ -1,6 +1,5 @@
 #include <iostream>
 #include <sstream>
-#include "primitives/AES_PRG.hpp"
 
 #include <stdlib.h>
 #include "comm/Comm.hpp"

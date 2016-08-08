@@ -8,6 +8,7 @@
 #include "PolynomialLeader.h"
 #include "SimpleHashingPolynomialLeader.h"
 #include "SimpleHashingNaiveLeader.h"
+#include <system_error>
 
 boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults,
                                                    const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins, const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes,
@@ -33,5 +34,5 @@ boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, const
         default:
             break;
     }
-    throw(system_error());
+    throw(std::system_error());
 }
