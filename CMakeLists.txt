@@ -40,7 +40,7 @@ AUX_SOURCE_DIRECTORY("$ENV{HOME}/MultiPartyPSI/Source Files" SOURCES)
 set(SOURCE_FILES ${SOURCES} "Paillier/PaillierParty.cpp" "Paillier/KissnerParty.cpp" "Source Files/BaseMPSIParty.cpp" "Source Files/Leader.cpp" "Source Files/SimpleHashingPolynomialFollower.cpp"
         "Source Files/SimpleHashingPolynomialLeader.cpp" "Source Files/SimpleHashingNaiveFollower.cpp"
         "Source Files/SimpleHashingNaiveLeader.cpp"
-        "Source Files/GarbledBloomFilter.cpp" PRG/PRG.cpp $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
+        "Source Files/GarbledBloomFilter.cpp" $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
         ${MIRACLE_LIB_SOURCES} ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES})
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
@@ -48,6 +48,5 @@ TARGET_LINK_LIBRARIES(MultiPartyPSI
         $ENV{HOME}/libscapi/scapi.a
         $ENV{HOME}/libscapi/install/lib/libntl.a
         $ENV{HOME}/libscapi/install/lib/libOTExtension.so
-        ${SSL_LIBDIR}/libcrypto.a
         $ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib/miracl.a
         boost_system boost_thread miracl pthread ssl crypto glib-2.0 dl gmpxx gmp z)
