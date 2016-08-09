@@ -3,15 +3,9 @@ project(MultiPartyPSI)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -maes -mavx -ldl -mpclmul -lpthread -lboost_system -lntl -lgmp -lgmpxx -ggdb -lssl -lcrypto -lglib-2.0")
 
-#SET (SSL_LIBDIR /usr/local/ssl/lib/)
-SET (SSL_LIBDIR /usr/ssl/lib/)
-
 SET (BOOST_ROOT $ENV{HOME}/boost_1_60_0/)
 SET (BOOST_INCLUDEDIR $ENV{HOME}/boost_1_60_0/)
 SET (BOOST_LIBRARYDIR $ENV{HOME}/boost_1_60_0/stage/lib)
-
-#SET (SSL_LIBDIR /usr/local/ssl/lib/)
-SET (SSL_LIBDIR /usr/ssl/lib/)
 
 find_package(Boost COMPONENTS system thread chrono date_time atomic REQUIRED)
 
