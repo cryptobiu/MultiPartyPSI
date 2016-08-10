@@ -1,3 +1,5 @@
+import ConfigParser
+
 conf = open("Config", "rb").read()
 config = ConfigParser.RawConfigParser(allow_no_value=True)
 config.readfp(io.BytesIO(conf))
