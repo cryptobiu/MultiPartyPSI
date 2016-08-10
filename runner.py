@@ -27,7 +27,7 @@ import os
 MAX_INT = 2**32-1
 MIN_INT = 0
 PROGRAM_TYPE = 0
-
+LOOPBACK_ADDRESS = "127.0.0.1"
 class Strategy:
     NAIVE_METHOD_SMALL_N = 0
     NAIVE_METHOD_LARGE_N = 1
@@ -58,7 +58,11 @@ numOfParties = int(config.get("General", "numOfParties"))
 
 CLOCKS_PER_SEC = 1000000.0
 
+isLocalHost = (config.get("General", "remote") == "False")
+
 serverIp = config.get("server", "ip")
+if isLocalHost:
+    serverIp = LOOPBACK_ADDRESS
 serverPort = int(config.get("server", "port"))
 leaderId = int(config.get("General", "leaderId"))
 setSize = int(config.get("General", "setSize"))
