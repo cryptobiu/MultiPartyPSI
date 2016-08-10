@@ -1,4 +1,6 @@
 import ConfigParser
+import io
+import os
 
 conf = open("Config", "rb").read()
 config = ConfigParser.RawConfigParser(allow_no_value=True)
