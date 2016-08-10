@@ -18,7 +18,13 @@ MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile &config,
 
     m_numOfParties = stoi(m_config.Value("General", "numOfParties"));
 
+    m_isLocalHost = (m_config.Value("General", "remote") == std::string("False"));
+
     m_ipAddress = m_config.Value(std::to_string(m_partyId).c_str(), "ip");
+    if (m_isLocalHost) {
+        m_ipAddress = LOOPBACK_ADDRESS;
+    }
+
     m_basePortNumber = stoi(m_config.Value(std::to_string(m_partyId).c_str(), "port"));
 
     PRINT_PARTY(m_partyId) << "try to connect to parties" << std::endl;
@@ -39,6 +45,9 @@ void MultiPartyPlayer::connectToAllParties() {
         }
 
         string ipAddress = m_config.Value(std::to_string(i), "ip");
+        if (m_isLocalHost) {
+            ipAddress = LOOPBACK_ADDRESS;
+        }
         uint32_t portNumber = stoi(m_config.Value(std::to_string(i), "port"));
         PRINT_PARTY(m_partyId) << "My port " << m_basePortNumber + i << std::endl;
         m_myAddresses[i].reset(new SocketPartyData(IpAdress::from_string(m_ipAddress), m_basePortNumber + i));
@@ -73,6 +82,9 @@ void MultiPartyPlayer::connectToAllParties() {
 void MultiPartyPlayer::connectToServer() {
 
     auto serverIp = m_config.Value("server", "ip");
+    if (m_isLocalHost) {
+        serverIp = LOOPBACK_ADDRESS;
+    }
     auto serverPort = stoi(m_config.Value("server", "port"));
 
     //SocketPartyData me(IpAdress::from_string(m_ipAddress), m_basePortNumber+m_numOfParties+1);

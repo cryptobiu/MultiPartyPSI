@@ -70,14 +70,7 @@ def startPrograms(processes):
             processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
     else:
         for i in xrange(1,numOfParties+1):
-            port_list = []
-            basePort = int(config.get(str(i), "port"))
-            for j in xrange(1,numOfParties+1):
-                port_list.append('-p')
-                port_list.append('{0}:{0}'.format(basePort+j))
-            command_line = ['docker', 'run'] + port_list + ['scapicryptobiu/multipartypsi', './bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]
-            print command_line
-            processes.append(Popen(command_line))
+            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
 
 def runMPPSI(strategy):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -89,11 +82,15 @@ def runMPPSI(strategy):
         thread.start_new_thread(startPrograms, (processes,))
     else:
         for i in xrange(1,numOfParties+1):
-            clientIp = config.get(str(i), "ip")
-            os.system('sshpass -p "305151094" scp ./Config naor@{0}:Config'.format(clientIp))
-            os.system('sshpass -p "305151094" scp ./bin/MultiPartyPSI naor@{0}:MultiPartyPSI'.format(clientIp))
-            os.system('sshpass -p "305151094" ssh naor@{0} "./MultiPartyPSI {1} {2} {3} &"'.format(
-                clientIp,i,'Config',PROGRAM_TYPE))
+            name = config.get(str(i), "name")
+
+            port_list = ""
+            basePort = int(config.get(str(i), "port"))
+            for j in xrange(1,numOfParties+1):
+                port_list = port_list + ' -p {0}:{0}'.format(basePort+j)
+            command_line = 'docker run' + port_list + 'scapicryptobiu/multipartypsi ./MultiPartyPSI ' + str(i) + ' Config ' + str(PROGRAM_TYPE)
+            print command_line
+            os.system('sshpass -p "305151094" ssh naor@{0} "{1} &"'.format(name, command_line))
 
     parties = {}
     for _ in xrange(numOfParties):

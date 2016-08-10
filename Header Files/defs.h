@@ -8,6 +8,7 @@
 #include <openssl/rand.h>
 #include <emmintrin.h>
 #include <stdint.h>
+#include <string>
 
 typedef __m128i block;
 
@@ -55,6 +56,8 @@ struct secParameters {
     uint32_t m_symSecParameter;
     uint32_t m_statSecParameter;
 };
+
+extern const std::string LOOPBACK_ADDRESS;
 
 #endif //MULTIPARTYPSI_DEFS_H
 
