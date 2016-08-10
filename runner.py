@@ -92,7 +92,7 @@ def runMPPSI(strategy):
             basePort = int(config.get(str(i), "port"))
             for j in xrange(1,numOfParties+1):
                 port_list = port_list + ' -p {0}:{0}'.format(basePort+j)
-            command_line = 'docker run' + port_list + 'scapicryptobiu/multipartypsi ./MultiPartyPSI ' + str(i) + ' Config ' + str(PROGRAM_TYPE)
+            command_line = 'docker run' + port_list + 'scapicryptobiu/multipartypsi ./bin/MultiPartyPSI ' + str(i) + ' Config ' + str(PROGRAM_TYPE)
             print command_line
             os.system('sshpass -p "305151094" ssh naor@{0} "{1} &"'.format(name, command_line))
 
