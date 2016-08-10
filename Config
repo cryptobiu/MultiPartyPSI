@@ -1,12 +1,12 @@
 [General]
-numOfParties=3
+numOfParties=2
 setSize=1
 symSecurityParameter=128
 seedSizeInBytes=16
 elementSizeInBits=32
 leaderId=1
 debug=False
-remote=True
+remote=False
 [server]
 ip=127.0.0.1
 port=5000

@@ -21,6 +21,7 @@ MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile &config,
     m_ipAddress = m_config.Value(std::to_string(m_partyId).c_str(), "ip");
     m_basePortNumber = stoi(m_config.Value(std::to_string(m_partyId).c_str(), "port"));
 
+    PRINT_PARTY(m_partyId) << "try to connect to parties" << std::endl;
     connectToAllParties();
 
     PRINT_PARTY(m_partyId) << "connected to all parties" << std::endl;
@@ -39,7 +40,9 @@ void MultiPartyPlayer::connectToAllParties() {
 
         string ipAddress = m_config.Value(std::to_string(i), "ip");
         uint32_t portNumber = stoi(m_config.Value(std::to_string(i), "port"));
+        PRINT_PARTY(m_partyId) << "My port " << m_basePortNumber + i << std::endl;
         m_myAddresses[i].reset(new SocketPartyData(IpAdress::from_string(m_ipAddress), m_basePortNumber + i));
+        PRINT_PARTY(m_partyId) << "Other port " << portNumber+m_partyId << std::endl;
         m_otherAddresses[i].reset(new SocketPartyData(IpAdress::from_string(ipAddress), portNumber+m_partyId));
         //m_otherParties[i] = boost::make_shared<CommPartyTCPSynced>(m_ioService, *m_myAddresses[i], *m_otherAddresses[i]);
         m_parties[i] = boost::shared_ptr<CSocket>(new CSocket());

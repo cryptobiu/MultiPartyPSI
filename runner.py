@@ -9,6 +9,18 @@ import struct
 import random
 import os
 
+#docker images
+#docker run -it scapicryptobiu/multipartypsi
+# docker rmi -f scapicryptobiu/multipartypsi
+# docker build --no-cache -t scapicryptobiu/multipartypsi:latest .
+
+# dpkg-divert --local --rename --add /sbin/initctl
+# ln -s /bin/true /sbin/initctl
+
+# sudo service docker stop
+# sudo pkill -f docker
+# sudo service docker start
+
 # ssh naor@cybhead1.lnx.biu.ac.il
 # ssh cybnode11
 
@@ -58,7 +70,14 @@ def startPrograms(processes):
             processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
     else:
         for i in xrange(1,numOfParties+1):
-            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
+            port_list = []
+            basePort = int(config.get(str(i), "port"))
+            for j in xrange(1,numOfParties+1):
+                port_list.append('-p')
+                port_list.append('{0}:{0}'.format(basePort+j))
+            command_line = ['docker', 'run'] + port_list + ['scapicryptobiu/multipartypsi', './bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]
+            print command_line
+            processes.append(Popen(command_line))
 
 def runMPPSI(strategy):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
