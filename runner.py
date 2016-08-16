@@ -125,17 +125,17 @@ def runMPPSI(strategy):
         intersection.append(random.randint(MIN_INT, MAX_INT))
 
     for i in xrange(numOfParties):
-        s = []
+        els = []
         for j in xrange(setSize-intersectSize):
             s.append(random.randint(MIN_INT, MAX_INT))
 
-        s = s + intersection
-        random.shuffle(s)
+        els = els + intersection
+        random.shuffle(els)
 
         # print "elements to party %d are %s" % (i, " ".join([str(el) for el in s]))
 
         buffer = ""
-        for e in s:
+        for e in els:
             buffer = buffer + struct.pack("<I",e)
 
         parties[i+1].send(buffer)
