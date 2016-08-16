@@ -76,9 +76,10 @@ def startPrograms(processes):
         for i in xrange(1,numOfParties+1):
             processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
 
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((serverIp, serverPort))
+
 def runMPPSI(strategy):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((serverIp, serverPort))
     s.listen(numOfParties)
 
     processes = []
@@ -186,8 +187,6 @@ def runMPPSI(strategy):
     for process in processes:
         process.wait()
         print "return code is " + str(process.returncode)
-
-    s.close()
 
 if __name__ == "__main__":
     if PROGRAM_TYPE == 0:
