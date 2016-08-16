@@ -328,6 +328,9 @@ void PsiParty::additiveSecretShare() {
         std::cout << std::endl;
         */
 
+        PRINT_PARTY(m_partyId) << "share is : ";
+        printHex(share.get(),KEY_SIZE);
+        std::cout << std::endl;
         SecretKey key(share.get(), KEY_SIZE, "PrgFromOpenSSLAES");
         PrgFromOpenSSLAES prg(shareSize/16);
 
