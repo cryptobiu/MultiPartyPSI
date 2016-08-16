@@ -71,10 +71,12 @@ void MultiPartyPlayer::connectToAllParties() {
      */
 
     for (uint32_t i = 1; i <= m_partyId-1; i++) {
+        std::cout << "Listen to " << m_myAddresses[i]->getIpAddress().to_string().c_str() << ":" << m_myAddresses[i]->getPort() << std::endl;
         listen(m_myAddresses[i]->getIpAddress().to_string().c_str(), m_myAddresses[i]->getPort(), m_parties[i].get(), 1);
     }
 
     for (uint32_t i=m_partyId+1; i <= m_numOfParties; i++) {
+        std::cout << "Connect to " << m_otherAddresses[i]->getIpAddress().to_string().c_str() << ":" << m_otherAddresses[i]->getPort() << std::endl;
         connect(m_otherAddresses[i]->getIpAddress().to_string().c_str(), m_otherAddresses[i]->getPort(), *m_parties[i]);
     }
 }
