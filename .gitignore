@@ -2,3 +2,7 @@
 ConfigParser
 bin
 io
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
