@@ -183,10 +183,11 @@ def runMPPSI(strategy):
         except:
             pass
 
-
     for process in processes:
         process.wait()
         print "return code is " + str(process.returncode)
+
+    s.close()
 
 if __name__ == "__main__":
     if PROGRAM_TYPE == 0:
