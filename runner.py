@@ -79,6 +79,15 @@ def startPrograms(processes):
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((serverIp, serverPort))
 
+os.system('cmake CMakeLists.txt; make')
+
+if config.get("General", "remote") == "True":
+    for i in xrange(1,numOfParties+1):
+        ip = config.get(str(i), "ip")
+
+        os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
+        os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
+
 def runMPPSI(strategy):
     s.listen(numOfParties)
 
@@ -98,11 +107,6 @@ def runMPPSI(strategy):
             print command_line
             os.system('sshpass -p "305151094" ssh naor@{0} "{1} &"'.format(name, command_line))
         '''
-        for i in xrange(1,numOfParties+1):
-            ip = config.get(str(i), "ip")
-
-            os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
-            os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
 
         for i in xrange(1,numOfParties+1):
             ip = config.get(str(i), "ip")
