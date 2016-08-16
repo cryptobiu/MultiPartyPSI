@@ -106,9 +106,7 @@ def runMPPSI(strategy):
         for i in xrange(1,numOfParties+1):
             ip = config.get(str(i), "ip")
 
-            command_line = './MultiPartyPSI/MultiPartyPSI ' + str(i) + ' MultiPartyPSI/Config ' + str(PROGRAM_TYPE)
-            print command_line
-            os.system('ssh -i key.pem {0} "{1}" &'.format(ip, command_line))
+            processes.append(Popen(['ssh', '-i', 'key.pem', ip, './MultiPartyPSI/MultiPartyPSI', str(i), 'MultiPartyPSI/Config', str(PROGRAM_TYPE)]))
 
     parties = {}
     for _ in xrange(numOfParties):
