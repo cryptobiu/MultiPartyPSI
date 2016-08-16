@@ -345,8 +345,6 @@ void PsiParty::additiveSecretShare() {
         */
     }
 
-    /*
     PRINT_PARTY(m_partyId) << "my secret shares are: ";
     printShares(m_secretShare, m_numOfBins,getMaskSizeInBytes());
-    */
 }
