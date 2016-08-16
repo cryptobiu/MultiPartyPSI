@@ -85,6 +85,7 @@ def runMPPSI(strategy):
     if config.get("General", "remote") == "False":
         thread.start_new_thread(startPrograms, (processes,))
     else:
+        '''
         for i in xrange(1,numOfParties+1):
             name = config.get(str(i), "name")
 
@@ -95,6 +96,14 @@ def runMPPSI(strategy):
             command_line = 'docker run' + port_list + 'scapicryptobiu/multipartypsi ./bin/MultiPartyPSI ' + str(i) + ' Config ' + str(PROGRAM_TYPE)
             print command_line
             os.system('sshpass -p "305151094" ssh naor@{0} "{1} &"'.format(name, command_line))
+        '''
+        for i in xrange(1,numOfParties+1):
+            ip = config.get(str(i), "ip")
+
+            os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip, command_line))
+            command_line = './MultiPartyPSI/MultiPartyPSI ' + str(i) + ' MultiPartyPSI/Config ' + str(PROGRAM_TYPE)
+            print command_line
+            os.system('ssh -i key.pem {0} "{1} &"'.format(ip, command_line))
 
     parties = {}
     for _ in xrange(numOfParties):
