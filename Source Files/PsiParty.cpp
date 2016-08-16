@@ -314,25 +314,19 @@ void PsiParty::additiveSecretShare() {
     memset(m_secretShare.get(), 0, shareSize);
 
     for (auto &share : shares) {
-        /*
-        std::cout << "key: ";
-        printHex(share.get(),KEY_SIZE);
-        std::cout << std::endl;
-
-        std::shared_ptr<vector<byte>> key;
-        key.reset(new vector<byte>(share.get(), share.get()+KEY_SIZE));
-        AES_PRG prg(key, shareSize);
-        byte *prgResult = prg.getRandomBytes();
-        std::cout << "PRG result: ";
-        printHex(prgResult,shareSize);
-        std::cout << std::endl;
-        */
 
         PRINT_PARTY(m_partyId) << "share is : ";
         printHex(share.get(),KEY_SIZE);
         std::cout << std::endl;
+
+
+        SecretKey key(share.get(), KEY_SIZE, "OpenSSLRC4");
+        OpenSSLRC4 prg;
+
+        /*
         SecretKey key(share.get(), KEY_SIZE, "PrgFromOpenSSLAES");
         PrgFromOpenSSLAES prg(shareSize/16);
+        */
 
         prg.setKey(key);
         vector<byte> result;
