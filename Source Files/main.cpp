@@ -9,7 +9,7 @@
 
 #include <boost/thread/thread.hpp>
 #include "../Header Files/PsiParty.h"
-#include "../Paillier/KissnerParty.h"
+#include "KissnerParty.h"
 #include <NTL/ZZ.h>
 #include <NTL/ZZ_p.h>
 

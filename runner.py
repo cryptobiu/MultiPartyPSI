@@ -26,7 +26,7 @@ import os
 
 MAX_INT = 2**32-1
 MIN_INT = 0
-PROGRAM_TYPE = 1
+PROGRAM_TYPE = 0
 LOOPBACK_ADDRESS = "127.0.0.1"
 class Strategy:
     NAIVE_METHOD_SMALL_N = 0
@@ -43,8 +43,8 @@ class Strategy:
     CUCKOO_HASH_BINARY_HASH = 11
 
 '''
-strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Strategy.SIMPLE_HASH, Strategy.CUCKOO_HASH, Strategy.POLYNOMIALS,
-                        Strategy.BLOOM_FILTER, Strategy.BINARY_HASH, Strategy.POLYNOMIALS_SIMPLE_HASH, Strategy.BINARY_HASH_SIMPLE_HASH, Strategy.CUCKOO_HASH_POLYNOMIALS,
+strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Strategy.SIMPLE_HASH, Strategy.POLYNOMIALS,
+                        Strategy.BLOOM_FILTER, Strategy.POLYNOMIALS_SIMPLE_HASH, Strategy.BINARY_HASH, Strategy.BINARY_HASH_SIMPLE_HASH, Strategy.CUCKOO_HASH, Strategy.CUCKOO_HASH_POLYNOMIALS,
                         Strategy.CUCKOO_HASH_BLOOM_FILTER, Strategy.CUCKOO_HASH_BINARY_HASH]
 '''
 
