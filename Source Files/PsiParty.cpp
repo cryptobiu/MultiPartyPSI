@@ -319,14 +319,14 @@ void PsiParty::additiveSecretShare() {
         printHex(share.get(),KEY_SIZE);
         std::cout << std::endl;
 
-
+        /*
         SecretKey key(share.get(), KEY_SIZE, "OpenSSLRC4");
         OpenSSLRC4 prg;
-
-        /*
-        SecretKey key(share.get(), KEY_SIZE, "PrgFromOpenSSLAES");
-        PrgFromOpenSSLAES prg(shareSize/16);
         */
+
+        SecretKey key(share.get(), KEY_SIZE, "PrgFromOpenSSLAES");
+        PrgFromOpenSSLAES prg(ceil_divide(shareSize,16));
+
 
         prg.setKey(key);
         vector<byte> result;
