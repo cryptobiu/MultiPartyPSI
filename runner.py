@@ -86,6 +86,7 @@ if config.get("General", "remote") == "True":
         ip = config.get(str(i), "ip")
 
         os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
+	os.system('scp -i key.pem ./Config {0}:MultiPartyPSI/Config'.format(ip))
         os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
 
 def runMPPSI(strategy):
@@ -132,7 +133,7 @@ def runMPPSI(strategy):
     for i in xrange(numOfParties):
         els = []
         for j in xrange(setSize-intersectSize):
-            s.append(random.randint(MIN_INT, MAX_INT))
+            els.append(random.randint(MIN_INT, MAX_INT))
 
         els = els + intersection
         random.shuffle(els)

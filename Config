@@ -1,6 +1,6 @@
 [General]
-numOfParties=10
-setSize=1
+numOfParties=8
+setSize=5
 symSecurityParameter=128
 seedSizeInBytes=16
 elementSizeInBits=32
