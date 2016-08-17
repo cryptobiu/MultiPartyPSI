@@ -49,9 +49,7 @@ void MultiPartyPlayer::connectToAllParties() {
             ipAddress = LOOPBACK_ADDRESS;
         }
         uint32_t portNumber = stoi(m_config.Value(std::to_string(i), "port"));
-        PRINT_PARTY(m_partyId) << "My port " << m_basePortNumber + i << std::endl;
         m_myAddresses[i].reset(new SocketPartyData(IpAdress::from_string(m_ipAddress), m_basePortNumber + i));
-        PRINT_PARTY(m_partyId) << "Other port " << portNumber+m_partyId << std::endl;
         m_otherAddresses[i].reset(new SocketPartyData(IpAdress::from_string(ipAddress), portNumber+m_partyId));
         //m_otherParties[i] = boost::make_shared<CommPartyTCPSynced>(m_ioService, *m_myAddresses[i], *m_otherAddresses[i]);
         m_parties[i] = boost::shared_ptr<CSocket>(new CSocket());
@@ -71,12 +69,10 @@ void MultiPartyPlayer::connectToAllParties() {
      */
 
     for (uint32_t i = 1; i <= m_partyId-1; i++) {
-        std::cout << "Listen to " << m_myAddresses[i]->getIpAddress().to_string().c_str() << ":" << m_myAddresses[i]->getPort() << std::endl;
         listen(m_myAddresses[i]->getIpAddress().to_string().c_str(), m_myAddresses[i]->getPort(), m_parties[i].get(), 1);
     }
 
     for (uint32_t i=m_partyId+1; i <= m_numOfParties; i++) {
-        std::cout << "Connect to " << m_otherAddresses[i]->getIpAddress().to_string().c_str() << ":" << m_otherAddresses[i]->getPort() << std::endl;
         connect(m_otherAddresses[i]->getIpAddress().to_string().c_str(), m_otherAddresses[i]->getPort(), *m_parties[i]);
     }
 }

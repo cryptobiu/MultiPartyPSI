@@ -23,12 +23,9 @@ int main(int argc, char *argv[])
     char *configPath = argv[2];
     ProgramType programType =  static_cast<ProgramType>(atoi(argv[3]));
 
-    PRINT_PARTY(partyId) << "Begin" << std::endl;
-
     boost::asio::io_service io_service;
     boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service));
 
-    PRINT_PARTY(partyId) << "Here" << std::endl;
     // read the file as config file
     ConfigFile cf(configPath);
 

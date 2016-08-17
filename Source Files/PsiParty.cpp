@@ -314,16 +314,6 @@ void PsiParty::additiveSecretShare() {
     memset(m_secretShare.get(), 0, shareSize);
 
     for (auto &share : shares) {
-
-        PRINT_PARTY(m_partyId) << "share is : ";
-        printHex(share.get(),KEY_SIZE);
-        std::cout << std::endl;
-
-        /*
-        SecretKey key(share.get(), KEY_SIZE, "OpenSSLRC4");
-        OpenSSLRC4 prg;
-        */
-
         SecretKey key(share.get(), KEY_SIZE, "PrgFromOpenSSLAES");
         PrgFromOpenSSLAES prg(ceil_divide(shareSize,16));
 
@@ -341,7 +331,4 @@ void PsiParty::additiveSecretShare() {
         }
         */
     }
-
-    PRINT_PARTY(m_partyId) << "my secret shares are: ";
-    printShares(m_secretShare.get(), m_numOfBins,getMaskSizeInBytes());
 }

@@ -26,7 +26,7 @@ import os
 
 MAX_INT = 2**32-1
 MIN_INT = 0
-PROGRAM_TYPE = 0
+PROGRAM_TYPE = 1
 LOOPBACK_ADDRESS = "127.0.0.1"
 class Strategy:
     NAIVE_METHOD_SMALL_N = 0
