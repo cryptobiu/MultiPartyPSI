@@ -4,6 +4,7 @@
 
 #include "LeaderFactory.h"
 #include "NaiveLeader.h"
+#include "NaiveInverseLeader.h"
 #include "GBFLeader.h"
 #include "PolynomialLeader.h"
 #include "SimpleHashingPolynomialLeader.h"
@@ -18,6 +19,9 @@ boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, const
     switch(strategy) {
         case Strategy::NAIVE_METHOD_SMALL_N:
             return boost::shared_ptr<Leader>(new NaiveLeader(leaderResults, hashInfo, numOfBins,
+                                                             secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters));
+        case Strategy::NAIVE_METHOD_LARGE_N:
+            return boost::shared_ptr<Leader>(new NaiveInverseLeader(leaderResults, hashInfo, numOfBins,
                                                              secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters));
         case Strategy::BLOOM_FILTER:
             return boost::shared_ptr<Leader>(new GBFLeader(leaderResults, hashInfo, numOfBins,

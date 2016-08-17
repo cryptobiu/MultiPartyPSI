@@ -31,11 +31,11 @@ AUX_SOURCE_DIRECTORY($ENV{HOME}/MultiPartyPSI/PSI_C_0.1/PSI/OT BF_OT_SOURCES)
 AUX_SOURCE_DIRECTORY($ENV{HOME}/MultiPartyPSI/PSI_C_0.1/PSI/Threads BF_THREADS_SOURCES)
 AUX_SOURCE_DIRECTORY("$ENV{HOME}/MultiPartyPSI/Source Files" SOURCES)
 
-set(SOURCE_FILES ${SOURCES} "Source Files/PaillierParty.cpp" "Source Files/KissnerParty.cpp" "Source Files/BaseMPSIParty.cpp" "Source Files/Leader.cpp" "Source Files/SimpleHashingPolynomialFollower.cpp"
+set(SOURCE_FILES ${SOURCES} "Source Files/NaiveInverseLeader.cpp" "Source Files/PaillierParty.cpp" "Source Files/KissnerParty.cpp" "Source Files/BaseMPSIParty.cpp" "Source Files/Leader.cpp" "Source Files/SimpleHashingPolynomialFollower.cpp"
         "Source Files/SimpleHashingPolynomialLeader.cpp" "Source Files/SimpleHashingNaiveFollower.cpp"
         "Source Files/SimpleHashingNaiveLeader.cpp"
         "Source Files/GarbledBloomFilter.cpp" $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
-        ${MIRACLE_LIB_SOURCES} ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES})
+        ${MIRACLE_LIB_SOURCES} ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES} "Header Files/NaiveInverseFollower.h" "Source Files/NaiveInverseLeader.cpp" "Header Files/NaiveInverseLeader.h")
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI

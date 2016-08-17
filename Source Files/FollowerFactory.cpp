@@ -4,6 +4,7 @@
 
 #include "FollowerFactory.h"
 #include "NaiveFollower.h"
+#include "NaiveInverseFollower.h"
 #include "GBFFollower.h"
 #include "PolynomialFollower.h"
 #include "SimpleHashingPolynomialFollower.h"
@@ -15,6 +16,8 @@ boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy,
     switch(strategy) {
         case Strategy::NAIVE_METHOD_SMALL_N:
             return boost::shared_ptr<Follower>(new NaiveFollower(followerSet, secretShare, leader, parameters));
+        case Strategy::NAIVE_METHOD_LARGE_N:
+            return boost::shared_ptr<Follower>(new NaiveInverseFollower(followerSet, secretShare, leader, parameters));
         case Strategy::BLOOM_FILTER:
             return boost::shared_ptr<Follower>(new GBFFollower(followerSet, secretShare, leader, parameters));
         case Strategy::POLYNOMIALS:
