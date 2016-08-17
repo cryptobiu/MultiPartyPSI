@@ -79,7 +79,7 @@ def startPrograms(processes):
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((serverIp, serverPort))
 
-os.system('cmake CMakeLists.txt; make')
+#os.system('cmake CMakeLists.txt; make')
 
 if config.get("General", "remote") == "True":
     for i in xrange(1,numOfParties+1):
