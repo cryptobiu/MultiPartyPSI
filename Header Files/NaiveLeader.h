@@ -22,7 +22,7 @@ protected:
 
     bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
 
-    virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t binIndex);
+    virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex);
 
     map<uint32_t , boost::shared_ptr<uint8_t>> m_partiesResults;
 private:
