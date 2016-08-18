@@ -23,6 +23,7 @@ vector<uint32_t> Leader::run() {
         if (isElementInAllSets(i, binIndex, tableIndex, hashFuncIndex, secret)) {
             intersection.push_back(i);
         }
+        std::cout << ceil(i*100.0/m_setSize) << " precent is done" << std::endl;
     }
 
     return intersection;

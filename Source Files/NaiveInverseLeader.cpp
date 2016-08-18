@@ -67,6 +67,7 @@ vec_GF2 NaiveInverseLeader::solve(mat_GF2 A, vec_GF2 b) {
     sol.SetLength(A.NumCols(), GF2(0));
 
     int32_t lastRow=A.NumRows()-1;
+
     while (A[lastRow][A.NumCols()-1]==0) {
         if ((A[lastRow]*sol) != b[lastRow]) {
             throw(system_error());
@@ -92,7 +93,6 @@ vec_GF2 NaiveInverseLeader::solve(mat_GF2 A, vec_GF2 b) {
         lastRow--;
     }
 
-    std::cout << "solution to matrix is " << sol << std::endl;
     return sol;
 }
 
