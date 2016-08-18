@@ -49,5 +49,7 @@ int main(int argc, char *argv[])
 
     party->run();
 
+    PRINT_PARTY(partyId) << "After run" << std::endl;
+
     return 0;
 }

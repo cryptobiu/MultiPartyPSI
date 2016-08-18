@@ -21,12 +21,14 @@ crypto::crypto(uint32_t symsecbits) {
 }
 
 crypto::~crypto() {
+	/*
 	free_prf_state(&global_prf_state);
 	free(aes_hash_in_buf);
 	free(aes_hash_out_buf);
 	free(sha_hash_buf);
 	free(aes_hash_buf_y1);
 	free(aes_hash_buf_y2);
+	 */
 	//TODO: securely delete the AES keys
 }
 

@@ -150,7 +150,7 @@ void PsiParty::runAsLeader() {
     map<uint32_t , boost::shared_ptr<uint8_t>> leaderResults;
 
     boost::shared_ptr<uint32_t> perm(new uint32_t[m_setSize]);
-    memset(perm.get(),0,m_setSize);
+    memset(perm.get(),0,m_setSize*sizeof(uint32_t));
 
     boost::shared_ptr<uint32_t> nelesinbin(new uint32_t[m_numOfBins]);
     memset(nelesinbin.get(),0,m_numOfBins);
@@ -206,10 +206,10 @@ void PsiParty::runAsLeader() {
         runLeaderAgainstFollower(party, leaderResults[party.first], nelesinbin, outbitlen, hash_table);
     }
 
-    PRINT_PARTY(m_partyId) << "otpsi was successful" << std::endl;
-
-
     boost::shared_ptr<CuckooHashInfo> hashInfo(new CuckooHashInfo[m_setSize]);
+    for (uint32_t i = 0; i < m_setSize; i++) {
+        hashInfo.get()[i].tableIndex = -1;
+    }
 
     for (uint32_t i = 0; i < m_numOfBins; i++) {
         // if bin is not empty

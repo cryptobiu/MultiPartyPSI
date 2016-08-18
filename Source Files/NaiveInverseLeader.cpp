@@ -37,8 +37,6 @@ void NaiveInverseLeader::receiveServerData() {
 
 vec_GF2 NaiveInverseLeader::solve(mat_GF2 A, vec_GF2 b) {
 
-    std::cout << "canonization began" << std::endl;
-
     uint32_t nextRow = 0;
     for (uint32_t j =0; j < A.NumCols(); j++) {
         uint32_t i;
@@ -64,8 +62,6 @@ vec_GF2 NaiveInverseLeader::solve(mat_GF2 A, vec_GF2 b) {
             nextRow++;
         }
     }
-
-    std::cout << "canonization was successful" << std::endl;
 
     vec_GF2 sol;
     sol.SetLength(A.NumCols(), GF2(0));
