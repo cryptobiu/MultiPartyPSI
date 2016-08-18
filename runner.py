@@ -47,8 +47,10 @@ strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Stra
                         Strategy.BLOOM_FILTER, Strategy.POLYNOMIALS_SIMPLE_HASH, Strategy.BINARY_HASH, Strategy.BINARY_HASH_SIMPLE_HASH, Strategy.CUCKOO_HASH, Strategy.CUCKOO_HASH_POLYNOMIALS,
                         Strategy.CUCKOO_HASH_BLOOM_FILTER, Strategy.CUCKOO_HASH_BINARY_HASH]
 '''
-
+'''
 strategies = [Strategy.NAIVE_METHOD_SMALL_N,Strategy.SIMPLE_HASH,Strategy.BLOOM_FILTER,Strategy.POLYNOMIALS,Strategy.POLYNOMIALS_SIMPLE_HASH,]
+'''
+strategies = [Strategy.NAIVE_METHOD_LARGE_N,]
 
 conf = open("Config", "rb").read()
 config = ConfigParser.RawConfigParser(allow_no_value=True)
@@ -86,7 +88,7 @@ if config.get("General", "remote") == "True":
         ip = config.get(str(i), "ip")
 
         os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
-	os.system('scp -i key.pem ./Config {0}:MultiPartyPSI/Config'.format(ip))
+        os.system('scp -i key.pem ./Config {0}:MultiPartyPSI/Config'.format(ip))
         os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
 
 def runMPPSI(strategy):

@@ -31,23 +31,90 @@ void NaiveInverseLeader::receiveServerData() {
                 fullVector.append(vec_GF2FromBytes(ptr+j*m_maskSizeInBytes, m_maskSizeInBytes));
             }
         }
-        m_matPerHash[i] = to_mat_GF2(fullVector);
+        m_matPerHash[i] = transpose(to_mat_GF2(fullVector));
     }
 }
 
-vec_GF2 NaiveInverseLeader::vec_GF2FromBytes(uint8_t *arr, uint32_t size) {
+vec_GF2 NaiveInverseLeader::solve(mat_GF2 A, vec_GF2 b) {
+
+    uint32_t nextRow = 0;
+    for (uint32_t j =0; j < A.NumCols(); j++) {
+        uint32_t i;
+        for (i=nextRow; i < A.NumRows(); i++) {
+            if (A[i][j] == 1) {
+                break;
+            }
+        }
+        if (A[i][j] == 1) {
+            if (nextRow !=i) {
+                swap(A[nextRow],A[i]);
+                swap(b[nextRow],b[i]);
+            }
+            for (uint32_t k=nextRow+1; k < A.NumRows(); k++) {
+                if (A[k][j] == 1) {
+                    A[k] = A[k] + A[nextRow];
+                    b[k] = b[k] + b[nextRow];
+                }
+            }
+            nextRow++;
+        }
+    }
+
+    vec_GF2 sol;
+    sol.SetLength(A.NumCols(), GF2(0));
+
+    int32_t lastRow=A.NumRows()-1;
+    for (int32_t j=A.NumCols()-1; j >=0; j--) {
+        if (lastRow == -1) {
+            throw(system_error());
+        }
+        while (A[lastRow][j]==0) {
+            if ((A[lastRow]*sol) != b[lastRow]) {
+                throw(system_error());
+            }
+            lastRow--;
+            if (lastRow == -1) {
+                throw(system_error());
+            }
+        }
+        if ((A[lastRow]*sol) != b[lastRow]) {
+            sol[j]=1;
+        }
+        lastRow--;
+    }
+
+    std::cout << "solution to matrix is " << sol << std::endl;
+    return sol;
+}
+
+vec_GF2 NaiveInverseLeader::vec_GF2FromBytes(uint8_t *arr, uint32_t sizeInBytes) {
     NTL::GF2X e;
-    NTL::GF2XFromBytes(e, arr, size);
-    return VectorCopy(e, size * sizeof(uint8_t));
+    NTL::GF2XFromBytes(e, arr, sizeInBytes);
+    return VectorCopy(e, sizeInBytes*8);
+    //return VectorCopy(e, m_setSize*m_partiesResults.size());
 }
 
 bool NaiveInverseLeader::isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex) {
 
     vec_GF2 b = vec_GF2FromBytes(formerShare, m_maskSizeInBytes);
 
-    GF2 det;
-    vec_GF2 res;
-    solve(det, res, m_matPerHash[hashIndex], b);
+    try {
+        vec_GF2 res = solve(m_matPerHash[hashIndex], b);
 
-    return (det != 0);
-};
+        for (uint32_t i =0; i < m_parties.size()*m_setSize; i+=m_setSize) {
+            uint32_t numOnes = 0;
+            for (uint32_t j = 0; j < m_setSize; j++) {
+                if (res[i+j]==1) {
+                    numOnes++;
+                }
+            }
+            if (numOnes != 1) {
+                return false;
+            }
+        }
+    }
+    catch(system_error) {
+        return false;
+    }
+    return true;
+}

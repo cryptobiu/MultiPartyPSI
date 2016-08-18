@@ -317,7 +317,6 @@ void PsiParty::additiveSecretShare() {
         SecretKey key(share.get(), KEY_SIZE, "PrgFromOpenSSLAES");
         PrgFromOpenSSLAES prg(ceil_divide(shareSize,16));
 
-
         prg.setKey(key);
         vector<byte> result;
         prg.getPRGBytes(result, 0,shareSize);

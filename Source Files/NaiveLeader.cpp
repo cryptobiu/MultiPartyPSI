@@ -39,6 +39,7 @@ bool NaiveLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t
 }
 
 bool NaiveLeader::isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex) {
+    std::cout << "NaiveLeader::isZeroXOR" << std::endl;
     if (partyNum <= m_parties.size()+1) {
         uint8_t *partyResult = m_partiesResults[partyNum].get();
         for (uint32_t i = hashIndex*m_setSize; i < (hashIndex+1)*m_setSize; i++) {
