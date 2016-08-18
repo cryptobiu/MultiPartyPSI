@@ -194,6 +194,7 @@ def runMPPSI(strategy):
     for process in processes:
         process.wait()
         print "return code is " + str(process.returncode)
+    print "real intersection size is %d" % intersectSize
 
 if __name__ == "__main__":
     if PROGRAM_TYPE == 0:

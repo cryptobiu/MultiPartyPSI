@@ -37,6 +37,8 @@ void NaiveInverseLeader::receiveServerData() {
 
 vec_GF2 NaiveInverseLeader::solve(mat_GF2 A, vec_GF2 b) {
 
+    std::cout << "canonization began" << std::endl;
+
     uint32_t nextRow = 0;
     for (uint32_t j =0; j < A.NumCols(); j++) {
         uint32_t i;
@@ -44,6 +46,9 @@ vec_GF2 NaiveInverseLeader::solve(mat_GF2 A, vec_GF2 b) {
             if (A[i][j] == 1) {
                 break;
             }
+        }
+        if (i==A.NumRows()) {
+            continue;
         }
         if (A[i][j] == 1) {
             if (nextRow !=i) {
@@ -60,23 +65,31 @@ vec_GF2 NaiveInverseLeader::solve(mat_GF2 A, vec_GF2 b) {
         }
     }
 
+    std::cout << "canonization was successful" << std::endl;
+
     vec_GF2 sol;
     sol.SetLength(A.NumCols(), GF2(0));
 
     int32_t lastRow=A.NumRows()-1;
-    for (int32_t j=A.NumCols()-1; j >=0; j--) {
+    while (A[lastRow][A.NumCols()-1]==0) {
+        if ((A[lastRow]*sol) != b[lastRow]) {
+            throw(system_error());
+        }
+        lastRow--;
         if (lastRow == -1) {
             throw(system_error());
         }
-        while (A[lastRow][j]==0) {
-            if ((A[lastRow]*sol) != b[lastRow]) {
-                throw(system_error());
-            }
-            lastRow--;
-            if (lastRow == -1) {
-                throw(system_error());
-            }
+    }
+
+
+    for (int32_t j=A.NumCols()-1; j >= 0; j--) {
+        if (A[lastRow][j]==0) {
+            continue;
         }
+        if (lastRow == -1) {
+            throw(system_error());
+        }
+
         if ((A[lastRow]*sol) != b[lastRow]) {
             sol[j]=1;
         }
