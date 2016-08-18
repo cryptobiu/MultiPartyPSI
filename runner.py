@@ -41,11 +41,12 @@ class Strategy:
     CUCKOO_HASH_POLYNOMIALS = 9
     CUCKOO_HASH_BLOOM_FILTER = 10
     CUCKOO_HASH_BINARY_HASH = 11
+    GAUSS_SIMPLE_HASH = 12
 
 '''
 strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Strategy.SIMPLE_HASH, Strategy.POLYNOMIALS,
                         Strategy.BLOOM_FILTER, Strategy.POLYNOMIALS_SIMPLE_HASH, Strategy.BINARY_HASH, Strategy.BINARY_HASH_SIMPLE_HASH, Strategy.CUCKOO_HASH, Strategy.CUCKOO_HASH_POLYNOMIALS,
-                        Strategy.CUCKOO_HASH_BLOOM_FILTER, Strategy.CUCKOO_HASH_BINARY_HASH]
+                        Strategy.CUCKOO_HASH_BLOOM_FILTER, Strategy.CUCKOO_HASH_BINARY_HASH, Strategy.GAUSS_SIMPLE_HASH]
 '''
 
 strategies = [Strategy.NAIVE_METHOD_SMALL_N,Strategy.NAIVE_METHOD_LARGE_N,Strategy.SIMPLE_HASH,

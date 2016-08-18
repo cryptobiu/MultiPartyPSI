@@ -20,9 +20,9 @@
 #include <stdint.h>
 
 using namespace std;
-Strategy strategies[12] = {Strategy::NAIVE_METHOD_SMALL_N, Strategy::NAIVE_METHOD_LARGE_N, Strategy::SIMPLE_HASH, Strategy::CUCKOO_HASH, Strategy::POLYNOMIALS,
+Strategy strategies[13] = {Strategy::NAIVE_METHOD_SMALL_N, Strategy::NAIVE_METHOD_LARGE_N, Strategy::SIMPLE_HASH, Strategy::CUCKOO_HASH, Strategy::POLYNOMIALS,
 Strategy::BLOOM_FILTER, Strategy::BINARY_HASH, Strategy::POLYNOMIALS_SIMPLE_HASH, Strategy::BINARY_HASH_SIMPLE_HASH, Strategy::CUCKOO_HASH_POLYNOMIALS,
-Strategy::CUCKOO_HASH_BLOOM_FILTER, Strategy::CUCKOO_HASH_BINARY_HASH};
+Strategy::CUCKOO_HASH_BLOOM_FILTER, Strategy::CUCKOO_HASH_BINARY_HASH, Strategy::GAUSS_SIMPLE_HASH};
 
 const std::string LOOPBACK_ADDRESS = "127.0.0.1";
 
@@ -81,6 +81,8 @@ uint32_t getStrategy(Strategy strategy) {
             return 10;
         case Strategy::CUCKOO_HASH_BINARY_HASH:
             return 11;
+        case Strategy::GAUSS_SIMPLE_HASH:
+            return 12:
         default:
             return 20;
     }

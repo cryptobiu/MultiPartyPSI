@@ -56,7 +56,6 @@ void PsiParty::setBinsParameters() {
 }
 
 void PsiParty::initializeMaskSize() {
-    // m_crypt->get_seclvl().statbits or m_crypt->get_seclvl().symbits
     switch(m_strategy) {
         case Strategy::NAIVE_METHOD_SMALL_N:
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
@@ -65,6 +64,9 @@ void PsiParty::initializeMaskSize() {
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*m_setSize, 8);
             break;
         case Strategy::SIMPLE_HASH:
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
+            break;
+        case Strategy::GAUSS_SIMPLE_HASH:
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*ceil_log2(m_setSize), 8);
             break;
         case Strategy::CUCKOO_HASH:
