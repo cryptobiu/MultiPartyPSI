@@ -35,15 +35,15 @@ bool NaiveLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t
     }
 
     // 1 is always the leader Id
-    return isZeroXOR(secret,2,hashFuncIndex);
+    return isZeroXOR(secret,2,hashFuncIndex,binIndex);
 }
 
-bool NaiveLeader::isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex) {
+bool NaiveLeader::isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex) {
     if (partyNum <= m_parties.size()+1) {
         uint8_t *partyResult = m_partiesResults[partyNum].get();
         for (uint32_t i = hashIndex*m_setSize; i < (hashIndex+1)*m_setSize; i++) {
             XOR(formerShare,partyResult+i*m_maskSizeInBytes, m_maskSizeInBytes);
-            if (isZeroXOR(formerShare,partyNum+1,hashIndex)) {
+            if (isZeroXOR(formerShare,partyNum+1,hashIndex,binIndex)) {
                 return true;
             }
             XOR(formerShare,partyResult+i*m_maskSizeInBytes, m_maskSizeInBytes);

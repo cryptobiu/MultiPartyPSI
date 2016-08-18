@@ -1,14 +1,12 @@
 //
-// Created by naor on 8/17/16.
+// Created by naor on 8/18/16.
 //
 
-#include <NTL/GF2X.h>
-#include "NaiveInverseLeader.h"
-#include "defs.h"
-#include "ot-psi.h"
+#include <ot-psi.h>
+#include "SimpleHashingNaiveInverseLeader.h"
 #include "GF2MatrixUtils.h"
 
-void NaiveInverseLeader::receiveServerData() {
+void SimpleHashingNaiveInverseLeader::receiveServerData() {
     boost::shared_ptr<mask_rcv_ctx> rcv_ctxs(new mask_rcv_ctx[m_parties.size()+1]);
     for (auto &party : m_parties) {
         //receive server masks
@@ -24,28 +22,29 @@ void NaiveInverseLeader::receiveServerData() {
 
     receiveServerDataInThreads<mask_rcv_ctx>(rcv_ctxs, &NaiveLeader::receiveMasks);
 
-    for (uint32_t i=0; i < m_numOfHashFunctions; i++) {
+    for (uint32_t i=0; i < m_numOfBins; i++) {
         vec_vec_GF2 fullVector;
+
         for (auto &result : m_partiesResults) {
-            uint8_t *ptr = result.second.get()+i*m_setSize*m_maskSizeInBytes;
-            for (uint32_t j=0; j < m_setSize; j++) {
+            uint8_t *ptr = result.second.get()+i*m_maxBinSize*m_maskSizeInBytes;
+            for (uint32_t j=0; j < m_maxBinSize; j++) {
                 fullVector.append(GF2MatrixUtils::vec_GF2FromBytes(ptr+j*m_maskSizeInBytes, m_maskSizeInBytes));
             }
         }
-        m_matPerHash[i] = transpose(to_mat_GF2(fullVector));
+        m_matPerBin[i] = transpose(to_mat_GF2(fullVector));
     }
 }
 
-bool NaiveInverseLeader::isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex) {
+bool SimpleHashingNaiveInverseLeader::isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex) {
 
     vec_GF2 b = GF2MatrixUtils::vec_GF2FromBytes(formerShare, m_maskSizeInBytes);
 
     try {
-        vec_GF2 res = GF2MatrixUtils::solve(m_matPerHash[hashIndex], b);
+        vec_GF2 res = GF2MatrixUtils::solve(m_matPerBin[binIndex], b);
 
-        for (uint32_t i =0; i < m_parties.size()*m_setSize; i+=m_setSize) {
+        for (uint32_t i =0; i < m_parties.size()*m_maxBinSize; i+=m_maxBinSize) {
             uint32_t numOnes = 0;
-            for (uint32_t j = 0; j < m_setSize; j++) {
+            for (uint32_t j = 0; j < m_maxBinSize; j++) {
                 if (res[i+j]==1) {
                     numOnes++;
                 }

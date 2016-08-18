@@ -19,7 +19,7 @@ public:
     virtual ~SimpleHashingNaiveLeader() {};
 private:
     virtual void receiveServerData();
-    virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t binIndex);
+    virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex);
 
     uint32_t m_maxBinSize;
 

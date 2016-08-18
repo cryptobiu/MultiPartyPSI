@@ -22,10 +22,8 @@ public:
 protected:
     virtual void receiveServerData();
 
-    virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex);
+    virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex);
 
-    vec_GF2 vec_GF2FromBytes(uint8_t *arr, uint32_t size);
-    vec_GF2 solve(mat_GF2 A, vec_GF2 b);
     map<uint32_t , mat_GF2> m_matPerHash;
 private:
     COPY_CTR(NaiveInverseLeader);

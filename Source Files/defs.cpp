@@ -82,7 +82,7 @@ uint32_t getStrategy(Strategy strategy) {
         case Strategy::CUCKOO_HASH_BINARY_HASH:
             return 11;
         case Strategy::GAUSS_SIMPLE_HASH:
-            return 12:
+            return 12;
         default:
             return 20;
     }

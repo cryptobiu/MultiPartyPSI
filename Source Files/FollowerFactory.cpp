@@ -9,6 +9,7 @@
 #include "PolynomialFollower.h"
 #include "SimpleHashingPolynomialFollower.h"
 #include "SimpleHashingNaiveFollower.h"
+#include "SimpleHashingNaiveInverseFollower.h"
 #include <system_error>
 
 boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy, const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare,
@@ -26,6 +27,8 @@ boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy,
             return boost::shared_ptr<Follower>(new SimpleHashingPolynomialFollower(followerSet, secretShare, leader, parameters));
         case Strategy::SIMPLE_HASH:
             return boost::shared_ptr<Follower>(new SimpleHashingNaiveFollower(followerSet, secretShare, leader, parameters));
+        case Strategy::GAUSS_SIMPLE_HASH:
+            return boost::shared_ptr<Follower>(new SimpleHashingNaiveInverseFollower(followerSet, secretShare, leader, parameters));
         default:
             break;
     }
