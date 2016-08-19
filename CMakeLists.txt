@@ -12,7 +12,7 @@ find_package(Boost COMPONENTS system thread chrono date_time atomic REQUIRED)
 SET(SCAPI_ROOT $ENV{HOME}/libscapi/include/)
 
 INCLUDE_DIRECTORIES(/usr/include/openssl ${SCAPI_ROOT} ${BOOST_INCLUDEDIR} /usr/include/glib-2.0/ /usr/lib/x86_64-linux-gnu/glib-2.0/include
-        $ENV{HOME}/MultiPartyPSI/PSI/src/externals/Miracl/include $ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib
+        $ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib $ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib
         $ENV{HOME}/MultiPartyPSI/PSI_C_0.1/PSI/headers $ENV{HOME}/libscapi/build/NTL/include
         "$ENV{HOME}/MultiPartyPSI/Header Files" $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based $ENV{HOME}/MultiPartyPSI/PSI/src/util
         $ENV{HOME}/MultiPartyPSI/PSI/src/hashing)
