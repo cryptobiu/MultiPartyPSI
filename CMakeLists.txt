@@ -43,4 +43,4 @@ TARGET_LINK_LIBRARIES(MultiPartyPSI
         $ENV{HOME}/libscapi/install/lib/libntl.a
         $ENV{HOME}/libscapi/install/lib/libOTExtension.so
         $ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib/miracl.a
-        boost_system boost_thread miracl pthread ssl crypto glib-2.0 dl gmpxx gmp z)
+        boost_system boost_thread pthread ssl crypto glib-2.0 dl gmpxx gmp z)
