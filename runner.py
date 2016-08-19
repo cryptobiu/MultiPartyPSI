@@ -49,7 +49,7 @@ strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Stra
                         Strategy.CUCKOO_HASH_BLOOM_FILTER, Strategy.CUCKOO_HASH_BINARY_HASH, Strategy.GAUSS_SIMPLE_HASH]
 '''
 '''Strategy.NAIVE_METHOD_SMALL_N,Strategy.NAIVE_METHOD_LARGE_N,Strategy.SIMPLE_HASH,'''
-strategies = [Strategy.GAUSS_SIMPLE_HASH, Strategy.BLOOM_FILTER,Strategy.POLYNOMIALS,Strategy.POLYNOMIALS_SIMPLE_HASH]
+strategies = [Strategy.POLYNOMIALS_SIMPLE_HASH]
 
 conf = open("Config", "rb").read()
 config = ConfigParser.RawConfigParser(allow_no_value=True)
