@@ -61,21 +61,21 @@ ar r miracl.a mrflash.o mrfrnd.o mrdouble.o mrround.o mrbuild.o
 ar r miracl.a mrflsh1.o mrpi.o mrflsh2.o mrflsh3.o mrflsh4.o
 ar r miracl.a mrbrick.o mrebrick.o mrec2m.o mrgf2m.o mrmuldv.o mrshs512.o mrsha3.o mrfpe.o
 rm mr*.o
-gcc -pthread -m64 -O2 bmark.c miracl.a -o bmark
-gcc -pthread -m64 -O2 fact.c miracl.a -o fact
+gcc -D_REENTRANT -m64 -O2 bmark.c miracl.a -lpthread -o bmark
+gcc -D_REENTRANT -m64 -O2 fact.c miracl.a -lpthread -o fact
 g++ -c -m64 -O2 big.cpp
 g++ -c -m64 -O2 zzn.cpp
 g++ -c -m64 -O2 ecn.cpp
 g++ -c -m64 -O2 ec2.cpp
 g++ -c -m64 -O2 crt.cpp
-g++ -pthread -m64 -O2 mersenne.cpp big.o miracl.a -o mersenne
-g++ -pthread -m64 -O2 brent.cpp big.o zzn.o miracl.a -o brent
+g++ -D_REENTRANT -m64 -O2 mersenne.cpp big.o miracl.a -lpthread -o mersenne
+g++ -D_REENTRANT -m64 -O2 brent.cpp big.o zzn.o miracl.a -lpthread -o brent
 g++ -c -m64 -O2 flash.cpp
-g++ -pthread -m64 -O2 sample.cpp flash.o miracl.a -o sample
-g++ -pthread -m64 -O2 ecsgen.cpp ecn.o big.o miracl.a -o ecsgen
-g++ -pthread -m64 -O2 ecsign.cpp ecn.o big.o miracl.a -o ecsign
-g++ -pthread -m64 -O2 ecsver.cpp ecn.o big.o miracl.a -o ecsver
-g++ -pthread -m64 -O2 pk-demo.cpp ecn.o big.o miracl.a -o pk-demo
+g++ -D_REENTRANT -m64 -O2 sample.cpp flash.o miracl.a -lpthread -o sample
+g++ -D_REENTRANT -m64 -O2 ecsgen.cpp ecn.o big.o miracl.a -lpthread -o ecsgen
+g++ -D_REENTRANT -m64 -O2 ecsign.cpp ecn.o big.o miracl.a -lpthread -o ecsign
+g++ -D_REENTRANT -m64 -O2 ecsver.cpp ecn.o big.o miracl.a -lpthread -o ecsver
+g++ -D_REENTRANT -m64 -O2 pk-demo.cpp ecn.o big.o miracl.a -lpthread -o pk-demo
 g++ -c -m64 -O2 polymod.cpp
 g++ -c -m64 -O2 poly.cpp
-g++ -pthread -m64 -O2 schoof.cpp polymod.o poly.o ecn.o crt.o zzn.o big.o miracl.a -o schoof
+g++ -D_REENTRANT -m64 -O2 schoof.cpp polymod.o poly.o ecn.o crt.o zzn.o big.o miracl.a -lpthread -o schoof
