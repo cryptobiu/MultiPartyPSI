@@ -1,11 +1,12 @@
 [General]
-numOfParties=3
-setSize=10
+numOfParties=5
+setSize=1000
 symSecurityParameter=128
 seedSizeInBytes=16
 elementSizeInBits=32
 leaderId=1
 debug=False
+profile=False
 remote=False
 [server]
 ip=172.31.48.57

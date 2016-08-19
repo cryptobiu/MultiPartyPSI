@@ -48,13 +48,13 @@ vec_GF2 GF2MatrixUtils::solve(mat_GF2 A, vec_GF2 b) {
         }
     }
 
-
     for (int32_t j=A.NumCols()-1; j >= 0; j--) {
-        if (A[lastRow][j]==0) {
-            continue;
-        }
         if (lastRow == -1) {
             throw(system_error());
+        }
+
+        if (A[lastRow][j]==0) {
+            continue;
         }
 
         if ((A[lastRow]*sol) != b[lastRow]) {

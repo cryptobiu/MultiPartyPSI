@@ -20,7 +20,7 @@ public:
     };
     virtual ~NaiveInverseLeader() {};
 protected:
-    virtual void receiveServerData();
+    virtual void receiveServerData() override;
 
     virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex);
 

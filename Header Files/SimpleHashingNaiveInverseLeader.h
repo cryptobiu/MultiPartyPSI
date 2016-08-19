@@ -21,9 +21,9 @@ public:
     };
     virtual ~SimpleHashingNaiveInverseLeader() {};
 protected:
-    virtual void receiveServerData();
+    virtual void receiveServerData() override;
 
-    virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex);
+    virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex) override;
 
     map<uint32_t , mat_GF2> m_matPerBin;
 
