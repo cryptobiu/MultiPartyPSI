@@ -16,7 +16,17 @@ BaseMPSIParty::BaseMPSIParty(uint32_t partyId, ConfigFile &config, boost::asio::
 
     m_serverSocket.Receive(reinterpret_cast<byte *>(m_elements.get()), m_setSize*sizeof(uint32_t));
 
-    initializeCrypto();
+    m_seedBuf.reset(new uint8_t[m_seedSize]);
+    m_serverSocket.Receive(m_seedBuf.get(), m_seedSize*sizeof(uint8_t));
+
+    m_crypt.reset(initializeCrypto());
+
+    uint64_t rnd;
+    m_crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
+    srand((unsigned)rnd+time(0));
+
+    m_parameters.m_statSecParameter = m_crypt->get_seclvl().statbits;
+    m_crypt->init_prf_state(&m_prfState, m_seedBuf.get());
 }
 
 void BaseMPSIParty::LoadConfiguration() {
@@ -27,24 +37,12 @@ void BaseMPSIParty::LoadConfiguration() {
     m_seedSize=stoi(m_config.Value("General", "seedSizeInBytes"));
 }
 
-void BaseMPSIParty::initializeCrypto() {
-
-    boost::shared_ptr<uint8_t> seed_buf(new uint8_t[m_seedSize]);
-    m_serverSocket.Receive(seed_buf.get(), m_seedSize*sizeof(uint8_t));
-
-    uint64_t rnd;
-
+crypto *BaseMPSIParty::initializeCrypto() {
     boost::shared_ptr<uint8_t> seed(new uint8_t[AES_BYTES]);
 
     memcpy(seed.get(), const_seed, AES_BYTES);
     (seed.get())[0] = static_cast<uint8_t>(m_partyId);
-    m_crypt.reset(new crypto(m_parameters.m_symSecParameter, seed.get()));
-
-    m_parameters.m_statSecParameter = m_crypt->get_seclvl().statbits;
-    m_crypt->gen_rnd((uint8_t*) &rnd, sizeof(uint64_t));
-    srand((unsigned)rnd+time(0));
-
-    m_crypt->init_prf_state(&m_prfState, seed_buf.get());
+    return new crypto(m_parameters.m_symSecParameter, seed.get());
 }
 
 void BaseMPSIParty::syncronize() {

@@ -20,14 +20,16 @@ protected:
     secParameters m_parameters;
     uint32_t m_elementSizeInBits;
     uint32_t m_seedSize;
+    boost::shared_ptr<uint8_t> m_seedBuf;
     boost::shared_ptr<crypto> m_crypt;
     prf_state_ctx m_prfState;
+
+    crypto *initializeCrypto();
 private:
     COPY_CTR(BaseMPSIParty);
     ASSIGN_OP(BaseMPSIParty);
 
     void LoadConfiguration();
-    void initializeCrypto();
 };
 
 
