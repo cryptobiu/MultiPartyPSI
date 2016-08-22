@@ -24,6 +24,9 @@ import os
 # ssh naor@cybhead1.lnx.biu.ac.il
 # ssh cybnode11
 
+# cp PSI/src/externals/Miracl/lib/linux64.bak PSI/src/externals/Miracl/lib/linux64
+# cp PSI/src/externals/Miracl/include/mirdef.h64.bak PSI/src/externals/Miracl/include/mirdef.h64
+
 MAX_INT = 2**32-1
 MIN_INT = 0
 PROGRAM_TYPE = 0
