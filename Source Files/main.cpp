@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
     PRINT_PARTY(partyId) << "is connected" << std::endl;
 
-    party->run();
+    party->runAndLog();
 
     PRINT_PARTY(partyId) << "After run" << std::endl;
 

@@ -12,6 +12,8 @@ KissnerParty::KissnerParty(uint32_t partyId, ConfigFile &config, boost::asio::io
 
 void KissnerParty::run() {
 
+    initPaiilier();
+
     vector<ZZ> encCoefficients = getEncryptedCoefficients();
 
     vector<ZZ> sharedPolynomial = makeSharedPolynomial(encCoefficients);

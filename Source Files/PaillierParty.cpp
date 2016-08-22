@@ -9,6 +9,10 @@
 #include <vector>
 
 PaillierParty::PaillierParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService) : BaseMPSIParty(partyId,config,ioService) {
+
+}
+
+void PaillierParty::initPaiilier() {
     uint32_t symSecurityParameter = stoi(getValFromConfig(m_config, "General", "symsecurityparameter"));
     uint32_t bitSize;
     switch(symSecurityParameter) {
@@ -57,8 +61,6 @@ PaillierParty::PaillierParty(uint32_t partyId, ConfigFile &config, boost::asio::
         m_n = m_p * m_q;
         m_m = m_pTag * m_qTag;
     }
-
-
 
     m_field = m_n * m_n;
     m_delta = factorial(m_numOfParties);

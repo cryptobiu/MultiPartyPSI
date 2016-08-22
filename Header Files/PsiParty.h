@@ -31,7 +31,8 @@ private:
 
     void runAsLeader();
     void runAsFollower(CSocket &leader);
-    void finishAndReportStatsToServer();
+
+    void initPsi();
 
     void initializeMaskSize();
     void setBinsParameters();

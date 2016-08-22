@@ -29,6 +29,14 @@ BaseMPSIParty::BaseMPSIParty(uint32_t partyId, ConfigFile &config, boost::asio::
     m_crypt->init_prf_state(&m_prfState, m_seedBuf.get());
 }
 
+void BaseMPSIParty::runAndLog() {
+    float before = clock();
+    run();
+    float finalTime = clock()-before;
+
+    m_serverSocket.Send(reinterpret_cast<byte *>(&finalTime), sizeof(float));
+}
+
 void BaseMPSIParty::LoadConfiguration() {
     m_setSize = stoi(getValFromConfig(m_config, "General", "setsize"));
     m_elementSizeInBits = stoi(getValFromConfig(m_config, "General", "elementsizeinbits"));

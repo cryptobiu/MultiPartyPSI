@@ -22,12 +22,14 @@
 PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &ioService) :
         BaseMPSIParty(partyId, config, ioService)
 {
-    setBinsParameters();
-
     m_serverSocket.Receive(reinterpret_cast<byte *>(&m_strategy), 1);
     PRINT_PARTY(m_partyId) << "is executing strategy " << getStrategy(m_strategy) << std::endl;
+}
 
-    m_statistics.partyId = partyId;
+void PsiParty::initPsi() {
+    setBinsParameters();
+
+    m_statistics.partyId = m_partyId;
 
     initializeMaskSize();
 
@@ -42,7 +44,6 @@ PsiParty::PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &io
         m_eleptr = m_elements;
         m_internal_bitlen = m_elementSizeInBits;
     }
-
 }
 
 void PsiParty::setBinsParameters() {
@@ -102,6 +103,8 @@ void PsiParty::initializeMaskSize() {
 }
 
 void PsiParty::run() {
+    initPsi();
+
     m_statistics.beginTime = clock();
 
     PRINT_PARTY(m_partyId) << "additive secret sharing is runnning" << std::endl;
@@ -120,8 +123,6 @@ void PsiParty::run() {
         PRINT_PARTY(m_partyId) << "run as follower"  << std::endl;
         runAsFollower(*m_parties[leaderId]);
     }
-
-    finishAndReportStatsToServer();
 }
 
 void PsiParty::runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_ptr<CSocket>> &party, const boost::shared_ptr<uint8_t> &leaderResults,
@@ -140,11 +141,6 @@ void PsiParty::runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_
                 crypt.get(), party.second.get(), 1, leaderResults.get());
 
     PRINT_PARTY(m_partyId) << "done running leader against party " << party.first << std::endl;
-}
-
-void PsiParty::finishAndReportStatsToServer() {
-    PRINT_PARTY(m_partyId) << "is reporting stats to server" << std::endl;
-    m_serverSocket.Send(reinterpret_cast<byte *>(&m_statistics), sizeof(struct statistics));
 }
 
 void PsiParty::runAsLeader() {

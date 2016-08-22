@@ -30,6 +30,7 @@ protected:
     COPY_CTR(PaillierParty);
     ASSIGN_OP(PaillierParty);
 
+    void initPaiilier();
     void secretShare();
     uint32_t factorial(uint32_t n);
     ZZ L_function(const ZZ& value);

@@ -167,6 +167,12 @@ def runMPPSI(strategy):
 
     print "syncronized !"
 
+    finalResults = {}
+    for partyId in xrange(1,numOfParties+1):
+        finalTime = struct.unpack("<f", parties[partyId].recv(4))[0]/CLOCKS_PER_SEC
+        print "party %d with time %f seconds" % (partyId,finalTime)
+        finalResults[partyId]=finalTime
+    '''
     if strategy is not None:
         try:
             for i in xrange(1,numOfParties+1):
@@ -190,11 +196,47 @@ def runMPPSI(strategy):
                     print "intersection size is: %d" % intersectionSize
         except:
             pass
+    '''
 
     for process in processes:
         process.wait()
         print "return code is " + str(process.returncode)
     print "real intersection size is %d" % intersectSize
+    return finalResults
+
+def main(config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None):
+    os.system('git checkout -- %s' % config_filepath)
+    global config, s
+    conf = open(config_filepath, "rb").read()
+    config = ConfigParser.RawConfigParser(allow_no_value=True)
+    config.readfp(io.BytesIO(conf))
+
+    serverIp = config.get("server", "ip")
+    isLocalHost = (config.get("General", "remote") == "False")
+    if isLocalHost:
+        serverIp = LOOPBACK_ADDRESS
+    serverPort = int(config.get("server", "port"))
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((serverIp, serverPort))
+
+    if num_parties is not None:
+        config.set("General", "numofparties", num_parties)
+    if set_size is not None:
+        config.set("General", "setsize", set_size)
+    if key_size is not None:
+        config.set("General", "symsecurityparameter", key_size)
+    config.write(open(config_filepath, "wb"))
+
+    if old_method:
+        finalResults = runMPPSI(None)
+        return finalResults
+    else:
+        strategy = strategy
+        if strategy is None:
+            strategy = DEFAULT_STRATEGY
+        finalResults = runMPPSI(strategy)
+        return finalResults
 
 if __name__ == "__main__":
     parser = optparse.OptionParser()
@@ -224,35 +266,6 @@ if __name__ == "__main__":
                       )
     options, remainder = parser.parse_args()
 
-    print options.config_filepath
+    main(options.config_filepath,options.set_size,options.num_parties,options.key_size,options.old_method,options.strategy)
 
-    os.system('git checkout -- %s' % options.config_filepath)
 
-    conf = open(options.config_filepath, "rb").read()
-    config = ConfigParser.RawConfigParser(allow_no_value=True)
-    config.readfp(io.BytesIO(conf))
-
-    serverIp = config.get("server", "ip")
-    isLocalHost = (config.get("General", "remote") == "False")
-    if isLocalHost:
-        serverIp = LOOPBACK_ADDRESS
-    serverPort = int(config.get("server", "port"))
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((serverIp, serverPort))
-
-    if options.num_parties is not None:
-        config.set("General", "numofparties", options.num_parties)
-    if options.set_size is not None:
-        config.set("General", "setsize", options.set_size)
-    if options.key_size is not None:
-        config.set("General", "symsecurityparameter", options.key_size)
-    config.write(open(options.config_filepath, "wb"))
-
-    if options.old_method:
-        runMPPSI(None)
-    else:
-        strategy = options.strategy
-        if strategy is None:
-            strategy = DEFAULT_STRATEGY
-        runMPPSI(strategy)
