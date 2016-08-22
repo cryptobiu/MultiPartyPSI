@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 project(MultiPartyPSI)
 
+add_custom_target(miracl
+        COMMAND make
+        WORKING_DIRECTORY $ENV{HOME}/MultiPartyPSI/PSI)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -D_REENTRANT -O2 -lgmp -lgmpxx -lpthread -ggdb -lssl -lcrypto -lglib-2.0 -maes -mavx -ldl -mpclmul -lboost_system -lntl")
 
 SET (BOOST_ROOT $ENV{HOME}/boost_1_60_0/)
@@ -42,3 +46,5 @@ TARGET_LINK_LIBRARIES(MultiPartyPSI
         $ENV{HOME}/libscapi/install/lib/libntl.a
         $ENV{HOME}/libscapi/install/lib/libOTExtension.so
         boost_system boost_thread pthread ssl crypto glib-2.0 dl gmpxx gmp z)
+
+add_dependencies(MultiPartyPSI miracl)
