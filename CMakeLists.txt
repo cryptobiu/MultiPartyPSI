@@ -20,7 +20,7 @@ INCLUDE_DIRECTORIES(/usr/include/openssl /usr/include/glib-2.0/ /usr/lib/x86_64-
         $ENV{HOME}/MultiPartyPSI/PSI_C_0.1/PSI/headers $ENV{HOME}/libscapi/build/NTL/include
         "$ENV{HOME}/MultiPartyPSI/Header Files" $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based $ENV{HOME}/MultiPartyPSI/PSI/src/util
         $ENV{HOME}/MultiPartyPSI/PSI/src/hashing)
-link_directories(${SSL_LIBDIR} ${BOOST_LIBRARYDIR})
+link_directories($ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib ${SSL_LIBDIR} ${BOOST_LIBRARYDIR})
 
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY $ENV{HOME}/MultiPartyPSI/bin)
 
@@ -41,6 +41,8 @@ set(SOURCE_FILES ${SOURCES} "Source Files/NaiveInverseLeader.cpp" "Source Files/
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI
+        $ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib/big.o
+        $ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib/ec2.o
         $ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib/miracl.a
         $ENV{HOME}/libscapi/scapi.a
         $ENV{HOME}/libscapi/install/lib/libntl.a
