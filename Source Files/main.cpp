@@ -23,6 +23,8 @@ int main(int argc, char *argv[])
     char *configPath = argv[2];
     ProgramType programType =  static_cast<ProgramType>(atoi(argv[3]));
 
+    mr_init_threading();   // initialize MIRACL for multi-threading
+
     boost::asio::io_service io_service;
     boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service));
 
@@ -50,6 +52,8 @@ int main(int argc, char *argv[])
     party->run();
 
     PRINT_PARTY(partyId) << "After run" << std::endl;
+
+    mr_end_threading();
 
     return 0;
 }

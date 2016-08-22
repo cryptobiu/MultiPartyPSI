@@ -135,8 +135,9 @@ void PsiParty::runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_
 
     //Perform the OPRG execution
     //cout << "otpsi client running ots" << endl;
+    boost::shared_ptr<crypto> crypt(initializeCrypto());
     oprg_client(hash_table.get(), m_numOfBins, m_setSize, nelesinbin.get(), outbitlen, m_maskbitlen,
-                m_crypt.get(), party.second.get(), 1, leaderResults.get());
+                crypt.get(), party.second.get(), 1, leaderResults.get());
 
     PRINT_PARTY(m_partyId) << "done running leader against party " << party.first << std::endl;
 }
@@ -193,19 +194,19 @@ void PsiParty::runAsLeader() {
 
     boost::thread_group threadpool;
 
-    /*
     for (auto &party : m_parties) {
         leaderResults[party.first] = boost::shared_ptr<uint8_t>(new uint8_t[m_setSize * getMaskSizeInBytes()]);
         threadpool.create_thread(boost::bind(&PsiParty::runLeaderAgainstFollower, this,
-                                             party, leaderResults[party.first - 1], nelesinbin, outbitlen, hash_table));
+                                             party, leaderResults[party.first], nelesinbin, outbitlen, hash_table));
     }
     threadpool.join_all();
-     */
 
+    /*
     for (auto &party : m_parties) {
         leaderResults[party.first] = boost::shared_ptr<uint8_t>(new uint8_t[m_setSize * getMaskSizeInBytes()]);
         runLeaderAgainstFollower(party, leaderResults[party.first], nelesinbin, outbitlen, hash_table);
     }
+*/
 
     boost::shared_ptr<CuckooHashInfo> hashInfo(new CuckooHashInfo[m_setSize]);
     for (uint32_t i = 0; i < m_setSize; i++) {
