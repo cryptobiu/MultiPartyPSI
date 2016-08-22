@@ -201,13 +201,6 @@ void PsiParty::runAsLeader() {
     }
     threadpool.join_all();
 
-    /*
-    for (auto &party : m_parties) {
-        leaderResults[party.first] = boost::shared_ptr<uint8_t>(new uint8_t[m_setSize * getMaskSizeInBytes()]);
-        runLeaderAgainstFollower(party, leaderResults[party.first], nelesinbin, outbitlen, hash_table);
-    }
-*/
-
     boost::shared_ptr<CuckooHashInfo> hashInfo(new CuckooHashInfo[m_setSize]);
     for (uint32_t i = 0; i < m_setSize; i++) {
         hashInfo.get()[i].tableIndex = -1;
