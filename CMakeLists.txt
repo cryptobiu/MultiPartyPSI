@@ -7,6 +7,10 @@ add_custom_target(miracl
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -D_REENTRANT -O2 -lgmp -lgmpxx -lpthread -ggdb -lssl -lcrypto -lglib-2.0 -maes -mavx -ldl -mpclmul -lboost_system -lntl")
 
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D DEBUG")
+endif()
+
 SET (BOOST_ROOT $ENV{HOME}/boost_1_60_0/)
 SET (BOOST_INCLUDEDIR $ENV{HOME}/boost_1_60_0/)
 SET (BOOST_LIBRARYDIR $ENV{HOME}/boost_1_60_0/stage/lib)

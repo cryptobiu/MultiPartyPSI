@@ -226,7 +226,6 @@ if __name__ == "__main__":
 
     print options.config_filepath
 
-    import pdb; pdb.set_trace()
     os.system('git checkout -- %s' % options.config_filepath)
 
     conf = open(options.config_filepath, "rb").read()

@@ -12,7 +12,7 @@ void SimpleHashingNaiveFollower::run() {
     for (uint32_t k=0; k < m_followerSet.m_numOfBins; k++) {
         uint32_t numOfElementsInBin = m_followerSet.m_numOfElementsInBin.get()[k];
         if (numOfElementsInBin > m_followerSet.m_maxBinSize) {
-            std::cout << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!";
+            PRINT() << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!";
         }
         uint32_t numOfRandomBytes = (m_followerSet.m_maxBinSize-numOfElementsInBin)*m_followerSet.m_maskSizeInBytes;
         boost::shared_ptr<uint8_t> random(new uint8_t[numOfRandomBytes]);

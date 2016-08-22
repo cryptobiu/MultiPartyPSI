@@ -78,8 +78,8 @@ void PolynomialFollower::run() {
         vector<vector<uint8_t>> polynomialCoffBytes = getPolynomialCoffBytes(polynomial);
         for (auto &polynomialCoff : polynomialCoffBytes) {
             if (polynomialCoff.size() != m_followerSet.m_maskSizeInBytes) {
-                std::cout << "coefficient size is not correct !!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-                std::cout << polynomialCoff.size() << std::endl;
+                PRINT() << "coefficient size is not correct !!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+                PRINT() << polynomialCoff.size() << std::endl;
             }
             send_masks(polynomialCoff.data(), 1,
                        polynomialCoff.size(), m_leader);

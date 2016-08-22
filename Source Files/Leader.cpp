@@ -16,14 +16,14 @@ vector<uint32_t> Leader::run() {
         uint8_t* secret = &(m_secretShare.get()[binIndex*m_maskSizeInBytes]);
 
         if (tableIndex==-1) {
-            std::cout << "Element " << i << "was not inserted to hash table" << std::endl;
+            PRINT() << "Element " << i << "was not inserted to hash table" << std::endl;
             continue;
         }
 
         if (isElementInAllSets(i, binIndex, tableIndex, hashFuncIndex, secret)) {
             intersection.push_back(i);
         }
-        std::cout << i*100.0/m_setSize << " precent is done" << std::endl;
+        PRINT() << i*100.0/m_setSize << " precent is done" << std::endl;
     }
 
     return intersection;

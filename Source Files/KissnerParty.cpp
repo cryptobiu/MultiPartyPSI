@@ -37,7 +37,7 @@ void KissnerParty::run() {
             }
 
         }
-        std::cout << "intersection size is " << intersection.length() << std::endl;
+        PRINT() << "intersection size is " << intersection.length() << std::endl;
     }
 }
 

@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include <string>
 #include <infra/ConfigFile.hpp>
+#include <streambuf>
+#include <ostream>
 
 typedef __m128i block;
 
@@ -18,7 +20,32 @@ void printHex(const uint8_t *arr, uint32_t size);
 void printShares(const uint8_t *arr, uint32_t numOfShares, uint32_t maxSizeInBytes);
 bool isZero(uint8_t *arr, uint32_t size);
 
+#ifdef DEBUG
 #define PRINT_PARTY(partyId) std::cout << "Party " << partyId << " "
+#define PRINT() std::cout
+#else
+class null_out_buf : public std::streambuf {
+    public:
+        virtual std::streamsize xsputn (const char * s, std::streamsize n) {
+            return n;
+        }
+        virtual int overflow (int c) {
+            return 1;
+        }
+};
+
+class null_out_stream : public std::ostream {
+    public:
+        null_out_stream() : std::ostream (&buf) {}
+    private:
+        null_out_buf buf;
+};
+
+extern null_out_stream cnul;       // My null stream.
+
+#define PRINT_PARTY(partyId) cnul << "Party " << partyId << " "
+#define PRINT() cnul
+#endif
 
 #define COPY_CTR(A) A(const A&)
 #define ASSIGN_OP(A) A &operator=(const A&)

@@ -24,6 +24,8 @@ Strategy strategies[13] = {Strategy::NAIVE_METHOD_SMALL_N, Strategy::NAIVE_METHO
 Strategy::BLOOM_FILTER, Strategy::BINARY_HASH, Strategy::POLYNOMIALS_SIMPLE_HASH, Strategy::BINARY_HASH_SIMPLE_HASH, Strategy::CUCKOO_HASH_POLYNOMIALS,
 Strategy::CUCKOO_HASH_BLOOM_FILTER, Strategy::CUCKOO_HASH_BINARY_HASH, Strategy::GAUSS_SIMPLE_HASH};
 
+null_out_stream cnul;
+
 const std::string LOOPBACK_ADDRESS = "127.0.0.1";
 
 void XOR(uint8_t *xoree1, uint8_t *xoree2, uint32_t size) {
@@ -34,16 +36,16 @@ void XOR(uint8_t *xoree1, uint8_t *xoree2, uint32_t size) {
 
 void printHex(const uint8_t *arr, uint32_t size) {
     for(uint32_t k = 0; k < size; k++) {
-        std::cout << setw(2) << setfill('0') << (hex) << (unsigned int) arr[k] << (dec);
+        PRINT() << setw(2) << setfill('0') << (hex) << (unsigned int) arr[k] << (dec);
     }
 }
 
 void printShares(const uint8_t *arr, uint32_t numOfShares, uint32_t maxSizeInBytes) {
     for (uint32_t i = 0; i < numOfShares; i++) {
         printHex(arr+i*maxSizeInBytes, maxSizeInBytes);
-        std::cout << " ";
+        PRINT() << " ";
     }
-    std::cout << std::endl;
+    PRINT() << std::endl;
 }
 
 bool isZero(uint8_t *arr, uint32_t size) {
