@@ -34,9 +34,11 @@ int main(int argc, char *argv[])
     boost::shared_ptr<BaseMPSIParty> party;
     switch(programType) {
         case ProgramType::OT_MPSI:
+            PRINT_PARTY(partyId) << "PSI party is initialized" << std::endl;
             party.reset(new PsiParty(partyId, cf, io_service));
             break;
         case ProgramType::KISSNER_MPSI:
+            PRINT_PARTY(partyId) << "kissner party is initialized" << std::endl;
             party.reset(new KissnerParty(partyId, cf, io_service));
             break;
         default:

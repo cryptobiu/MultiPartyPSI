@@ -30,7 +30,7 @@ import optparse
 
 MAX_INT = 2**32-1
 MIN_INT = 0
-PROGRAM_TYPE = 0
+
 LOOPBACK_ADDRESS = "127.0.0.1"
 class Strategy:
     NAIVE_METHOD_SMALL_N = 0
@@ -61,17 +61,17 @@ config = None
 
 CLOCKS_PER_SEC = 1000000.0
 
-def startPrograms(processes, numOfParties):
+def startPrograms(processes, numOfParties, program_type):
     if config.get("General", "debug") == "True":
         for i in xrange(2,numOfParties+1):
-            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
+            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(program_type)]))
     elif config.get("General", "profile") == "True":
-        processes.append(Popen(['valgrind','--tool=callgrind','bin/MultiPartyPSI', str(1),'Config',str(PROGRAM_TYPE)]))
+        processes.append(Popen(['valgrind','--tool=callgrind','bin/MultiPartyPSI', str(1),'Config',str(program_type)]))
         for i in xrange(2,numOfParties+1):
-            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
+            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(program_type)]))
     else:
         for i in xrange(1,numOfParties+1):
-            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
+            processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(program_type)]))
 
 s = None
 
@@ -95,8 +95,9 @@ def runMPPSI(strategy):
             os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
 
     processes = []
+    program_type = 1 if strategy is None else 0
     if config.get("General", "remote") == "False":
-        thread.start_new_thread(startPrograms, (processes,numOfParties))
+        thread.start_new_thread(startPrograms, (processes,numOfParties, program_type))
     else:
         '''
         for i in xrange(1,numOfParties+1):
@@ -113,8 +114,7 @@ def runMPPSI(strategy):
 
         for i in xrange(1,numOfParties+1):
             ip = config.get(str(i), "ip")
-
-            processes.append(Popen(['ssh', '-i', 'key.pem', ip, './MultiPartyPSI/MultiPartyPSI', str(i), 'MultiPartyPSI/Config', str(PROGRAM_TYPE)]))
+            processes.append(Popen(['ssh', '-i', 'key.pem', ip, './MultiPartyPSI/MultiPartyPSI', str(i), 'MultiPartyPSI/Config', str(program_type)]))
 
     parties = {}
     for _ in xrange(numOfParties):
@@ -167,7 +167,7 @@ def runMPPSI(strategy):
 
     print "syncronized !"
 
-    if PROGRAM_TYPE == 0:
+    if strategy is not None:
         try:
             for i in xrange(1,numOfParties+1):
                 partyId = struct.unpack("<i", parties[i].recv(4))[0]
