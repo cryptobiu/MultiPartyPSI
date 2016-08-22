@@ -87,3 +87,9 @@ uint32_t getStrategy(Strategy strategy) {
             return 20;
     }
 }
+
+std::string getValFromConfig(ConfigFile &config, const char* section, const char* valueName) {
+    std::string value = config.Value(section,valueName);
+    size_t first = value.find_first_not_of(' ');
+    return value.substr(first, value.length()-first);
+}

@@ -16,7 +16,7 @@ void KissnerParty::run() {
 
     vector<ZZ> sharedPolynomial = makeSharedPolynomial(encCoefficients);
 
-    uint32_t leaderId = stoi(m_config.Value("General", "leaderId"));
+    uint32_t leaderId = stoi(getValFromConfig(m_config, "General", "leaderid"));
 
     if (m_partyId != leaderId) {
         makeDecryptedPolynomialAsFollower(sharedPolynomial,leaderId);

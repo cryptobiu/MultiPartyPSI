@@ -30,11 +30,11 @@ BaseMPSIParty::BaseMPSIParty(uint32_t partyId, ConfigFile &config, boost::asio::
 }
 
 void BaseMPSIParty::LoadConfiguration() {
-    m_setSize = stoi(m_config.Value("General", "setSize"));
-    m_elementSizeInBits = stoi(m_config.Value("General", "elementSizeInBits"));
+    m_setSize = stoi(getValFromConfig(m_config, "General", "setsize"));
+    m_elementSizeInBits = stoi(getValFromConfig(m_config, "General", "elementsizeinbits"));
 
-    m_parameters.m_symSecParameter=stoi(m_config.Value("General", "symSecurityParameter"));
-    m_seedSize=stoi(m_config.Value("General", "seedSizeInBytes"));
+    m_parameters.m_symSecParameter=stoi(getValFromConfig(m_config, "General", "symsecurityparameter"));
+    m_seedSize=stoi(getValFromConfig(m_config, "General", "seedsizeinbytes"));
 }
 
 crypto *BaseMPSIParty::initializeCrypto() {

@@ -9,7 +9,7 @@
 #include <vector>
 
 PaillierParty::PaillierParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService) : BaseMPSIParty(partyId,config,ioService) {
-    uint32_t symSecurityParameter = stoi(m_config.Value("General", "symSecurityParameter"));
+    uint32_t symSecurityParameter = stoi(getValFromConfig(m_config, "General", "symsecurityparameter"));
     uint32_t bitSize;
     switch(symSecurityParameter) {
         case 80:
@@ -22,7 +22,7 @@ PaillierParty::PaillierParty(uint32_t partyId, ConfigFile &config, boost::asio::
             throw(system_error());
     }
 
-    uint32_t leaderId = stoi(m_config.Value("General", "leaderId"));
+    uint32_t leaderId = stoi(getValFromConfig(m_config, "General", "leaderid"));
 
     if (m_partyId == leaderId) {
         m_pTag = GenGermainPrime_ZZ(bitSize/2-1);

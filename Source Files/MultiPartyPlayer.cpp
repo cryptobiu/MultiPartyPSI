@@ -16,16 +16,16 @@ MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile &config,
                              boost::asio::io_service &ioService) :
     m_config(config), m_partyId(partyId), m_ioService(ioService) {
 
-    m_numOfParties = stoi(m_config.Value("General", "numOfParties"));
+    m_numOfParties = stoi(getValFromConfig(m_config, "General", "numofparties"));
 
-    m_isLocalHost = (m_config.Value("General", "remote") == std::string("False"));
+    m_isLocalHost = (getValFromConfig(m_config, "General", "remote") == std::string("False"));
 
-    m_ipAddress = m_config.Value(std::to_string(m_partyId).c_str(), "ip");
+    m_ipAddress = getValFromConfig(m_config, std::to_string(m_partyId).c_str(), "ip");
     if (m_isLocalHost) {
         m_ipAddress = LOOPBACK_ADDRESS;
     }
 
-    m_basePortNumber = stoi(m_config.Value(std::to_string(m_partyId).c_str(), "port"));
+    m_basePortNumber = stoi(getValFromConfig(m_config, std::to_string(m_partyId).c_str(), "port"));
 
     PRINT_PARTY(m_partyId) << "try to connect to parties" << std::endl;
     connectToAllParties();
@@ -44,11 +44,11 @@ void MultiPartyPlayer::connectToAllParties() {
             continue;
         }
 
-        string ipAddress = m_config.Value(std::to_string(i), "ip");
+        string ipAddress = getValFromConfig(m_config, std::to_string(i).c_str(), "ip");
         if (m_isLocalHost) {
             ipAddress = LOOPBACK_ADDRESS;
         }
-        uint32_t portNumber = stoi(m_config.Value(std::to_string(i), "port"));
+        uint32_t portNumber = stoi(getValFromConfig(m_config, std::to_string(i).c_str(), "port"));
         m_myAddresses[i].reset(new SocketPartyData(IpAdress::from_string(m_ipAddress), m_basePortNumber + i));
         m_otherAddresses[i].reset(new SocketPartyData(IpAdress::from_string(ipAddress), portNumber+m_partyId));
         //m_otherParties[i] = boost::make_shared<CommPartyTCPSynced>(m_ioService, *m_myAddresses[i], *m_otherAddresses[i]);
@@ -79,11 +79,11 @@ void MultiPartyPlayer::connectToAllParties() {
 
 void MultiPartyPlayer::connectToServer() {
 
-    auto serverIp = m_config.Value("server", "ip");
+    auto serverIp = getValFromConfig(m_config, "server", "ip");
     if (m_isLocalHost) {
         serverIp = LOOPBACK_ADDRESS;
     }
-    auto serverPort = stoi(m_config.Value("server", "port"));
+    auto serverPort = stoi(getValFromConfig(m_config, "server", "port"));
 
     //SocketPartyData me(IpAdress::from_string(m_ipAddress), m_basePortNumber+m_numOfParties+1);
     //SocketPartyData server(IpAdress::from_string(serverIp), serverPort);

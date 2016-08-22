@@ -8,6 +8,7 @@ import thread
 import struct
 import random
 import os
+import optparse
 
 #docker images
 #docker run -it scapicryptobiu/multipartypsi
@@ -52,27 +53,15 @@ strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Stra
                         Strategy.CUCKOO_HASH_BLOOM_FILTER, Strategy.CUCKOO_HASH_BINARY_HASH, Strategy.GAUSS_SIMPLE_HASH]
 '''
 '''Strategy.NAIVE_METHOD_SMALL_N,Strategy.NAIVE_METHOD_LARGE_N,Strategy.SIMPLE_HASH,'''
-strategies = [Strategy.POLYNOMIALS_SIMPLE_HASH]
+strategies = []
 
-conf = open("Config", "rb").read()
-config = ConfigParser.RawConfigParser(allow_no_value=True)
-config.readfp(io.BytesIO(conf))
+DEFAULT_STRATEGY = Strategy.POLYNOMIALS_SIMPLE_HASH
 
-numOfParties = int(config.get("General", "numOfParties"))
+config = None
 
 CLOCKS_PER_SEC = 1000000.0
 
-isLocalHost = (config.get("General", "remote") == "False")
-
-serverIp = config.get("server", "ip")
-if isLocalHost:
-    serverIp = LOOPBACK_ADDRESS
-serverPort = int(config.get("server", "port"))
-leaderId = int(config.get("General", "leaderId"))
-setSize = int(config.get("General", "setSize"))
-seedSizeInBytes=int(config.get("General", "seedSizeInBytes"))
-
-def startPrograms(processes):
+def startPrograms(processes, numOfParties):
     if config.get("General", "debug") == "True":
         for i in xrange(2,numOfParties+1):
             processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
@@ -84,25 +73,30 @@ def startPrograms(processes):
         for i in xrange(1,numOfParties+1):
             processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(PROGRAM_TYPE)]))
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((serverIp, serverPort))
+s = None
+
 
 #os.system('cmake CMakeLists.txt; make')
 
-if config.get("General", "remote") == "True":
-    for i in xrange(1,numOfParties+1):
-        ip = config.get(str(i), "ip")
-
-        os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
-        os.system('scp -i key.pem ./Config {0}:MultiPartyPSI/Config'.format(ip))
-        os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
-
 def runMPPSI(strategy):
+    numOfParties = int(config.get("General", "numofparties"))
+    leaderId = int(config.get("General", "leaderid"))
+    setSize = int(config.get("General", "setsize"))
+    seedSizeInBytes=int(config.get("General", "seedsizeinbytes"))
+
     s.listen(numOfParties)
+
+    if config.get("General", "remote") == "True":
+        for i in xrange(1,numOfParties+1):
+            ip = config.get(str(i), "ip")
+
+            os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
+            os.system('scp -i key.pem ./Config {0}:MultiPartyPSI/Config'.format(ip))
+            os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
 
     processes = []
     if config.get("General", "remote") == "False":
-        thread.start_new_thread(startPrograms, (processes,))
+        thread.start_new_thread(startPrograms, (processes,numOfParties))
     else:
         '''
         for i in xrange(1,numOfParties+1):
@@ -203,8 +197,63 @@ def runMPPSI(strategy):
     print "real intersection size is %d" % intersectSize
 
 if __name__ == "__main__":
-    if PROGRAM_TYPE == 0:
-        for strategy in strategies:
-            runMPPSI(strategy)
-    else:
+    parser = optparse.OptionParser()
+    parser.add_option('-c',
+                      dest="config_filepath",
+                      default="Config"
+                      )
+    parser.add_option('-m',
+                      dest="set_size",
+                      type="int",
+                      )
+    parser.add_option('-n',
+                      dest="num_parties",
+                      type="int",
+                      )
+    parser.add_option('-k',
+                      dest="key_size",
+                      type="int",
+                      )
+    parser.add_option('-o',
+                      dest="old_method",
+                      default=False,
+                      action="store_true",
+                      )
+    parser.add_option('-s',
+                      dest="strategy",
+                      )
+    options, remainder = parser.parse_args()
+
+    print options.config_filepath
+
+    import pdb; pdb.set_trace()
+    os.system('git checkout -- %s' % options.config_filepath)
+
+    conf = open(options.config_filepath, "rb").read()
+    config = ConfigParser.RawConfigParser(allow_no_value=True)
+    config.readfp(io.BytesIO(conf))
+
+    serverIp = config.get("server", "ip")
+    isLocalHost = (config.get("General", "remote") == "False")
+    if isLocalHost:
+        serverIp = LOOPBACK_ADDRESS
+    serverPort = int(config.get("server", "port"))
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((serverIp, serverPort))
+
+    if options.num_parties is not None:
+        config.set("General", "numofparties", options.num_parties)
+    if options.set_size is not None:
+        config.set("General", "setsize", options.set_size)
+    if options.key_size is not None:
+        config.set("General", "symsecurityparameter", options.key_size)
+    config.write(open(options.config_filepath, "wb"))
+
+    if options.old_method:
         runMPPSI(None)
+    else:
+        strategy = options.strategy
+        if strategy is None:
+            strategy = DEFAULT_STRATEGY
+        runMPPSI(strategy)

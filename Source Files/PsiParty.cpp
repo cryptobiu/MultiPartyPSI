@@ -110,7 +110,7 @@ void PsiParty::run() {
 
     m_statistics.afterSharing = clock();
 
-    uint leaderId = stoi(m_config.Value("General", "leaderId"));
+    uint leaderId = stoi(getValFromConfig(m_config, "General", "leaderid"));
 
     if (m_partyId == leaderId) {
         PRINT_PARTY(m_partyId) << "run as leader" << std::endl;

@@ -9,6 +9,7 @@
 #include <emmintrin.h>
 #include <stdint.h>
 #include <string>
+#include <infra/ConfigFile.hpp>
 
 typedef __m128i block;
 
@@ -59,6 +60,8 @@ struct secParameters {
 };
 
 extern const std::string LOOPBACK_ADDRESS;
+
+std::string getValFromConfig(ConfigFile &config, const char* section, const char* valueName);
 
 #endif //MULTIPARTYPSI_DEFS_H
 
