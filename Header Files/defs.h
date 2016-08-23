@@ -76,7 +76,7 @@ uint32_t getStrategy(Strategy strategy);
 extern Strategy strategies[13];
 
 struct CuckooHashInfo {
-    uint32_t binIndex;
+    int32_t binIndex;
     int32_t tableIndex;
     uint32_t hashedBy;
 };

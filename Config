@@ -1,7 +1,7 @@
 [General]
 numofparties = 3
-setsize = 10000
-symsecurityparameter = 80
+setsize = 16
+symsecurityparameter = 128
 seedsizeinbytes = 16
 elementsizeinbits = 32
 leaderid = 1

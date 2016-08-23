@@ -33,27 +33,19 @@ MIN_INT = 0
 
 LOOPBACK_ADDRESS = "127.0.0.1"
 class Strategy:
-    NAIVE_METHOD_SMALL_N = 0
-    NAIVE_METHOD_LARGE_N = 1
-    SIMPLE_HASH = 2
-    CUCKOO_HASH = 3
+    NAIVE_METHOD_SMALL_N = 0 # too slow
+    NAIVE_METHOD_LARGE_N = 1 # too slow
+    SIMPLE_HASH = 2 # too slow
+    CUCKOO_HASH = 3 # not proven secure
     POLYNOMIALS = 4
     BLOOM_FILTER = 5
-    BINARY_HASH = 6
+    BINARY_HASH = 6 # not proven analysis
     POLYNOMIALS_SIMPLE_HASH = 7
-    BINARY_HASH_SIMPLE_HASH = 8
-    CUCKOO_HASH_POLYNOMIALS = 9
-    CUCKOO_HASH_BLOOM_FILTER = 10
-    CUCKOO_HASH_BINARY_HASH = 11
+    BINARY_HASH_SIMPLE_HASH = 8 # not proven analysis
+    CUCKOO_HASH_POLYNOMIALS = 9 # not proven secure
+    CUCKOO_HASH_BLOOM_FILTER = 10 # not proven secure
+    CUCKOO_HASH_BINARY_HASH = 11 # not proven secure
     GAUSS_SIMPLE_HASH = 12
-
-'''
-strategies = [Strategy.NAIVE_METHOD_SMALL_N, Strategy.NAIVE_METHOD_LARGE_N, Strategy.SIMPLE_HASH, Strategy.POLYNOMIALS,
-                        Strategy.BLOOM_FILTER, Strategy.POLYNOMIALS_SIMPLE_HASH, Strategy.BINARY_HASH, Strategy.BINARY_HASH_SIMPLE_HASH, Strategy.CUCKOO_HASH, Strategy.CUCKOO_HASH_POLYNOMIALS,
-                        Strategy.CUCKOO_HASH_BLOOM_FILTER, Strategy.CUCKOO_HASH_BINARY_HASH, Strategy.GAUSS_SIMPLE_HASH]
-'''
-'''Strategy.NAIVE_METHOD_SMALL_N,Strategy.NAIVE_METHOD_LARGE_N,Strategy.SIMPLE_HASH,'''
-strategies = []
 
 DEFAULT_STRATEGY = Strategy.POLYNOMIALS_SIMPLE_HASH
 
@@ -74,9 +66,6 @@ def startPrograms(processes, numOfParties, program_type):
             processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(program_type)]))
 
 s = None
-
-
-#os.system('cmake CMakeLists.txt; make')
 
 def runMPPSI(strategy):
     numOfParties = int(config.get("General", "numofparties"))

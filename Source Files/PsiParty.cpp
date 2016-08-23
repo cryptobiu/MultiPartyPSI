@@ -200,6 +200,7 @@ void PsiParty::runAsLeader() {
     boost::shared_ptr<CuckooHashInfo> hashInfo(new CuckooHashInfo[m_setSize]);
     for (uint32_t i = 0; i < m_setSize; i++) {
         hashInfo.get()[i].tableIndex = -1;
+        hashInfo.get()[i].binIndex = -1;
     }
 
     for (uint32_t i = 0; i < m_numOfBins; i++) {
@@ -225,8 +226,6 @@ void PsiParty::runAsLeader() {
     auto intersection = leader->run();
 
     m_statistics.intersectionSize = intersection.size();
-
-    PRINT_PARTY(m_partyId) << "found that intersection size is " << intersection.size() << std::endl;
 
     m_statistics.specificStats.aftetComputing = clock();
 }
