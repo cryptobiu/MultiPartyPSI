@@ -7,7 +7,7 @@ import csv
 import os
 
 #SET_SIZES = [2**10,2**12,2**14,2**16,2**18,2**20]
-SET_SIZES = [2**2,2**4]#,2**6,2**8]
+SET_SIZES = [2**2,2**4,2**6,2**8]
 KEY_SIZES = [80,128]
 STRATEGIES = [runner.Strategy.POLYNOMIALS, runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH]
 # and ofcourse kissner
@@ -17,7 +17,7 @@ COLUMNS = ""
 
 #ExpResult = namedtuple('ExpResult', ['rev', 'start_time', 'key_size', 'num_parties', 'set_size', 'old_method','strategy'], verbose=True)
 
-os.system('cmake -DCMAKE_BUILD_TYPE=Debug CMakeLists.txt; make')
+os.system('cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt; make')
 process = subprocess.Popen(['git','rev-parse','HEAD'],stdout=subprocess.PIPE)
 REV = process.communicate()[0].rstrip('\n')
 

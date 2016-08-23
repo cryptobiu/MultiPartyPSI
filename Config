@@ -1,6 +1,6 @@
 [General]
 numofparties = 3
-setsize = 16
+setsize = 4
 symsecurityparameter = 128
 seedsizeinbytes = 16
 elementsizeinbits = 32
