@@ -23,11 +23,11 @@ def prepare_machines(num_of_parties):
             os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
             os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
 
-def run_and_add_to_csv(results_file_path,num_of_parties,key_size,set_size,old_method,strategy,bandwidth=None,delay=None):
+def run_and_add_to_csv(results_file_path,num_of_parties,key_size,set_size,old_method,strategy,bandwidth=None,latency=None):
     start_time = time.time()
     result = runner.main(key_size=key_size,num_parties=num_of_parties,set_size=set_size,old_method=old_method,strategy=strategy)
     result_str = '|'.join([str(item[1]) for item in sorted(result.items(),key= lambda x:x[0])])
-    row = [REV,str(bandwidth),str(delay),str(start_time),str(key_size),str(num_of_parties),str(set_size),str(old_method),runner.getStrategyName(strategy),result_str]
+    row = [REV,str(bandwidth),str(latency),str(start_time),str(key_size),str(num_of_parties),str(set_size),str(old_method),runner.getStrategyName(strategy),result_str]
 
     with open(results_file_path, 'ab') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=' ',
@@ -39,7 +39,7 @@ def prepare_results_file(config_file_path):
         with open(config_file_path, 'wb') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=' ',
                                    quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            csvwriter.writerow(['rev', 'bandwidth', 'delay', 'start_time', 'key_size', 'num_parties', 'set_size', 'old_method','strategy', 'result'])
+            csvwriter.writerow(['rev', 'bandwidth', 'latency', 'start_time', 'key_size', 'num_parties', 'set_size', 'old_method','strategy', 'result'])
     else:
         answer = raw_input("{0} exists. continuing means it would be appended. do you wish to continue ? (y/n)".format(config_file_path))
         if answer=='n':
@@ -49,7 +49,7 @@ def avg_experiments(result_file_path, avg_result_file_path, num_of_parties):
     with open(avg_result_file_path, 'wb') as csvf:
         csvwriter = csv.writer(csvf, delimiter=' ',
                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        csvwriter.writerow(['rev', 'bandwidth', 'delay', 'start_time', 'key_size', 'num_parties', 'set_size', 'old_method','strategy', 'result'])
+        csvwriter.writerow(['rev', 'bandwidth', 'latency', 'start_time', 'key_size', 'num_parties', 'set_size', 'old_method','strategy', 'result'])
         with open(result_file_path, 'rb') as csvfile:
             csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             csvreader.next() # remove title
@@ -60,7 +60,7 @@ def avg_experiments(result_file_path, avg_result_file_path, num_of_parties):
                     for i in xrange(10):
                         assert rows[i][0] == rows[0][0] #rev
                         assert rows[i][1] == rows[0][1] #bandwidth
-                        assert rows[i][2] == rows[0][2] #delay
+                        assert rows[i][2] == rows[0][2] #latency
 
                         assert rows[i][2] == rows[0][4] #key_size
                         assert rows[i][3] == rows[0][5] #num_parties
