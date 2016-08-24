@@ -60,7 +60,8 @@ ar r miracl.a mrpower.o mrfast.o mrshs.o mrshs256.o mraes.o mrlucas.o mrstrong.o
 ar r miracl.a mrflash.o mrfrnd.o mrdouble.o mrround.o mrbuild.o
 ar r miracl.a mrflsh1.o mrpi.o mrflsh2.o mrflsh3.o mrflsh4.o
 ar r miracl.a mrbrick.o mrebrick.o mrec2m.o mrgf2m.o mrmuldv.o mrshs512.o mrsha3.o mrfpe.o
--rm mr*.o
+rm mr*.o
+
 gcc -D_REENTRANT -m64 -O2 bmark.c miracl.a -lpthread -o bmark
 gcc -D_REENTRANT -m64 -O2 fact.c miracl.a -lpthread -o fact
 g++ -D_REENTRANT -c -m64 -O2 big.cpp
