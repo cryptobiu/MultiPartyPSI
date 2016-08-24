@@ -79,8 +79,8 @@ def runMPPSI(strategy):
         for i in xrange(1,numOfParties+1):
             ip = config.get(str(i), "ip")
 
-            os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
-            os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
+            #os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
+            #os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
             os.system('scp -i key.pem ./Config {0}:MultiPartyPSI/Config'.format(ip))
 
     processes = []

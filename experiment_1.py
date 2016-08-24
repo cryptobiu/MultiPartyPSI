@@ -5,6 +5,8 @@ import subprocess
 import time
 import csv
 import os
+import ConfigParser
+import io
 
 #SET_SIZES = [2**10,2**12,2**14,2**16,2**18,2**20]
 SET_SIZES = [2**2,2**4,2**6,2**8,2**10]
@@ -41,6 +43,16 @@ def run_and_add_to_csv(key_size,set_size,old_method,strategy):
         csvwriter = csv.writer(csvfile, delimiter=' ',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         csvwriter.writerow(row)
+
+conf = open("BaseConfig", "rb").read()
+config = ConfigParser.RawConfigParser(allow_no_value=True)
+config.readfp(io.BytesIO(conf))
+
+if config.get("General", "remote") == "True":
+    for i in xrange(1,int(config.get("General", "numofparties"))+1):
+        ip = config.get(str(i), "ip")
+        os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
+        os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
 
 for set_size in SET_SIZES:
     for key_size in KEY_SIZES:
