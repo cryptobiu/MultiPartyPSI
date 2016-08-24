@@ -15,6 +15,9 @@ STRATEGIES = [runner.Strategy.POLYNOMIALS, runner.Strategy.BLOOM_FILTER, runner.
 # and ofcourse kissner
 NUM_OF_PARTIES = 5
 
+# tc qdisc add dev eth0 root netem delay 100ms
+# tc qdisc change dev eth0 root netem loss 0.1%
+
 os.system('cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt; make')
 process = subprocess.Popen(['git','rev-parse','HEAD'],stdout=subprocess.PIPE)
 REV = process.communicate()[0].rstrip('\n')

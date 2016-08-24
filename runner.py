@@ -65,7 +65,18 @@ def startPrograms(processes, numOfParties, program_type):
         for i in xrange(1,numOfParties+1):
             processes.append(Popen(['bin/MultiPartyPSI', str(i),'Config',str(program_type)]))
 
-s = None
+conf = open("BaseConfig", "rb").read()
+config = ConfigParser.RawConfigParser(allow_no_value=True)
+config.readfp(io.BytesIO(conf))
+
+serverIp = config.get("server", "ip")
+isLocalHost = (config.get("General", "remote") == "False")
+if isLocalHost:
+    serverIp = LOOPBACK_ADDRESS
+serverPort = int(config.get("server", "port"))
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((serverIp, serverPort))
 
 def runMPPSI(strategy):
     numOfParties = int(config.get("General", "numofparties"))
@@ -174,20 +185,7 @@ def getStrategyName(strategy):
         if getattr(Strategy,attr) == strategy:
             return attr
 
-def main(base_config_filepath = "BaseConfig", config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None):
-    global config, s
-    conf = open(base_config_filepath, "rb").read()
-    config = ConfigParser.RawConfigParser(allow_no_value=True)
-    config.readfp(io.BytesIO(conf))
-
-    serverIp = config.get("server", "ip")
-    isLocalHost = (config.get("General", "remote") == "False")
-    if isLocalHost:
-        serverIp = LOOPBACK_ADDRESS
-    serverPort = int(config.get("server", "port"))
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((serverIp, serverPort))
+def main(config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None):
 
     if num_parties is not None:
         config.set("General", "numofparties", num_parties)
@@ -214,16 +212,10 @@ def main(base_config_filepath = "BaseConfig", config_filepath = "Config",set_siz
     else:
         finalResults = runMPPSI(strategy)
 
-    s.close()
-
     return finalResults
 
 if __name__ == "__main__":
     parser = optparse.OptionParser()
-    parser.add_option('-b',
-                      dest="base_config_filepath",
-                      default="BaseConfig"
-                      )
     parser.add_option('-c',
                       dest="config_filepath",
                       default="Config"
@@ -250,4 +242,4 @@ if __name__ == "__main__":
                       )
     options, remainder = parser.parse_args()
 
-    main(options.base_config_filepath, options.config_filepath,options.set_size,options.num_parties,options.key_size,options.old_method,options.strategy)
+    main(options.config_filepath,options.set_size,options.num_parties,options.key_size,options.old_method,options.strategy)
