@@ -69,6 +69,6 @@ for bandwidth, latency in BANDWIDTH_AND_LATENCY:
     for key_size in KEY_SIZES:
         for i in xrange(10):
             experiment_utils.run_and_add_to_csv('experiment2.csv',NUM_OF_PARTIES,key_size,SET_SIZE,True,None,bandwidth,latency)
-    set_machines_network(bandwidth, latency,True)
+    set_machines_network(bandwidth, latency,reset=True)
 
 experiment_utils.avg_experiments('experiment2.csv', 'experiment2_avg.csv', NUM_OF_PARTIES)
