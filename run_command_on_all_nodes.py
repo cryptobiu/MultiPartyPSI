@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import ConfigParser
 import io
 import os
