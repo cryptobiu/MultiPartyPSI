@@ -4,7 +4,7 @@ import ConfigParser
 import io
 import os
 
-conf = open("Config", "rb").read()
+conf = open("BaseConfig", "rb").read()
 config = ConfigParser.RawConfigParser(allow_no_value=True)
 config.readfp(io.BytesIO(conf))
 
