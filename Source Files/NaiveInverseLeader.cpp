@@ -7,6 +7,7 @@
 #include "defs.h"
 #include "ot-psi.h"
 #include "GF2MatrixUtils.h"
+#include <system_error>
 
 void NaiveInverseLeader::receiveServerData() {
     boost::shared_ptr<mask_rcv_ctx> rcv_ctxs(new mask_rcv_ctx[m_parties.size()+1]);
