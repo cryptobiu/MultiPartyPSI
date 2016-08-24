@@ -167,10 +167,10 @@ def runMPPSI(strategy):
             print "Error ! return code is " + str(process.returncode)
     return finalResults
 
-def main(config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None):
+def main(base_config_filepath = "BaseConfig", config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None):
     os.system('git checkout -- %s' % config_filepath)
     global config, s
-    conf = open(config_filepath, "rb").read()
+    conf = open(base_config_filepath, "rb").read()
     config = ConfigParser.RawConfigParser(allow_no_value=True)
     config.readfp(io.BytesIO(conf))
 
