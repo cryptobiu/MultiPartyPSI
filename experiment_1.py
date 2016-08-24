@@ -7,7 +7,7 @@ import csv
 import os
 
 #SET_SIZES = [2**10,2**12,2**14,2**16,2**18,2**20]
-SET_SIZES = [2**2,2**4,2**6,2**8]
+SET_SIZES = [2**2,2**4,2**6,2**8,2**10]
 KEY_SIZES = [80,128]
 STRATEGIES = [runner.Strategy.POLYNOMIALS, runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH]
 # and ofcourse kissner
@@ -44,11 +44,13 @@ def run_and_add_to_csv(key_size,set_size,old_method,strategy):
 
 for set_size in SET_SIZES:
     for key_size in KEY_SIZES:
-        for i in xrange(10):
-            run_and_add_to_csv(key_size,set_size,True,None)
         for strategy in STRATEGIES:
             for i in xrange(10):
                 run_and_add_to_csv(key_size,set_size,False,strategy)
+for set_size in SET_SIZES:
+    for key_size in KEY_SIZES:
+        for i in xrange(10):
+            run_and_add_to_csv(key_size,set_size,True,None)
 
 with open('experiment1_avg.csv', 'wb') as csvf:
     csvwriter = csv.writer(csvf, delimiter=' ',

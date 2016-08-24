@@ -244,5 +244,3 @@ if __name__ == "__main__":
     options, remainder = parser.parse_args()
 
     main(options.config_filepath,options.set_size,options.num_parties,options.key_size,options.old_method,options.strategy)
-
-
