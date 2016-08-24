@@ -216,6 +216,10 @@ def main(base_config_filepath = "BaseConfig", config_filepath = "Config",set_siz
 
 if __name__ == "__main__":
     parser = optparse.OptionParser()
+    parser.add_option('-b',
+                      dest="base_config_filepath",
+                      default="BaseConfig"
+                      )
     parser.add_option('-c',
                       dest="config_filepath",
                       default="Config"
@@ -242,4 +246,4 @@ if __name__ == "__main__":
                       )
     options, remainder = parser.parse_args()
 
-    main(options.config_filepath,options.set_size,options.num_parties,options.key_size,options.old_method,options.strategy)
+    main(options.base_config_filepath, options.config_filepath,options.set_size,options.num_parties,options.key_size,options.old_method,options.strategy)
