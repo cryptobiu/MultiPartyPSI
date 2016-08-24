@@ -1,5 +1,5 @@
 [General]
-numofparties = 3
+numofparties = 10
 setsize = 4
 symsecurityparameter = 128
 seedsizeinbytes = 16

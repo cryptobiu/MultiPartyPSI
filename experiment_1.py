@@ -13,7 +13,7 @@ SET_SIZES = [2**2,2**4,2**6,2**8,2**10]
 KEY_SIZES = [80,128]
 STRATEGIES = [runner.Strategy.POLYNOMIALS, runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH]
 # and ofcourse kissner
-NUM_OF_PARTIES = 3
+NUM_OF_PARTIES = 5
 
 COLUMNS = ""
 
