@@ -4,6 +4,7 @@
 
 #include <NTL/GF2X.h>
 #include "GF2MatrixUtils.h"
+#include <system_error>
 
 vec_GF2 GF2MatrixUtils::solve(mat_GF2 A, vec_GF2 b) {
 
