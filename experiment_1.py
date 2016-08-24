@@ -49,7 +49,7 @@ config = ConfigParser.RawConfigParser(allow_no_value=True)
 config.readfp(io.BytesIO(conf))
 
 if config.get("General", "remote") == "True":
-    for i in xrange(1,int(NUM_OF_PARTIES+1):
+    for i in xrange(1,int(NUM_OF_PARTIES+1)):
         ip = config.get(str(i), "ip")
         os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
         os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
