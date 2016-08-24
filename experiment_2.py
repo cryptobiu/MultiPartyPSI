@@ -17,9 +17,6 @@ BANDWIDTH_AND_LATENCY = [('1000mbit','0.2ms'),('54mbit','0.2ms'),('25mbit','10ms
 # and ofcourse kissner
 NUM_OF_PARTIES = 5
 
-# sudo tc qdisc add dev lo root tbf rate 1mbit burst 10kb latency 70ms
-# sudo tc qdisc add del lo root tbf rate 1mbit burst 10kb latency 70ms
-
 def set_machines_network(rate, latency, interface='eth0', reset=False):
     conf = open("BaseConfig", "rb").read()
     config = ConfigParser.RawConfigParser(allow_no_value=True)
