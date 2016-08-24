@@ -167,6 +167,13 @@ def runMPPSI(strategy):
             print "Error ! return code is " + str(process.returncode)
     return finalResults
 
+def getStrategyName(strategy):
+    for attr in dir(Strategy):
+        if attr is '__doc__' or attr is '__module__':
+            continue
+        if getattr(Strategy,attr) == strategy:
+            return attr
+
 def main(base_config_filepath = "BaseConfig", config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None):
     global config, s
     conf = open(base_config_filepath, "rb").read()
@@ -197,22 +204,19 @@ def main(base_config_filepath = "BaseConfig", config_filepath = "Config",set_siz
         if old_method:
             return "Kisnner"
         else:
-            for attr in dir(Strategy):
-                if attr is '__doc__' or attr is '__module__':
-                    continue
-                if getattr(Strategy,attr) == strategy:
-                    return "Ours ({0})".format(attr)
+            return "Ours ({0})".format(getStrategyName(strategy))
 
     print "Run MPPSI of {0} with {1} parties with set size {2} and key security param {3}".format(getProtocol(), \
             config.get("General", "numofparties"), config.get("General", "setsize"), config.get("General", "symsecurityparameter"))
 
     if old_method:
         finalResults = runMPPSI(None)
-        return finalResults
     else:
-
         finalResults = runMPPSI(strategy)
-        return finalResults
+
+    s.close()
+
+    return finalResults
 
 if __name__ == "__main__":
     parser = optparse.OptionParser()

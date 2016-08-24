@@ -37,7 +37,7 @@ def run_and_add_to_csv(key_size,set_size,old_method,strategy):
     start_time = time.time()
     result = runner.main(key_size=key_size,num_parties=NUM_OF_PARTIES,set_size=set_size,old_method=old_method,strategy=strategy)
     result_str = '|'.join([str(item[1]) for item in sorted(result.items(),key= lambda x:x[0])])
-    row = [REV,str(start_time),str(key_size),str(NUM_OF_PARTIES),str(set_size),str(old_method),str(strategy),result_str]
+    row = [REV,str(start_time),str(key_size),str(NUM_OF_PARTIES),str(set_size),str(old_method),runner.getStrategyName(strategy),result_str]
 
     with open('experiment1.csv', 'ab') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=' ',
