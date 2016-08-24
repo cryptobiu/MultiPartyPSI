@@ -116,8 +116,6 @@ def runMPPSI(strategy):
 
     intersectSize = random.randint(1,setSize)
 
-    print "Real intersection size is " + str(intersectSize)
-
     for _ in xrange(intersectSize):
         intersection.append(random.randint(MIN_INT, MAX_INT))
 
@@ -145,8 +143,6 @@ def runMPPSI(strategy):
         for i in xrange(numOfParties):
             parties[i+1].send(struct.pack("B",strategy))
 
-    print "syncronizing... "
-
     # synchronize
     for i in xrange(numOfParties):
         parties[i+1].recv(1)
@@ -154,43 +150,21 @@ def runMPPSI(strategy):
     for i in xrange(numOfParties):
         parties[i+1].send("a")
 
-    print "syncronized !"
-
     finalResults = {}
     for partyId in xrange(1,numOfParties+1):
-        finalTime = struct.unpack("<f", parties[partyId].recv(4))[0]/CLOCKS_PER_SEC
-        print "party %d with time %f seconds" % (partyId,finalTime)
-        finalResults[partyId]=finalTime
-    '''
-    if strategy is not None:
-        try:
-            for i in xrange(1,numOfParties+1):
-                partyId = struct.unpack("<i", parties[i].recv(4))[0]
-                beginTime = struct.unpack("<f", parties[i].recv(4))[0]
-                afterSharing = struct.unpack("<f", parties[i].recv(4))[0]
-                afterOTs = struct.unpack("<f", parties[i].recv(4))[0]
-                afterAll = struct.unpack("<f", parties[i].recv(4))[0]
-                intersectionSize = struct.unpack("<i", parties[i].recv(4))[0]
-
-                #calculations
-                timeForPhase1 = (afterSharing - beginTime)/CLOCKS_PER_SEC
-                timeForPhase2 = (afterOTs - afterSharing)/CLOCKS_PER_SEC
-                timeForPhase3 = (afterAll - afterOTs)/CLOCKS_PER_SEC
-
-                print "party id: %d" % partyId
-                print "time for phase 1: %f" % timeForPhase1
-                print "time for phase 2: %f" % timeForPhase2
-                print "time for phase 3: %f" % timeForPhase3
-                if i == leaderId:
-                    print "intersection size is: %d" % intersectionSize
-        except:
-            pass
-    '''
+        buffer = parties[partyId].recv(16)
+        finalTimeInMilli,bytesSent,intersectionSize = struct.unpack("<dii", buffer)
+        finalTime = finalTimeInMilli / 1000
+        print "party %d with time %f seconds and %d bytes sent" % (partyId,finalTime, bytesSent)
+        finalResults[partyId]=(finalTime,bytesSent)
+        if partyId == leaderId:
+            if intersectionSize != intersectSize:
+                print "Error ! leader published false intersection size (real!=published):(%d!=%d)" % (intersectSize, intersectionSize)
 
     for process in processes:
         process.wait()
-        print "return code is " + str(process.returncode)
-    print "real intersection size is %d" % intersectSize
+        if process.returncode != 0:
+            print "Error ! return code is " + str(process.returncode)
     return finalResults
 
 def main(config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None):
@@ -217,13 +191,27 @@ def main(config_filepath = "Config",set_size = None,num_parties=None,key_size = 
         config.set("General", "symsecurityparameter", key_size)
     config.write(open(config_filepath, "wb"))
 
+    if strategy is None:
+        strategy = DEFAULT_STRATEGY
+
+    def getProtocol():
+        if old_method:
+            return "Kisnner"
+        else:
+            for attr in dir(Strategy):
+                if attr is '__doc__' or attr is '__module__':
+                    continue
+                if getattr(Strategy,attr) == strategy:
+                    return "Ours ({0})".format(attr)
+
+    print "Run MPPSI of {0} with {1} parties with set size {2} and key security param {3}".format(getProtocol(), \
+            config.get("General", "numofparties"), config.get("General", "setsize"), config.get("General", "symsecurityparameter"))
+
     if old_method:
         finalResults = runMPPSI(None)
         return finalResults
     else:
-        strategy = strategy
-        if strategy is None:
-            strategy = DEFAULT_STRATEGY
+
         finalResults = runMPPSI(strategy)
         return finalResults
 

@@ -13,7 +13,7 @@ class BaseMPSIParty : public MultiPartyPlayer {
 public:
     BaseMPSIParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService);
     virtual ~BaseMPSIParty() {};
-    virtual void run()=0;
+    virtual uint32_t run()=0;
     void runAndLog();
     void syncronize();
 protected:
@@ -27,6 +27,7 @@ protected:
     prf_state_ctx m_prfState;
 
     crypto *initializeCrypto();
+    uint32_t getBytes(const std::string &type, const std::string &iface);
 private:
     COPY_CTR(BaseMPSIParty);
     ASSIGN_OP(BaseMPSIParty);

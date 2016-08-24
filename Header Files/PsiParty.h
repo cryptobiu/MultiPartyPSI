@@ -17,7 +17,7 @@ public:
     PsiParty(uint partyId, ConfigFile &config, boost::asio::io_service &ioService);
     virtual ~PsiParty() { };
 
-    void run();
+    virtual uint32_t run();
 
 private:
 
@@ -29,7 +29,7 @@ private:
      */
     void additiveSecretShare();
 
-    void runAsLeader();
+    uint32_t runAsLeader();
     void runAsFollower(CSocket &leader);
 
     void initPsi();

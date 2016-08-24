@@ -30,11 +30,33 @@ BaseMPSIParty::BaseMPSIParty(uint32_t partyId, ConfigFile &config, boost::asio::
 }
 
 void BaseMPSIParty::runAndLog() {
-    float before = clock();
-    run();
-    float finalTime = clock()-before;
+    BaseMPSIResult result;
+    timeval t_start, t_end;
 
-    m_serverSocket.Send(reinterpret_cast<byte *>(&finalTime), sizeof(float));
+    gettimeofday(&t_start, NULL);
+    PRINT_PARTY(m_partyId) << "After Clock" << std::endl;
+    std::string iface = "eth0";
+    if (m_isLocalHost) {
+        iface = "lo";
+    }
+
+    uint32_t txBefore = getBytes("tx",iface.c_str());
+
+    result.intersectionSize = run();
+    gettimeofday(&t_end, NULL);
+    result.finalTime = getMillies(t_start,t_end);
+    result.txFinal = getBytes("tx",iface.c_str())-txBefore;
+
+    PRINT_PARTY(m_partyId) << "Send the following values: " << result.finalTime << ", " << result.txFinal << ", " << result.intersectionSize << std::endl;
+    m_serverSocket.Send(reinterpret_cast<byte *>(&result), sizeof(BaseMPSIResult));
+}
+
+uint32_t BaseMPSIParty::getBytes(const std::string &type, const std::string &iface) {
+    std::string path = std::string("/sys/class/net/") + iface + std::string("/statistics/") + type + std::string("_bytes");
+    FILE *f = fopen(path.c_str(), "r");
+    uint32_t numBytes;
+    fscanf(f,"%d",&numBytes);
+    return numBytes;
 }
 
 void BaseMPSIParty::LoadConfiguration() {

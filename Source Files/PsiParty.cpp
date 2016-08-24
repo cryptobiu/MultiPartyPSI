@@ -102,7 +102,7 @@ void PsiParty::initializeMaskSize() {
     }
 }
 
-void PsiParty::run() {
+uint32_t PsiParty::run() {
     initPsi();
 
     m_statistics.beginTime = clock();
@@ -113,15 +113,17 @@ void PsiParty::run() {
 
     m_statistics.afterSharing = clock();
 
-    uint leaderId = stoi(getValFromConfig(m_config, "General", "leaderid"));
+    uint32_t leaderId = stoi(getValFromConfig(m_config, "General", "leaderid"));
 
     if (m_partyId == leaderId) {
         PRINT_PARTY(m_partyId) << "run as leader" << std::endl;
-        runAsLeader();
+        uint32_t intersectionSize = runAsLeader();
+        return intersectionSize;
     }
     else {
         PRINT_PARTY(m_partyId) << "run as follower"  << std::endl;
         runAsFollower(*m_parties[leaderId]);
+        return 0;
     }
 }
 
@@ -143,7 +145,7 @@ void PsiParty::runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_
     PRINT_PARTY(m_partyId) << "done running leader against party " << party.first << std::endl;
 }
 
-void PsiParty::runAsLeader() {
+uint32_t PsiParty::runAsLeader() {
 
     map<uint32_t , boost::shared_ptr<uint8_t>> leaderResults;
 
@@ -228,6 +230,8 @@ void PsiParty::runAsLeader() {
     m_statistics.intersectionSize = intersection.size();
 
     m_statistics.specificStats.aftetComputing = clock();
+
+    return intersection.size();
 }
 
 

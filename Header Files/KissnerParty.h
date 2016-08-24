@@ -13,7 +13,7 @@ public:
     KissnerParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService);
     virtual ~KissnerParty() {};
 
-    void run();
+    uint32_t run();
 private:
     COPY_CTR(KissnerParty);
     ASSIGN_OP(KissnerParty);

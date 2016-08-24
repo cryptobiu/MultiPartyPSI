@@ -81,6 +81,12 @@ struct CuckooHashInfo {
     uint32_t hashedBy;
 };
 
+struct BaseMPSIResult {
+    double finalTime;
+    uint32_t txFinal;
+    uint32_t intersectionSize;
+};
+
 struct secParameters {
     uint32_t m_symSecParameter;
     uint32_t m_statSecParameter;

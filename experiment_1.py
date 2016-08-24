@@ -53,13 +53,14 @@ for set_size in SET_SIZES:
 with open('experiment1_avg.csv', 'wb') as csvf:
     csvwriter = csv.writer(csvf, delimiter=' ',
                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    csvwriter.writerow(['rev', 'start_time', 'key_size', 'num_parties', 'set_size', 'old_method','strategy', 'result'])
     with open('experiment1.csv', 'rb') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         csvreader.next() # remove title
         try:
             while True:
                 rows = [csvreader.next() for i in xrange(10)]
-                results = [0]*NUM_OF_PARTIES
+                results = [(0,0)]*NUM_OF_PARTIES
                 for i in xrange(10):
                     assert rows[i][0] == rows[0][0] #rev
                     assert rows[i][2] == rows[0][2] #key_size
@@ -67,9 +68,9 @@ with open('experiment1_avg.csv', 'wb') as csvf:
                     assert rows[i][4] == rows[0][4] #set_size
                     assert rows[i][5] == rows[0][5] #old_method
                     assert rows[i][6] == rows[0][6] #strategy
-                    times = [float(x) for x in rows[i][7].split('|')]
-                    results = [results[i]+times[i] for i in xrange(NUM_OF_PARTIES)]
-                results = map(lambda x: str(x/10), results)
+                    times_and_bytes = [eval(x) for x in rows[i][7].split('|')]
+                    results = [(results[i][0]+times_and_bytes[i][0],results[i][1]+times_and_bytes[i][1]) for i in xrange(NUM_OF_PARTIES)]
+                results = map(lambda x: str((x[0]/10,x[1]/10)), results)
                 rows[0][7]='|'.join(results)
                 csvwriter.writerow(rows[0])
         except StopIteration:

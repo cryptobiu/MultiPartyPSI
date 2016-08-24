@@ -10,7 +10,7 @@ KissnerParty::KissnerParty(uint32_t partyId, ConfigFile &config, boost::asio::io
 
 }
 
-void KissnerParty::run() {
+uint32_t KissnerParty::run() {
 
     initPaiilier();
 
@@ -22,6 +22,7 @@ void KissnerParty::run() {
 
     if (m_partyId != leaderId) {
         makeDecryptedPolynomialAsFollower(sharedPolynomial,leaderId);
+        return 0;
     }
     else {
         vector<ZZ> decryptedPoly = makeDecryptedPolynomialAsLeader(sharedPolynomial);
@@ -39,7 +40,7 @@ void KissnerParty::run() {
             }
 
         }
-        PRINT() << "intersection size is " << intersection.length() << std::endl;
+        return intersection.length();
     }
 }
 
