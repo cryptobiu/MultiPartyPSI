@@ -168,7 +168,6 @@ def runMPPSI(strategy):
     return finalResults
 
 def main(base_config_filepath = "BaseConfig", config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None):
-    os.system('git checkout -- %s' % config_filepath)
     global config, s
     conf = open(base_config_filepath, "rb").read()
     config = ConfigParser.RawConfigParser(allow_no_value=True)
