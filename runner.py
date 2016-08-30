@@ -112,9 +112,16 @@ def runMPPSI(strategy):
             os.system('sshpass -p "305151094" ssh naor@{0} "{1} &"'.format(name, command_line))
         '''
 
-        for i in xrange(1,numOfParties+1):
-            ip = config.get(str(i), "ip")
-            processes.append(Popen(['ssh', '-i', 'key.pem', ip, './MultiPartyPSI/MultiPartyPSI', str(i), './MultiPartyPSI/Config', str(program_type)]))
+
+        if config.get("General", "profile") == "True":
+            for i in xrange(1,numOfParties+1):
+                ip = config.get(str(i), "ip")
+                processes.append(Popen(['ssh', '-i', 'key.pem', ip, 'valgrind','--tool=callgrind', './MultiPartyPSI/MultiPartyPSI', str(i), './MultiPartyPSI/Config', str(program_type)]))
+        else:
+            for i in xrange(1,numOfParties+1):
+                ip = config.get(str(i), "ip")
+                processes.append(Popen(['ssh', '-i', 'key.pem', ip, './MultiPartyPSI/MultiPartyPSI', str(i), './MultiPartyPSI/Config', str(program_type)]))
+
 
     parties = {}
     for _ in xrange(numOfParties):
