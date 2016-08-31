@@ -27,6 +27,8 @@ def prepare_machines(num_of_parties):
 def run_and_add_to_csv(results_file_path,num_of_parties,key_size,set_size,old_method,strategy,bandwidth=None,latency=None):
     start_time = time.time()
     result = runner.main(key_size=key_size,num_parties=num_of_parties,set_size=set_size,old_method=old_method,strategy=strategy)
+    if len(result) != num_of_parties:
+        return False
     result_str = '|'.join([str(item[1]) for item in sorted(result.items(),key= lambda x:x[0])])
     row = [REV,str(bandwidth),str(latency),str(start_time),str(key_size),str(num_of_parties),str(set_size),str(old_method),runner.getStrategyName(strategy),result_str]
 
@@ -34,6 +36,7 @@ def run_and_add_to_csv(results_file_path,num_of_parties,key_size,set_size,old_me
         csvwriter = csv.writer(csvfile, delimiter=' ',
                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
         csvwriter.writerow(row)
+    return True
 
 def prepare_results_file(config_file_path):
     if not os.path.isfile(config_file_path):
