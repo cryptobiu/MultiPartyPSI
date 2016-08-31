@@ -21,6 +21,7 @@ def prepare_machines(num_of_parties):
         for i in xrange(1,int(num_of_parties+1)):
             ip = config.get(str(i), "ip")
             os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
+            os.system('ssh -i key.pem {0} "rm MultiPartyPSI/MultiPartyPSI"'.format(ip))
             os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
 
 def run_and_add_to_csv(results_file_path,num_of_parties,key_size,set_size,old_method,strategy,bandwidth=None,latency=None):
