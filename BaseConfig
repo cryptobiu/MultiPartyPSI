@@ -10,7 +10,7 @@ profile = False
 remote = True
 
 [server]
-ip = 172.31.48.57
+ip = 172.31.10.192
 port = 5000
 
 [1]
