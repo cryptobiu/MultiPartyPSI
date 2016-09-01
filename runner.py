@@ -84,6 +84,15 @@ def newRandom(els):
         value = random.randint(MIN_INT, MAX_INT)
     return value
 
+print "Generating random set"
+random_set_size = 2**26
+random_set = []
+
+for i in xrange(random_set_size):
+    #random_set.append(newRandom(random_set))
+    random_set.append(i)
+print "Done generating random set"
+
 def runMPPSI(strategy):
     numOfParties = int(config.get("General", "numofparties"))
     leaderId = int(config.get("General", "leaderid"))
@@ -136,18 +145,15 @@ def runMPPSI(strategy):
         parties[partyId] = conn
 
     # make elements to each party and send to them
-    intersection = []
-
     intersectSize = random.randint(1,setSize)
+    intersection = random_set[:intersectSize]
 
-    for _ in xrange(intersectSize):
-        intersection.append(newRandom(intersection))
+    counter = intersectSize
 
     for i in xrange(numOfParties):
-        els = []
-        els = els + intersection
-        for j in xrange(setSize-intersectSize):
-            els.append(newRandom(els))
+        els = intersection + random_set[counter:counter+setSize-intersectSize]
+
+        counter = counter+setSize-intersectSize
 
         random.shuffle(els)
 
