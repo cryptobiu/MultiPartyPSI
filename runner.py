@@ -85,7 +85,7 @@ def newRandom(els):
     return value
 
 print "Generating random set"
-random_set_size = 2**26
+random_set_size = 2**24
 random_set = []
 
 for i in xrange(random_set_size):
