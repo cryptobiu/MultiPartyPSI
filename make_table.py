@@ -37,7 +37,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
             data = data[len(row):]
             row.sort(key=lambda x: place[x.strategy])
             vals = map(lambda x: "%.2f" % eval(x.result.split('|')[0])[0], row)
-            f.write(" & ".join(['2^{{{0}}}'.format(int(math.log(set_size,2)))] + vals) + " \\\\\\hline\n")
+            f.write(" & ".join(['$2^{{{0}}}$'.format(int(math.log(set_size,2)))] + vals) + " \\\\\\hline\n")
             set_size = set_size * 4
         f.write('\\end{tabular}\n')
         f.write('\\caption{Times (in seconds) with symmetric security parameter %d}\n'%KEY_SIZE)
@@ -59,7 +59,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
 
             amounts = map(lambda x: sum(map(lambda y: eval(y)[1],x.result.split('|'))), row)
             vals = map(lambda x: "%.2f" % (x/1000000.0), amounts)
-            f.write(" & ".join(['2^{{{0}}}'.format(int(math.log(set_size,2)))] + vals) + " \\\\\\hline\n")
+            f.write(" & ".join(['$2^{{{0}}}$'.format(int(math.log(set_size,2)))] + vals) + " \\\\\\hline\n")
             set_size = set_size * 4
         f.write('\\end{tabular}\n')
         f.write('\\caption{Communication complexity (in MB) with symmetric security parameter %d}\n'%KEY_SIZE)
