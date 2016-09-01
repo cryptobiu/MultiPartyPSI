@@ -66,7 +66,7 @@ def avg_experiments(result_file_path, avg_result_file_path, num_of_parties):
             csvreader.next() # remove title
             try:
                 while True:
-                    rows = [csvreader.next() for i in xrange(10)]
+                    rows = [csvreader.next() for i in xrange(3)]
                     results = [(0,0)]*num_of_parties
                     for i in xrange(10):
                         assert rows[i][0] == rows[0][0] #rev
