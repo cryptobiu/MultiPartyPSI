@@ -78,6 +78,12 @@ serverPort = int(config.get("server", "port"))
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((serverIp, serverPort))
 
+def newRandom(els):
+    value = random.randint(MIN_INT, MAX_INT)
+    while value in els:
+        value = random.randint(MIN_INT, MAX_INT)
+    return value
+
 def runMPPSI(strategy):
     numOfParties = int(config.get("General", "numofparties"))
     leaderId = int(config.get("General", "leaderid"))
@@ -135,14 +141,14 @@ def runMPPSI(strategy):
     intersectSize = random.randint(1,setSize)
 
     for _ in xrange(intersectSize):
-        intersection.append(random.randint(MIN_INT, MAX_INT))
+        intersection.append(newRandom(intersection))
 
     for i in xrange(numOfParties):
         els = []
-        for j in xrange(setSize-intersectSize):
-            els.append(random.randint(MIN_INT, MAX_INT))
-
         els = els + intersection
+        for j in xrange(setSize-intersectSize):
+            els.append(newRandom(els))
+
         random.shuffle(els)
 
         # print "elements to party %d are %s" % (i, " ".join([str(el) for el in s]))
@@ -250,6 +256,7 @@ if __name__ == "__main__":
                       )
     parser.add_option('-s',
                       dest="strategy",
+                      type="int",
                       )
     options, remainder = parser.parse_args()
 
