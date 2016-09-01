@@ -36,3 +36,4 @@ with open("experiment1_avg.csv", 'rb') as csvfile:
         f.write('\\end{tabular}\n')
         f.write('\\caption{Times (in seconds) with symmetric security parameter %d}\n'%KEY_SIZE)
         f.write('\\end{table}\n')
+        f.write('\n')
