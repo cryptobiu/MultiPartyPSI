@@ -8,7 +8,6 @@ import os
 import ConfigParser
 import io
 
-os.system('cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt; make')
 process = subprocess.Popen(['git','rev-parse','HEAD'],stdout=subprocess.PIPE)
 REV = process.communicate()[0].rstrip('\n')
 
@@ -22,7 +21,15 @@ def prepare_machines(num_of_parties):
             ip = config.get(str(i), "ip")
             os.system('ssh -i key.pem {0} "cd MultiPartyPSI; git pull"'.format(ip))
             os.system('ssh -i key.pem {0} "rm MultiPartyPSI/MultiPartyPSI"'.format(ip))
+
+            if i == 1:
+                os.system('ssh -i key.pem {0} "cd MultiPartyPSI; cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt; make"'.format(ip))
+                os.system('mkdir bin')
+                os.system('scp -i key.pem {0}:MultiPartyPSI/bin/MultiPartyPSI ./bin/MultiPartyPSI'.format(ip))
+
             os.system('scp -i key.pem ./bin/MultiPartyPSI {0}:MultiPartyPSI/MultiPartyPSI'.format(ip))
+    else:
+        os.system('cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt; make')
 
 def run_and_add_to_csv(results_file_path,num_of_parties,key_size,set_size,old_method,strategy,bandwidth=None,latency=None):
     start_time = time.time()
