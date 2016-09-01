@@ -41,7 +41,7 @@ void PolynomialFollower::generateIrreduciblePolynomial() {
     // std::cout << "Follower irreducible Polynomial is " << m_irreduciblePolynomial << std::endl;
 }
 
-vector<vector<uint8_t>> PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & polynomial) {
+void PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & polynomial, uint8_t *arr) {
     vector<vector<uint8_t>> polynomBytes;
 
     uint32_t polyDeg = deg(polynomial);
@@ -59,10 +59,23 @@ vector<vector<uint8_t>> PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & 
                 bytes.push_back(0);
             }
         }
-        polynomBytes.push_back(bytes);
+        memcpy(arr+i*m_followerSet.m_maskSizeInBytes,bytes.data(),m_followerSet.m_maskSizeInBytes);
+    }
+}
+
+void PolynomialFollower::sendPolynomials() {
+    uint8_t *masks;
+    posix_memalign((void**)&masks, 16, m_followerSet.m_maskSizeInBytes*m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfElements);
+
+    //send the masks to the receiver
+    for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
+        getPolynomialCoffBytes(m_polynomials[i], masks+m_followerSet.m_maskSizeInBytes*i*m_followerSet.m_numOfElements);
     }
 
-    return polynomBytes;
+    send_masks(masks, m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfElements,
+               m_followerSet.m_maskSizeInBytes, m_leader);
+
+    free(masks);
 }
 
 void PolynomialFollower::run() {
@@ -73,16 +86,5 @@ void PolynomialFollower::run() {
     //vector<uint8_t> irreduciblePolynomialBytes = PolynomialUtils::convertGF2XToBytes(m_irreduciblePolynomial);
     //send_masks(irreduciblePolynomialBytes.data(),1,m_followerSet.m_maskSizeInBytes,m_leader);
 
-    //send the masks to the receiver
-    for (auto &polynomial : m_polynomials) {
-        vector<vector<uint8_t>> polynomialCoffBytes = getPolynomialCoffBytes(polynomial);
-        for (auto &polynomialCoff : polynomialCoffBytes) {
-            if (polynomialCoff.size() != m_followerSet.m_maskSizeInBytes) {
-                PRINT() << "coefficient size is not correct !!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-                PRINT() << polynomialCoff.size() << std::endl;
-            }
-            send_masks(polynomialCoff.data(), 1,
-                       polynomialCoff.size(), m_leader);
-        }
-    }
+    sendPolynomials();
 }

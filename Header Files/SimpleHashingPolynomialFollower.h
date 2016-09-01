@@ -13,6 +13,8 @@ public:
                                     const secParameters &parameters) :
     PolynomialFollower(followerSet,secretShare,leader, parameters) {}
 private:
+    virtual void sendPolynomials() override;
+
     virtual void buildPolynomials() override;
 
     COPY_CTR(SimpleHashingPolynomialFollower);
