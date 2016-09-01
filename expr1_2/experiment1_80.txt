@@ -3,12 +3,25 @@
 \begin{tabular}{| l | l | l | l | l | l |}
 \hline
 Set Size & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash \\\hline
-1024 & 0.28 & 1.12 & 1.03 \\\hline
-4096 & 0.53 & 5.58 & 4.80 \\\hline
-16384 & 1.71 & 28.75 & 23.97 \\\hline
-65536 & 6.73 & 145.37 & 117.30 \\\hline
-262144 & 29.46 & 717.23 & 569.22 \\\hline
+2^10 & 0.28 & 1.12 & 1.03 \\\hline
+2^12 & 0.53 & 5.58 & 4.80 \\\hline
+2^14 & 1.71 & 28.75 & 23.97 \\\hline
+2^16 & 6.73 & 145.37 & 117.30 \\\hline
+2^18 & 29.46 & 717.23 & 569.22 \\\hline
 \end{tabular}
 \caption{Times (in seconds) with symmetric security parameter 80}
 \end{table}
 
+\begin{table}
+\centering
+\begin{tabular}{| l | l | l | l | l | l |}
+\hline
+Set Size & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash \\\hline
+2^10 & 2.82 & 1.73 & 3.20 \\\hline
+2^12 & 15.24 & 11.52 & 19.44 \\\hline
+2^14 & 65.27 & 58.14 & 99.65 \\\hline
+2^16 & 274.11 & 252.86 & 516.37 \\\hline
+2^18 & 1125.85 & 1126.41 & 2584.04 \\\hline
+\end{tabular}
+\caption{Communication complexity (in MB) with symmetric security parameter 80}
+\end{table}
