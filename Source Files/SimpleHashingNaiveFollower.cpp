@@ -30,7 +30,7 @@ void SimpleHashingNaiveFollower::run() {
 
         if (numOfRandomBytes != 0) {
             vector<uint8_t> random;
-            prg.getPRGBytes(random, progress*m_followerSet.m_maskSizeInBytes, numOfRandomBytes);
+            prg.getPRGBytes(random, 0, numOfRandomBytes);
 
             send_masks(random.data(), m_followerSet.m_maxBinSize-numOfElementsInBin, m_followerSet.m_maskSizeInBytes, m_leader);
         }
