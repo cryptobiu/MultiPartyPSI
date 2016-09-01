@@ -71,6 +71,7 @@ void *PolynomialLeader::receivePolynomials(void *ctx_tmp) {
     uint32_t coefficientSize = ctx->maskbytelen;
 
     for (uint32_t i = 0; i < ctx->numOfHashFunction; i++) {
+        PRINT() << "receive polynomial " << i << std::endl;
         for (uint32_t k =0; k < ctx->numPolynomPerHashFunc; k++) {
             ctx->polynoms[i*ctx->numPolynomPerHashFunc+k] = new NTL::GF2EX();
             for (uint32_t j=0; j < ctx->polynomSize; j++) {

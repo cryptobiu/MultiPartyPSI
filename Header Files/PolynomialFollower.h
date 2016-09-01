@@ -27,7 +27,8 @@ protected:
     virtual void buildPolynomials();
     void generateIrreduciblePolynomial();
 
-    vector<vector<uint8_t>> getPolynomialCoffBytes(NTL::GF2EX & polynomial);
+    void getPolynomialCoffBytes(NTL::GF2EX & polynomial, uint8_t *arr);
+    virtual void sendPolynomials();
 
     GF2X m_irreduciblePolynomial;
     vector<GF2EX> m_polynomials;

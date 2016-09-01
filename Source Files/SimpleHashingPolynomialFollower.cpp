@@ -2,6 +2,7 @@
 // Created by root on 7/26/16.
 //
 
+#include <ot-psi.h>
 #include "SimpleHashingPolynomialFollower.h"
 #include "PolynomialUtils.h"
 
@@ -32,7 +33,7 @@ void SimpleHashingPolynomialFollower::buildPolynomials(){
             }
 
             if (numOfElementsOfHashInBin > m_followerSet.m_maxBinSize) {
-                PRINT() << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!";
+                PRINT() << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!" << std::endl;
             }
 
             uint32_t numOfRandomElements = m_followerSet.m_maxBinSize-numOfElementsOfHashInBin;
@@ -47,4 +48,19 @@ void SimpleHashingPolynomialFollower::buildPolynomials(){
             elementIndex = elementIndex + numOfElementsInBin;
         }
     }
+}
+
+void SimpleHashingPolynomialFollower::sendPolynomials() {
+    uint8_t *masks;
+    posix_memalign((void**)&masks, 16, m_followerSet.m_maskSizeInBytes*m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize);
+
+    //send the masks to the receiver
+    for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfBins; i++) {
+        getPolynomialCoffBytes(m_polynomials[i], masks+m_followerSet.m_maskSizeInBytes*i*m_followerSet.m_maxBinSize);
+    }
+
+    send_masks(masks, m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize,
+               m_followerSet.m_maskSizeInBytes, m_leader);
+
+    free(masks);
 }

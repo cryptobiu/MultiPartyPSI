@@ -78,6 +78,21 @@ serverPort = int(config.get("server", "port"))
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((serverIp, serverPort))
 
+def newRandom(els):
+    value = random.randint(MIN_INT, MAX_INT)
+    while value in els:
+        value = random.randint(MIN_INT, MAX_INT)
+    return value
+
+print "Generating random set"
+random_set_size = 2**24
+random_set = []
+
+for i in xrange(random_set_size):
+    #random_set.append(newRandom(random_set))
+    random_set.append(i)
+print "Done generating random set"
+
 def runMPPSI(strategy):
     numOfParties = int(config.get("General", "numofparties"))
     leaderId = int(config.get("General", "leaderid"))
@@ -112,9 +127,16 @@ def runMPPSI(strategy):
             os.system('sshpass -p "305151094" ssh naor@{0} "{1} &"'.format(name, command_line))
         '''
 
-        for i in xrange(1,numOfParties+1):
-            ip = config.get(str(i), "ip")
-            processes.append(Popen(['ssh', '-i', 'key.pem', ip, './MultiPartyPSI/MultiPartyPSI', str(i), './MultiPartyPSI/Config', str(program_type)]))
+
+        if config.get("General", "profile") == "True":
+            for i in xrange(1,numOfParties+1):
+                ip = config.get(str(i), "ip")
+                processes.append(Popen(['ssh', '-i', 'key.pem', ip, 'valgrind','--tool=callgrind', './MultiPartyPSI/MultiPartyPSI', str(i), './MultiPartyPSI/Config', str(program_type)]))
+        else:
+            for i in xrange(1,numOfParties+1):
+                ip = config.get(str(i), "ip")
+                processes.append(Popen(['ssh', '-i', 'key.pem', ip, './MultiPartyPSI/MultiPartyPSI', str(i), './MultiPartyPSI/Config', str(program_type)]))
+
 
     parties = {}
     for _ in xrange(numOfParties):
@@ -123,19 +145,16 @@ def runMPPSI(strategy):
         parties[partyId] = conn
 
     # make elements to each party and send to them
-    intersection = []
-
     intersectSize = random.randint(1,setSize)
+    intersection = random_set[:intersectSize]
 
-    for _ in xrange(intersectSize):
-        intersection.append(random.randint(MIN_INT, MAX_INT))
+    counter = intersectSize
 
     for i in xrange(numOfParties):
-        els = []
-        for j in xrange(setSize-intersectSize):
-            els.append(random.randint(MIN_INT, MAX_INT))
+        els = intersection + random_set[counter:counter+setSize-intersectSize]
 
-        els = els + intersection
+        counter = counter+setSize-intersectSize
+
         random.shuffle(els)
 
         # print "elements to party %d are %s" % (i, " ".join([str(el) for el in s]))
@@ -162,15 +181,19 @@ def runMPPSI(strategy):
         parties[i+1].send("a")
 
     finalResults = {}
+
     for partyId in xrange(1,numOfParties+1):
-        buffer = parties[partyId].recv(16)
-        finalTimeInMilli,bytesSent,intersectionSize = struct.unpack("<dii", buffer)
-        finalTime = finalTimeInMilli / 1000
-        print "party %d with time %f seconds and %d bytes sent" % (partyId,finalTime, bytesSent)
-        finalResults[partyId]=(finalTime,bytesSent)
-        if partyId == leaderId:
-            if intersectionSize != intersectSize:
-                print "Error ! leader published false intersection size (real!=published):(%d!=%d)" % (intersectSize, intersectionSize)
+        try:
+            buffer = parties[partyId].recv(16)
+            finalTimeInMilli,bytesSent,intersectionSize = struct.unpack("<dii", buffer)
+            finalTime = finalTimeInMilli / 1000
+            print "party %d with time %f seconds and %d bytes sent" % (partyId,finalTime, bytesSent)
+            finalResults[partyId]=(finalTime,bytesSent)
+            if partyId == leaderId:
+                if intersectionSize != intersectSize:
+                    print "Error ! leader published false intersection size (real!=published):(%d!=%d)" % (intersectSize, intersectionSize)
+        except:
+            print "Error ! party %d doesn't sent back correct data" % partyId
 
     for process in processes:
         process.wait()
@@ -239,6 +262,7 @@ if __name__ == "__main__":
                       )
     parser.add_option('-s',
                       dest="strategy",
+                      type="int",
                       )
     options, remainder = parser.parse_args()
 
