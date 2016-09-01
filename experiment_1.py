@@ -9,7 +9,7 @@ import ConfigParser
 import io
 import experiment_utils
 
-SET_SIZES = [2**10,2**12,2**14,2**16,2**18,2**20]
+SET_SIZES = [2**10,2**12,2**14,2**16,2**18]
 #KEY_SIZES = [80,128]
 KEY_SIZES = [80]
 #STRATEGIES = [runner.Strategy.POLYNOMIALS, runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH]
