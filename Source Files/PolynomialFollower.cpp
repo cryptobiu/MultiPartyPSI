@@ -18,6 +18,7 @@ void PolynomialFollower::buildPolynomials(){
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
         vec_GF2E inputs;
         vec_GF2E masks;
+        PRINT() << "Get Points" << std::endl;
         for (uint32_t j=0; j < m_followerSet.m_numOfElements; j++) {
             uint32_t index = m_followerSet.m_elements_to_hash_table.get()[j*m_followerSet.m_numOfHashFunctions+i];
 
@@ -27,7 +28,10 @@ void PolynomialFollower::buildPolynomials(){
             NTL::GF2E mask = PolynomialUtils::convertBytesToGF2E(m_followerSet.m_masks.get()+index*m_followerSet.m_maskSizeInBytes, m_followerSet.m_maskSizeInBytes);
             masks.append(mask);
         }
-        GF2EX polynomial = interpolate(inputs, masks);
+
+        PRINT() << "interpolate" << std::endl;
+
+        GF2EX polynomial = interpolate(inputs, masks); // this is the costy operation
 
         m_polynomials.push_back(polynomial);
     }
@@ -81,10 +85,12 @@ void PolynomialFollower::sendPolynomials() {
 void PolynomialFollower::run() {
     xor_masks(m_followerSet.m_masks.get(), m_followerSet.m_maskSizeInBytes, m_secretShare.get(), m_followerSet.m_numOfBins, m_followerSet.m_numOfElementsInBin.get());
 
+    PRINT() << "buildPolynomials" << std::endl;
     buildPolynomials();
 
     //vector<uint8_t> irreduciblePolynomialBytes = PolynomialUtils::convertGF2XToBytes(m_irreduciblePolynomial);
     //send_masks(irreduciblePolynomialBytes.data(),1,m_followerSet.m_maskSizeInBytes,m_leader);
 
+    PRINT() << "sendPolynomials" << std::endl;
     sendPolynomials();
 }

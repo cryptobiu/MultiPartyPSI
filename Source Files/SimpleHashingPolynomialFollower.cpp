@@ -33,7 +33,7 @@ void SimpleHashingPolynomialFollower::buildPolynomials(){
             }
 
             if (numOfElementsOfHashInBin > m_followerSet.m_maxBinSize) {
-                PRINT() << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!";
+                PRINT() << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!" << std::endl;
             }
 
             uint32_t numOfRandomElements = m_followerSet.m_maxBinSize-numOfElementsOfHashInBin;
