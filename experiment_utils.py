@@ -11,6 +11,8 @@ import io
 process = subprocess.Popen(['git','rev-parse','HEAD'],stdout=subprocess.PIPE)
 REV = process.communicate()[0].rstrip('\n')
 
+NUM_OF_RUNS = 3
+
 def prepare_machines(num_of_parties):
     conf = open("BaseConfig", "rb").read()
     config = ConfigParser.RawConfigParser(allow_no_value=True)
@@ -66,9 +68,9 @@ def avg_experiments(result_file_path, avg_result_file_path, num_of_parties):
             csvreader.next() # remove title
             try:
                 while True:
-                    rows = [csvreader.next() for i in xrange(3)]
+                    rows = [csvreader.next() for i in xrange(NUM_OF_RUNS)]
                     results = [(0,0)]*num_of_parties
-                    for i in xrange(10):
+                    for i in xrange(NUM_OF_RUNS):
                         assert rows[i][0] == rows[0][0] #rev
                         assert rows[i][1] == rows[0][1] #bandwidth
                         assert rows[i][2] == rows[0][2] #latency
@@ -80,7 +82,7 @@ def avg_experiments(result_file_path, avg_result_file_path, num_of_parties):
                         assert rows[i][8] == rows[0][8] #strategy
                         times_and_bytes = [eval(x) for x in rows[i][9].split('|')]
                         results = [(results[i][0]+times_and_bytes[i][0],results[i][1]+times_and_bytes[i][1]) for i in xrange(num_of_parties)]
-                    results = map(lambda x: str((x[0]/10,x[1]/10)), results)
+                    results = map(lambda x: str((x[0]/NUM_OF_RUNS,x[1]/NUM_OF_RUNS)), results)
                     rows[0][9]='|'.join(results)
                     csvwriter.writerow(rows[0])
             except StopIteration:

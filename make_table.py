@@ -1,11 +1,15 @@
+#!/usr/bin/env python
+
 import csv
 from collections import namedtuple
+import sys
 
-place = {'POLYNOMIALS' : 0, 'BLOOM_FILTER' : 1, 'POLYNOMIALS_SIMPLE_HASH' : 2, 'GAUSS_SIMPLE_HASH' : 3, '' : 4}
+place = {'BLOOM_FILTER' : 1, 'POLYNOMIALS_SIMPLE_HASH' : 2, 'GAUSS_SIMPLE_HASH' : 3}
 
-KEY_SIZE = 128
+dir_name = sys.argv[1]
+KEY_SIZE = int(sys.argv[2])
 
-with open("experiment1_avg.csv", 'rb') as csvfile:
+with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
     Result = namedtuple('Result',csvreader.next())
     results = []
@@ -19,13 +23,13 @@ with open("experiment1_avg.csv", 'rb') as csvfile:
     results = filter(lambda x: x.key_size==str(KEY_SIZE),results)
     results.sort(key=lambda x: int(x.set_size))
     
-    with open("experiment1_%d.txt"%KEY_SIZE, 'wb') as f:
+    with open("{0}/experiment1_{1}.txt".format(dir_name, KEY_SIZE), 'wb') as f:
         f.write('\\begin{table}\n')
         f.write('\\centering\n')
         f.write('\\begin{tabular}{| l | l | l | l | l | l |}\n')
         f.write('\\hline\n')
-        f.write('Set Size & Polynomials & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash & Kissner \\\\\\hline\n')
-        set_size = 4
+        f.write('Set Size & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash \\\\\\hline\n')
+        set_size = 2**10
         while len(results) != 0:
             row = filter(lambda x: x.set_size == str(set_size), results)
             results = results[len(row):]
