@@ -24,7 +24,7 @@ INCLUDE_DIRECTORIES(/usr/include/openssl /usr/include/glib-2.0/ /usr/lib/x86_64-
         $ENV{HOME}/MultiPartyPSI/PSI_C_0.1/PSI/headers $ENV{HOME}/libscapi/build/NTL/include
         "$ENV{HOME}/MultiPartyPSI/Header Files" $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based $ENV{HOME}/MultiPartyPSI/PSI/src/util
         $ENV{HOME}/MultiPartyPSI/PSI/src/hashing)
-link_directories($ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib ${SSL_LIBDIR} ${BOOST_LIBRARYDIR})
+link_directories(/usr/local/lib $ENV{HOME}/MultiPartyPSI/PSI/src/externals/miracl_lib ${SSL_LIBDIR} ${BOOST_LIBRARYDIR})
 
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY $ENV{HOME}/MultiPartyPSI/bin)
 
