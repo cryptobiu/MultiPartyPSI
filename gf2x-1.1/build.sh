@@ -1,4 +1,4 @@
 ./configure
 make
 make check
-make install
+sudo make install
