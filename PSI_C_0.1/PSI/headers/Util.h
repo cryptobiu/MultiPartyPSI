@@ -16,6 +16,7 @@
 #include "list.h"
 #include "intHashTbl.h"
 #include "param.h"
+#include <unistd.h>
 
 //xor len bytes in the two byte arrrays and store the result in the first array. Must ensure not overflow the buffer;
 //inline void xorByteArray(uint8_t* inout, uint8_t* in2,uint32_t len){
@@ -190,33 +191,12 @@ inline int exists(int32_t idx, int32_t* indHis, int32_t i){
     }
     return 0;
 };
-/*
-inline int num_cores()
-{
-    int mib[4];
-    int numCPU;
-    size_t len = sizeof(numCPU);
-    
-    // set the mib for hw.ncpu
-    mib[0] = CTL_HW;
-    mib[1] = HW_NCPU;  // alternatively, try HW_NCPU;
-    
-    // get the number of CPUs from the system
-    sysctl(mib, 2, &numCPU, &len, NULL, 0);
-    
-    if( numCPU < 1 )
-    {
-        numCPU = 1;
-        
-    }
-    return numCPU;
-};
-*/
 
 inline int num_cores()
 {
-    return 1;
-}
+    return sysconf(_SC_NPROCESSORS_ONLN);
+};
+
 inline void receiveBulk(int sock, size_t toReceive, uint8_t* buf){
     size_t receivedLen=0;
     size_t step=1024;
