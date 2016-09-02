@@ -28,6 +28,11 @@ import optparse
 # cp PSI/src/externals/Miracl/lib/linux64.bak PSI/src/externals/Miracl/lib/linux64
 # cp PSI/src/externals/Miracl/include/mirdef.h64.bak PSI/src/externals/Miracl/include/mirdef.h64
 
+#./configure
+#make
+#make check
+#make install
+
 MAX_INT = 2**32-1
 MIN_INT = 0
 

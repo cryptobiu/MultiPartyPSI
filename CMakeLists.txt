@@ -5,7 +5,7 @@ add_custom_target(miracl
         COMMAND make
         WORKING_DIRECTORY $ENV{HOME}/MultiPartyPSI/PSI)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -D_REENTRANT -O2 -lgmp -lgmpxx -lpthread -ggdb -lssl -lcrypto -lglib-2.0 -maes -mavx -ldl -mpclmul -lboost_system -lntl")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -D_REENTRANT -O2 -lntl -lgf2x -lgmp -lgmpxx -lpthread -ggdb -lssl -lcrypto -lglib-2.0 -maes -mavx -ldl -mpclmul -lboost_system")
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D DEBUG")
@@ -51,6 +51,6 @@ TARGET_LINK_LIBRARIES(MultiPartyPSI
         $ENV{HOME}/libscapi/scapi.a
         $ENV{HOME}/libscapi/install/lib/libntl.a
         $ENV{HOME}/libscapi/install/lib/libOTExtension.so
-        boost_system boost_thread pthread ssl crypto glib-2.0 dl gmpxx gmp z)
+        boost_system boost_thread pthread ssl crypto glib-2.0 dl gmpxx gmp z gf2x)
 
 add_dependencies(MultiPartyPSI miracl)
