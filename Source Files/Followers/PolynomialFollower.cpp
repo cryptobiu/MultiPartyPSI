@@ -2,7 +2,7 @@
 // Created by root on 7/25/16.
 //
 
-#include "PolynomialFollower.h"
+#include "Followers/PolynomialFollower.h"
 #include "PolynomialUtils.h"
 #include "ot-psi.h"
 

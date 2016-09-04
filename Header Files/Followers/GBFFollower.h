@@ -5,7 +5,7 @@
 #ifndef MULTIPARTYPSI_GBFFOLLOWER_H
 #define MULTIPARTYPSI_GBFFOLLOWER_H
 
-#include "Follower.h"
+#include "Followers/Follower.h"
 #include "defs.h"
 
 #include "RangeHash.h"

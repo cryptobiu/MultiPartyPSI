@@ -5,7 +5,7 @@
 #ifndef MULTIPARTYPSI_SIMPLEHASHINGPOLYNOMIALFOLLOWER_H
 #define MULTIPARTYPSI_SIMPLEHASHINGPOLYNOMIALFOLLOWER_H
 
-#include "PolynomialFollower.h"
+#include "Followers/PolynomialFollower.h"
 
 class SimpleHashingPolynomialFollower : public PolynomialFollower {
 public:

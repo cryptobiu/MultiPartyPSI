@@ -5,7 +5,7 @@
 #ifndef MULTIPARTYPSI_NAIVELEADER_H
 #define MULTIPARTYPSI_NAIVELEADER_H
 
-#include "Leader.h"
+#include "Leaders/Leader.h"
 
 class NaiveLeader : public Leader {
 public:

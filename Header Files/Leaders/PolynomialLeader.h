@@ -5,7 +5,7 @@
 #ifndef MULTIPARTYPSI_POLYNOMIALLEADER_H
 #define MULTIPARTYPSI_POLYNOMIALLEADER_H
 
-#include "Leader.h"
+#include "Leaders/Leader.h"
 #include <boost/shared_ptr.hpp>
 #include <NTL/GF2EX.h>
 

@@ -6,7 +6,7 @@
 #define MULTIPARTYPSI_FOLLOWERFACTORY_H
 
 #include <boost/shared_ptr.hpp>
-#include "Follower.h"
+#include "Followers/Follower.h"
 
 using boost::shared_ptr;
 

@@ -6,7 +6,7 @@
 #define MULTIPARTYPSI_NAIVEINVERSEFOLLOWER_H
 
 
-#include "NaiveFollower.h"
+#include "Followers/NaiveFollower.h"
 
 class NaiveInverseFollower : public NaiveFollower {
 public:

@@ -5,7 +5,7 @@
 #ifndef MULTIPARTYPSI_NAIVEFOLLOWER_H
 #define MULTIPARTYPSI_NAIVEFOLLOWER_H
 
-#include "Follower.h"
+#include "Followers/Follower.h"
 
 class NaiveFollower : public Follower {
 public:

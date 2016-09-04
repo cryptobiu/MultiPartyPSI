@@ -7,7 +7,7 @@
 
 
 #include <boost/shared_ptr.hpp>
-#include "Leader.h"
+#include "Leaders/Leader.h"
 
 using boost::shared_ptr;
 

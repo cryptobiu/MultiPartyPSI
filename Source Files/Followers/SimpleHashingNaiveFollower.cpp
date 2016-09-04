@@ -3,7 +3,7 @@
 //
 
 #include <CryptoInfra/Key.hpp>
-#include "SimpleHashingNaiveFollower.h"
+#include "Followers/SimpleHashingNaiveFollower.h"
 #include "ot-psi.h"
 #include "primitives/Prg.hpp"
 

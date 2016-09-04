@@ -3,7 +3,7 @@
 //
 
 #include <ot-psi.h>
-#include "SimpleHashingPolynomialFollower.h"
+#include "Followers/SimpleHashingPolynomialFollower.h"
 #include "PolynomialUtils.h"
 
 void SimpleHashingPolynomialFollower::buildPolynomials(){

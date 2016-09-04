@@ -2,7 +2,7 @@
 // Created by root on 7/25/16.
 //
 
-#include "PolynomialLeader.h"
+#include "Leaders/PolynomialLeader.h"
 #include "PolynomialUtils.h"
 #include <vector>
 #include <NTL/GF2EX.h>

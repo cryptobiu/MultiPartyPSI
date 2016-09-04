@@ -36,12 +36,11 @@ AUX_SOURCE_DIRECTORY($ENV{HOME}/MultiPartyPSI/PSI_C_0.1/PSI/PSI BF_SOURCES)
 AUX_SOURCE_DIRECTORY($ENV{HOME}/MultiPartyPSI/PSI_C_0.1/PSI/OT BF_OT_SOURCES)
 AUX_SOURCE_DIRECTORY($ENV{HOME}/MultiPartyPSI/PSI_C_0.1/PSI/Threads BF_THREADS_SOURCES)
 AUX_SOURCE_DIRECTORY("$ENV{HOME}/MultiPartyPSI/Source Files" SOURCES)
+AUX_SOURCE_DIRECTORY("$ENV{HOME}/MultiPartyPSI/Source Files/Leaders" LEADERS_SOURCES)
+AUX_SOURCE_DIRECTORY("$ENV{HOME}/MultiPartyPSI/Source Files/Followers" FOLLOWERS_SOURCES)
 
-set(SOURCE_FILES ${SOURCES} "Source Files/NaiveInverseLeader.cpp" "Source Files/PaillierParty.cpp" "Source Files/KissnerParty.cpp" "Source Files/BaseMPSIParty.cpp" "Source Files/Leader.cpp" "Source Files/SimpleHashingPolynomialFollower.cpp"
-        "Source Files/SimpleHashingPolynomialLeader.cpp" "Source Files/SimpleHashingNaiveFollower.cpp"
-        "Source Files/SimpleHashingNaiveLeader.cpp"
-        "Source Files/GarbledBloomFilter.cpp" $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
-        ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES} "Header Files/NaiveInverseFollower.h" "Source Files/NaiveInverseLeader.cpp" "Header Files/NaiveInverseLeader.h" "Header Files/SimpleHashingNaiveInverseFollower.h" "Source Files/SimpleHashingNaiveInverseLeader.cpp" "Header Files/SimpleHashingNaiveInverseLeader.h" "Source Files/GF2MatrixUtils.cpp" "Header Files/GF2MatrixUtils.h")
+set(SOURCE_FILES ${SOURCES} ${LEADERS_SOURCES} ${FOLLOWERS_SOURCES} $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
+        ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES} "Header Files/Followers/NaiveInverseFollower.h" "Source Files/Leaders/NaiveInverseLeader.cpp" "Header Files/Leaders/NaiveInverseLeader.h" "Header Files/Followers/SimpleHashingNaiveInverseFollower.h" "Source Files/Leaders/SimpleHashingNaiveInverseLeader.cpp" "Header Files/Leaders/SimpleHashingNaiveInverseLeader.h" "Source Files/GF2MatrixUtils.cpp" "Header Files/GF2MatrixUtils.h")
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI

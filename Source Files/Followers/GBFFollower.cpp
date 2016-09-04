@@ -3,7 +3,7 @@
 //
 
 #include <GarbledBF.h>
-#include "GBFFollower.h"
+#include "Followers/GBFFollower.h"
 #include "ot-psi.h"
 
 GBFFollower::GBFFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters) :

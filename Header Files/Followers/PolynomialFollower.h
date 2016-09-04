@@ -5,7 +5,7 @@
 #ifndef MULTIPARTYPSI_POLYNOMIALFOLLOWER_H
 #define MULTIPARTYPSI_POLYNOMIALFOLLOWER_H
 
-#include "Follower.h"
+#include "Followers/Follower.h"
 
 #include <NTL/GF2E.h>
 #include <NTL/GF2EX.h>

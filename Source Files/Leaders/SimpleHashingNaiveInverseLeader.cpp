@@ -3,7 +3,7 @@
 //
 
 #include <ot-psi.h>
-#include "SimpleHashingNaiveInverseLeader.h"
+#include "Leaders/SimpleHashingNaiveInverseLeader.h"
 #include "GF2MatrixUtils.h"
 #include <system_error>
 

@@ -12,6 +12,18 @@
 
 typedef void *receiveDataFromFollower(void *);
 
+class Leader;
+
+struct ElementInfo {
+    uint32_t startPos;
+    uint32_t endPos;
+    CuckooHashInfo *hash;
+    uint8_t *secretShare;
+    uint32_t maskSizeInBytes;
+    Leader *leader;
+    uint32_t numFound;
+};
+
 class Leader {
 public:
     Leader(const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults, const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins,
@@ -24,7 +36,11 @@ public:
             m_parameters(parameters) {}
     virtual ~Leader() {};
 
-    virtual vector<uint32_t> run();
+    virtual uint32_t run();
+
+    static void *checkElementsInThread(void *elInfo);
+
+    virtual bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret)=0;
 
 protected:
 
@@ -32,7 +48,6 @@ protected:
     void receiveServerDataInThreads(const boost::shared_ptr<T>&, receiveDataFromFollower *func);
 
     virtual void receiveServerData()=0;
-    virtual bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret)=0;
 
     map<uint32_t , boost::shared_ptr<uint8_t>> m_leaderResults;
     boost::shared_ptr<CuckooHashInfo> m_hashInfo;

@@ -3,7 +3,7 @@
 //
 
 #include <NTL/GF2X.h>
-#include "NaiveInverseLeader.h"
+#include "Leaders/NaiveInverseLeader.h"
 #include "defs.h"
 #include "ot-psi.h"
 #include "GF2MatrixUtils.h"

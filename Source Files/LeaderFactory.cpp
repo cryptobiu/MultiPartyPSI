@@ -3,13 +3,13 @@
 //
 
 #include "LeaderFactory.h"
-#include "NaiveLeader.h"
-#include "NaiveInverseLeader.h"
-#include "GBFLeader.h"
-#include "PolynomialLeader.h"
-#include "SimpleHashingPolynomialLeader.h"
-#include "SimpleHashingNaiveLeader.h"
-#include "SimpleHashingNaiveInverseLeader.h"
+#include "Leaders/NaiveLeader.h"
+#include "Leaders/NaiveInverseLeader.h"
+#include "Leaders/GBFLeader.h"
+#include "Leaders/PolynomialLeader.h"
+#include "Leaders/SimpleHashingPolynomialLeader.h"
+#include "Leaders/SimpleHashingNaiveLeader.h"
+#include "Leaders/SimpleHashingNaiveInverseLeader.h"
 #include <system_error>
 
 boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults,

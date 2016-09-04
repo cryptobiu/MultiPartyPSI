@@ -2,7 +2,7 @@
 // Created by root on 7/21/16.
 //
 
-#include "NaiveFollower.h"
+#include "Followers/NaiveFollower.h"
 #include "ot-psi.h"
 
 void NaiveFollower::run() {

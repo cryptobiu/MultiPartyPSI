@@ -5,7 +5,7 @@
 #ifndef MULTIPARTYPSI_SIMPLEHASHINGNAIVEFOLLOWER_H
 #define MULTIPARTYPSI_SIMPLEHASHINGNAIVEFOLLOWER_H
 
-#include "Follower.h"
+#include "Followers/Follower.h"
 
 class SimpleHashingNaiveFollower : public Follower {
 public:

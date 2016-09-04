@@ -9,11 +9,11 @@
 #include "ot-psi.h"
 #include "hashing_util.h"
 #include "PsiParty.h"
-#include "Follower.h"
-#include "NaiveFollower.h"
+#include "Followers/Follower.h"
+#include "Followers/NaiveFollower.h"
 #include "FollowerFactory.h"
 #include "LeaderFactory.h"
-#include "NaiveLeader.h"
+#include "Leaders/NaiveLeader.h"
 #include <iomanip>
 #include "primitives/Prg.hpp"
 
@@ -235,13 +235,7 @@ uint32_t PsiParty::runAsLeader() {
                                              m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize,
                                            m_eleptr, ceil_divide(m_internal_bitlen, 8), m_parties, NUM_HASH_FUNCTIONS, m_maxBinSize, m_parameters);
 
-    auto intersection = leader->run();
-
-    m_statistics.intersectionSize = intersection.size();
-
-    m_statistics.specificStats.aftetComputing = clock();
-
-    return intersection.size();
+    return leader->run();
 }
 
 

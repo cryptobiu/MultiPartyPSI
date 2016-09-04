@@ -3,13 +3,13 @@
 //
 
 #include "FollowerFactory.h"
-#include "NaiveFollower.h"
-#include "NaiveInverseFollower.h"
-#include "GBFFollower.h"
-#include "PolynomialFollower.h"
-#include "SimpleHashingPolynomialFollower.h"
-#include "SimpleHashingNaiveFollower.h"
-#include "SimpleHashingNaiveInverseFollower.h"
+#include "Followers/NaiveFollower.h"
+#include "Followers/NaiveInverseFollower.h"
+#include "Followers/GBFFollower.h"
+#include "Followers/PolynomialFollower.h"
+#include "Followers/SimpleHashingPolynomialFollower.h"
+#include "Followers/SimpleHashingNaiveFollower.h"
+#include "Followers/SimpleHashingNaiveInverseFollower.h"
 #include <system_error>
 
 boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy, const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare,

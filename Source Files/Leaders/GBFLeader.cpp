@@ -2,7 +2,7 @@
 // Created by root on 7/22/16.
 //
 
-#include "GBFLeader.h"
+#include "Leaders/GBFLeader.h"
 
 GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderResults,
                      const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins,

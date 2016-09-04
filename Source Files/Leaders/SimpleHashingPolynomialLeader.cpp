@@ -2,7 +2,7 @@
 // Created by root on 7/26/16.
 //
 
-#include "SimpleHashingPolynomialLeader.h"
+#include "Leaders/SimpleHashingPolynomialLeader.h"
 #include <NTL/GF2EX.h>
 #include <PolynomialUtils.h>
 
