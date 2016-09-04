@@ -13,27 +13,45 @@ PolynomialFollower::PolynomialFollower(const FollowerSet& followerSet, const boo
 
 };
 
+void *PolynomialFollower::buildPolynomialsInThread(void *poly_struct) {
+    polynomial_struct *pol_struct = reinterpret_cast<polynomial_struct*>(poly_struct);
+
+    vec_GF2E inputs;
+    vec_GF2E masks;
+    PRINT() << "Get Points" << std::endl;
+    for (uint32_t j=0; j < pol_struct->followerSet->m_numOfElements; j++) {
+        uint32_t index = pol_struct->followerSet->m_elements_to_hash_table.get()[
+                j*pol_struct->followerSet->m_numOfHashFunctions+pol_struct->hashIndex];
+
+        NTL::GF2E input = PolynomialUtils::convertBytesToGF2E(
+                pol_struct->followerSet->m_realElements.get()+j*pol_struct->followerSet->m_elementSizeInBytes,
+                                                              pol_struct->followerSet->m_elementSizeInBytes);
+        inputs.append(input);
+
+        NTL::GF2E mask = PolynomialUtils::convertBytesToGF2E(
+                pol_struct->followerSet->m_masks.get()+index*pol_struct->followerSet->m_maskSizeInBytes,
+                pol_struct->followerSet->m_maskSizeInBytes);
+        masks.append(mask);
+    }
+
+    PRINT() << "interpolate" << std::endl;
+
+    GF2EX polynomial = interpolate(inputs, masks); // this is the costly operation
+
+    pol_struct->polynomials->push_back(polynomial);
+}
+
 void PolynomialFollower::buildPolynomials(){
 
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
-        vec_GF2E inputs;
-        vec_GF2E masks;
-        PRINT() << "Get Points" << std::endl;
-        for (uint32_t j=0; j < m_followerSet.m_numOfElements; j++) {
-            uint32_t index = m_followerSet.m_elements_to_hash_table.get()[j*m_followerSet.m_numOfHashFunctions+i];
+        polynomial_struct poly_struct;
+        poly_struct.polynomials = new vector<GF2EX>();
+        poly_struct.hashIndex = i;
+        poly_struct.followerSet = &m_followerSet;
 
-            NTL::GF2E input = PolynomialUtils::convertBytesToGF2E(m_followerSet.m_realElements.get()+j*m_followerSet.m_elementSizeInBytes, m_followerSet.m_elementSizeInBytes);
-            inputs.append(input);
+        buildPolynomialsInThread((void*)&poly_struct);
 
-            NTL::GF2E mask = PolynomialUtils::convertBytesToGF2E(m_followerSet.m_masks.get()+index*m_followerSet.m_maskSizeInBytes, m_followerSet.m_maskSizeInBytes);
-            masks.append(mask);
-        }
-
-        PRINT() << "interpolate" << std::endl;
-
-        GF2EX polynomial = interpolate(inputs, masks); // this is the costy operation
-
-        m_polynomials.push_back(polynomial);
+        m_polynomials.push_back((*poly_struct.polynomials)[0]);
     }
 }
 

@@ -78,6 +78,7 @@ serverPort = int(config.get("server", "port"))
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((serverIp, serverPort))
 
+
 def newRandom(els):
     value = random.randint(MIN_INT, MAX_INT)
     while value in els:
@@ -85,11 +86,12 @@ def newRandom(els):
     return value
 
 print "Generating random set"
-random_set_size = 2**24
+random_set_size = 2**22
 random_set = []
 
 for i in xrange(random_set_size):
     #random_set.append(newRandom(random_set))
+    #print i*100.0/random_set_size
     random_set.append(i)
 print "Done generating random set"
 

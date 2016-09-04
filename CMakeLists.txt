@@ -5,7 +5,7 @@ add_custom_target(miracl
         COMMAND make
         WORKING_DIRECTORY $ENV{HOME}/MultiPartyPSI/PSI)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -D_REENTRANT -O2 -lntl -lgf2x -lgmp -lgmpxx -lpthread -ggdb -lssl -lcrypto -lglib-2.0 -maes -mavx -ldl -mpclmul -lboost_system")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DUSECXXPROF -D_REENTRANT -O2 -lntl -lgf2x -lgmp -lgmpxx -lpthread -ggdb -lssl -lcrypto -lglib-2.0 -maes -mavx -ldl -mpclmul -lboost_system")
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D DEBUG")

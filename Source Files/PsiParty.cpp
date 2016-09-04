@@ -34,14 +34,14 @@ void PsiParty::initPsi() {
     initializeMaskSize();
 
     uint32_t elebytelen = ceil_divide(m_elementSizeInBits, 8);
-
+    /*
     PRINT_PARTY(m_partyId) << "Hashing occurs" << std::endl;
     //Hash elements into a smaller domain
     m_eleptr.reset(new uint8_t[getMaskSizeInBytes() * m_setSize]);
     domain_hashing(m_setSize, m_elements.get(), elebytelen, m_eleptr.get(), getMaskSizeInBytes(), m_crypt.get());
     m_internal_bitlen = m_maskbitlen;
+    */
 
-    /*
     // TODO: solve the problem with the CRF so that domain hashing would be not needed even for very similar elements
     if(m_elementSizeInBits > m_maskbitlen) {
         //Hash elements into a smaller domain
@@ -52,7 +52,8 @@ void PsiParty::initPsi() {
         m_eleptr = m_elements;
         m_internal_bitlen = m_elementSizeInBits;
     }
-    */
+
+    //printShares(m_eleptr.get(),m_setSize,elebytelen);
 }
 
 void PsiParty::setBinsParameters() {

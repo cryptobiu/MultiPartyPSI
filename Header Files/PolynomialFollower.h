@@ -16,6 +16,12 @@
 
 NTL_CLIENT
 
+struct polynomial_struct {
+    uint32_t hashIndex;
+    FollowerSet const * followerSet;
+    vector<GF2EX> *polynomials;
+};
+
 class PolynomialFollower : public Follower {
 public:
     PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters);
@@ -29,6 +35,7 @@ protected:
 
     void getPolynomialCoffBytes(NTL::GF2EX & polynomial, uint8_t *arr);
     virtual void sendPolynomials();
+    static void *buildPolynomialsInThread(void *poly_struct);
 
     GF2X m_irreduciblePolynomial;
     vector<GF2EX> m_polynomials;
