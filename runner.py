@@ -75,25 +75,11 @@ if isLocalHost:
     serverIp = LOOPBACK_ADDRESS
 serverPort = int(config.get("server", "port"))
 
+MAX_ELEMENT_SIZE = int(config.get("General", "elementsizeinbits"))
+MAX_ELEMENT = 2**MAX_ELEMENT_SIZE-1
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((serverIp, serverPort))
-
-
-def newRandom(els):
-    value = random.randint(MIN_INT, MAX_INT)
-    while value in els:
-        value = random.randint(MIN_INT, MAX_INT)
-    return value
-
-print "Generating random set"
-random_set_size = 2**10
-random_set = []
-
-for i in xrange(random_set_size):
-    random_set.append(newRandom(random_set))
-    #print i*100.0/random_set_size
-    #random_set.append(i)
-print "Done generating random set"
 
 def runMPPSI(strategy):
     numOfParties = int(config.get("General", "numofparties"))
@@ -148,12 +134,12 @@ def runMPPSI(strategy):
 
     # make elements to each party and send to them
     intersectSize = random.randint(1,setSize)
-    intersection = random_set[:intersectSize]
+    intersection = [random.randint(0, MAX_ELEMENT) for _ in xrange(intersectSize)]
 
     counter = intersectSize
 
     for i in xrange(numOfParties):
-        els = intersection + random_set[counter:counter+setSize-intersectSize]
+        els = intersection + [random.randint(0, MAX_ELEMENT) for _ in xrange(setSize-intersectSize)]
 
         counter = counter+setSize-intersectSize
 
@@ -163,7 +149,7 @@ def runMPPSI(strategy):
 
         buffer = ""
         for e in els:
-            buffer = buffer + struct.pack("<I",e)
+            buffer = buffer + struct.pack("<Q",e) # this is hardcoded 64 bit
 
         parties[i+1].send(buffer)
 
