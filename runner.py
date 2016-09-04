@@ -86,13 +86,13 @@ def newRandom(els):
     return value
 
 print "Generating random set"
-random_set_size = 2**22
+random_set_size = 2**10
 random_set = []
 
 for i in xrange(random_set_size):
-    #random_set.append(newRandom(random_set))
+    random_set.append(newRandom(random_set))
     #print i*100.0/random_set_size
-    random_set.append(i)
+    #random_set.append(i)
 print "Done generating random set"
 
 def runMPPSI(strategy):

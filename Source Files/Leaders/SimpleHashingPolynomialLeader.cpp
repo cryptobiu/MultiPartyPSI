@@ -20,6 +20,7 @@ void SimpleHashingPolynomialLeader::receiveServerData() {
         (rcv_ctxs.get())[party.first - 1].numOfHashFunction = m_numOfHashFunctions;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
+        (rcv_ctxs.get())[party.first - 1].irreduciblePolynomial = &m_irreduciblePolynomial;
     }
 
     receiveServerDataInThreads<polynomial_rcv_ctx>(rcv_ctxs, &PolynomialLeader::receivePolynomials);
@@ -34,6 +35,8 @@ void SimpleHashingPolynomialLeader::receiveServerData() {
 }
 
 bool SimpleHashingPolynomialLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret) {
+
+    GF2E::init(m_irreduciblePolynomial);
 
     for (auto &party : m_parties) {
         XOR(secret, m_leaderResults[party.first].get()+tableIndex*m_maskSizeInBytes, m_maskSizeInBytes);

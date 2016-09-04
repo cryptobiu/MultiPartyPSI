@@ -16,9 +16,9 @@ PolynomialLeader::PolynomialLeader(const map <uint32_t, boost::shared_ptr<uint8_
         Leader(leaderResults,hashInfo,numOfBins,secretShare,maskSizeInBytes,setSize,elements,
                elementSize,parties,numOfHashFunctions, parameters) {
 
-    GF2X irreduciblePolynomial = BuildSparseIrred_GF2X(m_parameters.m_statSecParameter);
+    m_irreduciblePolynomial = BuildSparseIrred_GF2X(m_parameters.m_statSecParameter);
     //std::cout << "Leader irreducible Polynomial is " << irreduciblePolynomial << std::endl;
-    GF2E::init(irreduciblePolynomial);
+    GF2E::init(m_irreduciblePolynomial);
 
 }
 
@@ -36,6 +36,7 @@ void PolynomialLeader::receiveServerData() {
         (rcv_ctxs.get())[party.first - 1].numOfHashFunction = m_numOfHashFunctions;
         (rcv_ctxs.get())[party.first - 1].maskbytelen = m_maskSizeInBytes;
         (rcv_ctxs.get())[party.first - 1].sock = party.second.get();
+        (rcv_ctxs.get())[party.first - 1].irreduciblePolynomial = &m_irreduciblePolynomial;
     }
 
     receiveServerDataInThreads<polynomial_rcv_ctx>(rcv_ctxs, &PolynomialLeader::receivePolynomials);
@@ -50,6 +51,8 @@ void PolynomialLeader::receiveServerData() {
 }
 
 bool PolynomialLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret) {
+
+    GF2E::init(m_irreduciblePolynomial);
 
     for (auto &party : m_parties) {
         XOR(secret, m_leaderResults[party.first].get()+tableIndex*m_maskSizeInBytes, m_maskSizeInBytes);
@@ -67,6 +70,8 @@ bool PolynomialLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uin
 void *PolynomialLeader::receivePolynomials(void *ctx_tmp) {
 
     polynomial_rcv_ctx* ctx = (polynomial_rcv_ctx*) ctx_tmp;
+
+    GF2E::init(*(ctx->irreduciblePolynomial));
 
     uint32_t coefficientSize = ctx->maskbytelen;
 

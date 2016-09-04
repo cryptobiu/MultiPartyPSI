@@ -7,12 +7,24 @@
 
 #include "Followers/PolynomialFollower.h"
 
+struct hash_polynomial_struct {
+    uint32_t hashIndex;
+    FollowerSet const * followerSet;
+    vector<GF2EX> *polynomials;
+    GF2X *irreduciblePolynomial;
+    uint32_t startBin;
+    uint32_t endBin;
+    uint32_t elementIndex;
+};
+
 class SimpleHashingPolynomialFollower : public PolynomialFollower {
 public:
     SimpleHashingPolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader,
                                     const secParameters &parameters) :
     PolynomialFollower(followerSet,secretShare,leader, parameters) {}
 private:
+    static void *buildPolynomialsInThread(void *poly_struct);
+
     virtual void sendPolynomials() override;
 
     virtual void buildPolynomials() override;

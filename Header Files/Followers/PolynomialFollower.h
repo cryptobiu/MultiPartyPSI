@@ -20,6 +20,7 @@ struct polynomial_struct {
     uint32_t hashIndex;
     FollowerSet const * followerSet;
     vector<GF2EX> *polynomials;
+    GF2X *irreduciblePolynomial;
 };
 
 class PolynomialFollower : public Follower {

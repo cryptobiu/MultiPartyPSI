@@ -42,7 +42,8 @@ boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledB
 
     boost::shared_ptr<uint8_t> recovered(new uint8_t[m_maskSizeInBytes]);
     memset(recovered.get(), 0, m_maskSizeInBytes);
-    int32_t* indexes = filter->indexes;
+    //int32_t* indexes = filter->indexes;
+    int32_t* indexes = (int32_t*)calloc(m_bfParam->k, sizeof(int32_t));
     //memset(indexes,0,hashNum);
 
     for (int i = 0; i < hashes.size(); i++) {
@@ -53,6 +54,8 @@ boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledB
             xorByteArray(recovered.get(), &filter->data[index*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
         }
     }
+
+    free(indexes);
     return recovered;
 }
 

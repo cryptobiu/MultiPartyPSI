@@ -16,6 +16,8 @@ PolynomialFollower::PolynomialFollower(const FollowerSet& followerSet, const boo
 void *PolynomialFollower::buildPolynomialsInThread(void *poly_struct) {
     polynomial_struct *pol_struct = reinterpret_cast<polynomial_struct*>(poly_struct);
 
+    GF2E::init(*(pol_struct->irreduciblePolynomial));
+
     vec_GF2E inputs;
     vec_GF2E masks;
     PRINT() << "Get Points" << std::endl;
@@ -48,10 +50,13 @@ void PolynomialFollower::buildPolynomials(){
         poly_struct.polynomials = new vector<GF2EX>();
         poly_struct.hashIndex = i;
         poly_struct.followerSet = &m_followerSet;
+        poly_struct.irreduciblePolynomial = &m_irreduciblePolynomial;
 
         buildPolynomialsInThread((void*)&poly_struct);
 
         m_polynomials.push_back((*poly_struct.polynomials)[0]);
+
+        delete poly_struct.polynomials;
     }
 }
 

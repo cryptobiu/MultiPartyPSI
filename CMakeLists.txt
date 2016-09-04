@@ -5,7 +5,7 @@ add_custom_target(miracl
         COMMAND make
         WORKING_DIRECTORY $ENV{HOME}/MultiPartyPSI/PSI)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DUSECXXPROF -D_REENTRANT -O2 -lntl -lgf2x -lgmp -lgmpxx -lpthread -ggdb -lssl -lcrypto -lglib-2.0 -maes -mavx -ldl -mpclmul -lboost_system")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DUSECXXPROF -D_REENTRANT -O2 -lntl -lgmp -lgmpxx -lpthread -ggdb -lssl -lcrypto -lglib-2.0 -maes -mavx -ldl -mpclmul -lboost_system")
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D DEBUG")
@@ -40,7 +40,7 @@ AUX_SOURCE_DIRECTORY("$ENV{HOME}/MultiPartyPSI/Source Files/Leaders" LEADERS_SOU
 AUX_SOURCE_DIRECTORY("$ENV{HOME}/MultiPartyPSI/Source Files/Followers" FOLLOWERS_SOURCES)
 
 set(SOURCE_FILES ${SOURCES} ${LEADERS_SOURCES} ${FOLLOWERS_SOURCES} $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
-        ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES} "Header Files/Followers/NaiveInverseFollower.h" "Source Files/Leaders/NaiveInverseLeader.cpp" "Header Files/Leaders/NaiveInverseLeader.h" "Header Files/Followers/SimpleHashingNaiveInverseFollower.h" "Source Files/Leaders/SimpleHashingNaiveInverseLeader.cpp" "Header Files/Leaders/SimpleHashingNaiveInverseLeader.h" "Source Files/GF2MatrixUtils.cpp" "Header Files/GF2MatrixUtils.h")
+        ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES})
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI
@@ -50,6 +50,6 @@ TARGET_LINK_LIBRARIES(MultiPartyPSI
         $ENV{HOME}/libscapi/scapi.a
         $ENV{HOME}/libscapi/install/lib/libntl.a
         $ENV{HOME}/libscapi/install/lib/libOTExtension.so
-        boost_system boost_thread pthread ssl crypto glib-2.0 dl gmpxx gmp z gf2x)
+        boost_system boost_thread pthread ssl crypto glib-2.0 dl gmpxx gmp z)
 
 add_dependencies(MultiPartyPSI miracl)

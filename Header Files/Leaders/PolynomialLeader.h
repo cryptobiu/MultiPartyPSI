@@ -7,7 +7,10 @@
 
 #include "Leaders/Leader.h"
 #include <boost/shared_ptr.hpp>
+#include <NTL/GF2X.h>
 #include <NTL/GF2EX.h>
+
+NTL_CLIENT
 
 struct polynomial_rcv_ctx {
     NTL::GF2EX **polynoms;
@@ -16,6 +19,7 @@ struct polynomial_rcv_ctx {
     uint32_t numOfHashFunction;
     uint32_t maskbytelen;
     CSocket* sock;
+    GF2X *irreduciblePolynomial;
 };
 
 class PolynomialLeader : public Leader {
@@ -34,8 +38,10 @@ protected:
     virtual void receiveServerData();
 
     std::map<uint32_t , std::vector<boost::shared_ptr<NTL::GF2EX>>> m_partiesPolynomials;
+    GF2X m_irreduciblePolynomial;
 
 private:
+
     COPY_CTR(PolynomialLeader);
     ASSIGN_OP(PolynomialLeader);
 };
