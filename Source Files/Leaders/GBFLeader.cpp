@@ -59,11 +59,11 @@ bf_info *GBFLeader::getSpecificThreadInfo() {
 void GBFLeader::freeSpecificThreadSpecificInfo(void* secretData) {
     bf_info *bf = reinterpret_cast<bf_info*>(secretData);
     for (auto &party : m_parties) {
-        delete[] bf->hashes[party.first];
+        delete[] bf->hashes[party.first-1];
     }
     delete[] bf->hashes;
     free(bf->indexes);
-    //delete bf;
+    delete bf;
 }
 
 boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledBF> &filter, RangeHash *hashes,
