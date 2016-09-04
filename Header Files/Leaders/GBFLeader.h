@@ -42,16 +42,18 @@ private:
     ASSIGN_OP(GBFLeader);
 
     boost::shared_ptr<uint8_t> GBF_query(const boost::shared_ptr<GarbledBF> &filter,
-                                         vector<boost::shared_ptr<RangeHash>> hashes,
-                                         uint8_t* element, int32_t eLen, vector<boost::shared_ptr<uint8_t>> keys);
+                                         RangeHash *hashes,
+                                         uint8_t* element, int32_t eLen, int32_t* indexes);
 
-    bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
+    virtual bf_info *getSpecificThreadInfo();
+    virtual void freeSpecificThreadSpecificInfo(void* secretData);
+
+    bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret, bf_info *specInfo);
 
     static void *receiveKeysAndFilters(void *ctx_tmp);
 
     void receiveServerData();
 
-    std::map<uint32_t , vector<boost::shared_ptr<RangeHash>>> m_hashFuncs;
     std::map<uint32_t , vector<boost::shared_ptr<uint8_t>>> m_partiesKeys;
     std::map<uint32_t , std::vector<boost::shared_ptr<GarbledBF>>> m_partiesFilters;
 };

@@ -34,7 +34,7 @@ void SimpleHashingPolynomialLeader::receiveServerData() {
     }
 }
 
-bool SimpleHashingPolynomialLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret) {
+bool SimpleHashingPolynomialLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret, bf_info *specInfo) {
 
     GF2E::init(m_irreduciblePolynomial);
 

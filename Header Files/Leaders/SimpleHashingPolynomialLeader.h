@@ -23,7 +23,7 @@ private:
 
     uint32_t m_maxBinSize;
 
-    virtual bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
+    virtual bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret, bf_info *specInfo);
     virtual void receiveServerData();
 };
 

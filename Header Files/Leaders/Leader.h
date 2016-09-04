@@ -9,10 +9,16 @@
 #include <map>
 #include "socket.h"
 #include "boost/shared_ptr.hpp"
+#include "../PSI_C_0.1/PSI/headers/RangeHash.h"
 
 typedef void *receiveDataFromFollower(void *);
 
 class Leader;
+
+struct bf_info {
+    RangeHash **hashes;
+    int32_t* indexes;
+};
 
 struct ElementInfo {
     uint32_t startPos;
@@ -22,6 +28,7 @@ struct ElementInfo {
     uint32_t maskSizeInBytes;
     Leader *leader;
     uint32_t numFound;
+    bf_info *threadSpecificInfo;
 };
 
 class Leader {
@@ -40,7 +47,7 @@ public:
 
     static void *checkElementsInThread(void *elInfo);
 
-    virtual bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret)=0;
+    virtual bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret, bf_info *specInfo)=0;
 
 protected:
 
@@ -48,6 +55,9 @@ protected:
     void receiveServerDataInThreads(const boost::shared_ptr<T>&, receiveDataFromFollower *func);
 
     virtual void receiveServerData()=0;
+
+    virtual bf_info *getSpecificThreadInfo() { return NULL;};
+    virtual void freeSpecificThreadSpecificInfo(void* secretData) {};
 
     map<uint32_t , boost::shared_ptr<uint8_t>> m_leaderResults;
     boost::shared_ptr<CuckooHashInfo> m_hashInfo;

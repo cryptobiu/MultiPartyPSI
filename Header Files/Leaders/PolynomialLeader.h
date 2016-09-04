@@ -34,7 +34,7 @@ public:
 
 protected:
     static void *receivePolynomials(void *ctx_tmp);
-    virtual bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
+    virtual bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret, bf_info *specInfo);
     virtual void receiveServerData();
 
     std::map<uint32_t , std::vector<boost::shared_ptr<NTL::GF2EX>>> m_partiesPolynomials;

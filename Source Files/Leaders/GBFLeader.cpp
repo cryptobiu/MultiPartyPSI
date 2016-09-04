@@ -19,48 +19,64 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
         for (uint32_t i = 0; i < m_numOfHashFunctions; i++) {
             m_partiesFilters[party.first].push_back(GBF_Create());
         }
-        m_hashFuncs[party.first] = std::vector<boost::shared_ptr<RangeHash>>();
         for (uint32_t i = 0; i < m_bfParam->k; i++) {
-            m_hashFuncs[party.first].push_back(boost::shared_ptr<RangeHash>(new RangeHash()));
             m_partiesKeys[party.first].push_back(boost::shared_ptr<uint8_t >(new uint8_t[keySize]));
         }
     }
 
 };
 
-bool GBFLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret) {
-
+bool GBFLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret, bf_info *specInfo) {
     for (auto &party : m_parties) {
         XOR(secret, m_leaderResults[party.first].get()+tableIndex*m_maskSizeInBytes, m_maskSizeInBytes);
-        auto value = GBF_query(m_partiesFilters[party.first][hashFuncIndex],m_hashFuncs[party.first],
-                  m_elements.get()+index*m_elementSize,m_elementSize,m_partiesKeys[party.first]);
+        auto value = GBF_query(m_partiesFilters[party.first][hashFuncIndex],specInfo->hashes[party.first-1],
+                  m_elements.get()+index*m_elementSize,m_elementSize, specInfo->indexes);
         XOR(secret, value.get(), m_maskSizeInBytes);
     }
 
     return isZero(secret, m_maskSizeInBytes);
 }
 
-boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledBF> &filter, vector<boost::shared_ptr<RangeHash>> hashes,
-                                                uint8_t* element, int32_t eLen, vector<boost::shared_ptr<uint8_t>> keys) {
+bf_info *GBFLeader::getSpecificThreadInfo() {
 
+    bf_info *bf = new bf_info;
+
+    bf->hashes = new RangeHash*[m_parties.size()+1];
     uint32_t keySize = m_parameters.m_symSecParameter/8;
 
-    vector<boost::shared_ptr<RangeHash>> hashFuncs;
-    for (int i = 0; i < hashes.size(); i++) {
-        boost::shared_ptr<RangeHash> hashFunc(new RangeHash());
-        RangeHash_Create(hashFunc.get(), keys[i].get(), keySize, m_bfParam->m);
-        hashFuncs.push_back(hashFunc);
+    for (auto &party : m_parties) {
+        bf->hashes[party.first-1] = new RangeHash[m_bfParam->k];
+        for (int i = 0; i < m_bfParam->k; i++) {
+            RangeHash_Create(&(bf->hashes[party.first-1][i]), m_partiesKeys[party.first][i].get(), keySize, m_bfParam->m);
+        }
     }
+
+    bf->indexes = (int32_t*)calloc(m_bfParam->k, sizeof(int32_t));
+
+    return bf;
+}
+
+void GBFLeader::freeSpecificThreadSpecificInfo(void* secretData) {
+    bf_info *bf = reinterpret_cast<bf_info*>(secretData);
+    for (auto &party : m_parties) {
+        delete[] bf->hashes[party.first];
+    }
+    delete[] bf->hashes;
+    free(bf->indexes);
+    //delete bf;
+}
+
+boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledBF> &filter, RangeHash *hashes,
+                                                uint8_t* element, int32_t eLen, int32_t* indexes) {
 
 
     boost::shared_ptr<uint8_t> recovered(new uint8_t[m_maskSizeInBytes]);
     memset(recovered.get(), 0, m_maskSizeInBytes);
     //int32_t* indexes = filter->indexes;
-    int32_t* indexes = (int32_t*)calloc(m_bfParam->k, sizeof(int32_t));
     //memset(indexes,0,hashNum);
 
-    for (int i = 0; i < hashFuncs.size(); i++) {
-        int32_t index=RangeHash_Digest(hashFuncs[i].get(), element, eLen);
+    for (int i = 0; i < m_bfParam->k; i++) {
+        int32_t index=RangeHash_Digest(&hashes[i], element, eLen);
         indexes[i]=index;
 
         if (!exists(index, indexes, i)) {
@@ -68,7 +84,6 @@ boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledB
         }
     }
 
-    free(indexes);
     return recovered;
 }
 
@@ -79,8 +94,6 @@ void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
     uint32_t keySize = ctx->symSecurityParameter/8;
     for (uint32_t i = 0; i < ctx->numHashes; i++) {
         ctx->sock->Receive(ctx->keys[i], keySize);
-        RangeHash_Create(ctx->hashes[i], ctx->keys[i], keySize, ctx->filterSize);
-
     }
 
     for (uint32_t i = 0; i < ctx->numOfHashFunction; i++) {
@@ -99,10 +112,8 @@ void GBFLeader::receiveServerData() {
             (rcv_ctxs.get())[party.first - 1].filters[i] = m_partiesFilters[party.first][i].get();
         }
 
-        (rcv_ctxs.get())[party.first - 1].hashes = new RangeHash *[m_bfParam->k];
         (rcv_ctxs.get())[party.first - 1].keys = new uint8_t *[m_bfParam->k];
         for (uint32_t i = 0; i < m_bfParam->k; i++) {
-            (rcv_ctxs.get())[party.first - 1].hashes[i] = m_hashFuncs[party.first][i].get();
             (rcv_ctxs.get())[party.first - 1].keys[i] = m_partiesKeys[party.first][i].get();
         }
 
