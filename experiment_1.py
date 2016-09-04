@@ -25,7 +25,7 @@ experiment_utils.prepare_results_file('experiment1.csv')
 for set_size in SET_SIZES:
     for key_size in KEY_SIZES:
         for strategy in STRATEGIES:
-            for i in xrange(3):
+            for i in xrange(10):
                 while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,False,strategy):
                     pass
 '''
