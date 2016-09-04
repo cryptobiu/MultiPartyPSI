@@ -3,6 +3,7 @@
 //
 
 #include <ot-psi.h>
+#include <Util.h>
 #include "Followers/SimpleHashingPolynomialFollower.h"
 #include "PolynomialUtils.h"
 
@@ -56,33 +57,58 @@ void *SimpleHashingPolynomialFollower::buildPolynomialsInThread(void *poly_struc
 
 void SimpleHashingPolynomialFollower::buildPolynomials(){
 
-    uint32_t numThreads = min(1U,m_followerSet.m_numOfBins);
+    uint32_t numThreads = min(static_cast<uint32_t>(num_cores()),m_followerSet.m_numOfBins);
 
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
         uint32_t elementIndex = 0;
 
+        vector<pthread_t> check_threads;
+        vector<boost::shared_ptr<hash_polynomial_struct>> polyStructs;
+
         for (uint32_t k=0; k < numThreads; k++) {
-            hash_polynomial_struct poly_struct;
-            poly_struct.polynomials = new vector<GF2EX>();
-            poly_struct.hashIndex = i;
-            poly_struct.followerSet = &m_followerSet;
-            poly_struct.irreduciblePolynomial = &m_irreduciblePolynomial;
-            poly_struct.startBin = k*m_followerSet.m_numOfBins/numThreads;
-            poly_struct.endBin = (k+1)*m_followerSet.m_numOfBins/numThreads;
+            pthread_t check_thread;
+            boost::shared_ptr<hash_polynomial_struct> poly_struct(new hash_polynomial_struct);
+
+            poly_struct->polynomials = new vector<GF2EX>();
+            poly_struct->hashIndex = i;
+            poly_struct->followerSet = &m_followerSet;
+            poly_struct->irreduciblePolynomial = &m_irreduciblePolynomial;
+            poly_struct->startBin = k*m_followerSet.m_numOfBins/numThreads;
+            poly_struct->endBin = (k+1)*m_followerSet.m_numOfBins/numThreads;
             if (k==(numThreads-1)) {
-                poly_struct.endBin = m_followerSet.m_numOfBins;
+                poly_struct->endBin = m_followerSet.m_numOfBins;
             }
-            poly_struct.elementIndex = elementIndex;
+            poly_struct->elementIndex = elementIndex;
 
-            buildPolynomialsInThread((void*)&poly_struct);
+            if(pthread_create(&check_thread, NULL, &SimpleHashingPolynomialFollower::buildPolynomialsInThread, (void*)poly_struct.get())) {
+                cerr << "Error in creating new pthread at check element!" << endl;
+                exit(0);
+            }
 
-            m_polynomials.insert(m_polynomials.end(), poly_struct.polynomials->begin(), poly_struct.polynomials->end());
+            check_threads.push_back(check_thread);
 
-            for (uint32_t j = poly_struct.startBin; j < poly_struct.endBin; j++) {
+            polyStructs.push_back(poly_struct);
+
+            for (uint32_t j = poly_struct->startBin; j < poly_struct->endBin; j++) {
                 elementIndex = elementIndex + m_followerSet.m_numOfElementsInBin.get()[j];
             }
+        }
 
-            delete poly_struct.polynomials;
+        for (auto &check_thread : check_threads) {
+            //meanwhile generate the hash table
+            //GHashTable* map = otpsi_create_hash_table(ceil_divide(inbitlen,8), masks, neles, maskbytelen, perm);
+            //intersect_size = otpsi_find_intersection(eleptr, result, ceil_divide(inbitlen,8), masks, neles, server_masks,
+            //		neles * NUM_HASH_FUNCTIONS, maskbytelen, perm);
+            //wait for receiving thread
+            if(pthread_join(check_thread, NULL)) {
+                cerr << "Error in joining pthread at check element!" << endl;
+                exit(0);
+            }
+        }
+
+        for (auto &polyStruct : polyStructs) {
+            m_polynomials.insert(m_polynomials.end(), polyStruct->polynomials->begin(), polyStruct->polynomials->end());
+            delete polyStruct->polynomials;
         }
     }
 }

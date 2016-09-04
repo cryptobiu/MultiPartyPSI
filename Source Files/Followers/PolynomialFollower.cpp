@@ -45,18 +45,42 @@ void *PolynomialFollower::buildPolynomialsInThread(void *poly_struct) {
 
 void PolynomialFollower::buildPolynomials(){
 
+    vector<pthread_t> check_threads;
+    vector<boost::shared_ptr<polynomial_struct>> polyStructs;
+
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
-        polynomial_struct poly_struct;
-        poly_struct.polynomials = new vector<GF2EX>();
-        poly_struct.hashIndex = i;
-        poly_struct.followerSet = &m_followerSet;
-        poly_struct.irreduciblePolynomial = &m_irreduciblePolynomial;
+        pthread_t check_thread;
+        boost::shared_ptr<polynomial_struct> poly_struct(new polynomial_struct);
+        poly_struct->polynomials = new vector<GF2EX>();
+        poly_struct->hashIndex = i;
+        poly_struct->followerSet = &m_followerSet;
+        poly_struct->irreduciblePolynomial = &m_irreduciblePolynomial;
 
-        buildPolynomialsInThread((void*)&poly_struct);
+        if(pthread_create(&check_thread, NULL, &PolynomialFollower::buildPolynomialsInThread, (void*)poly_struct.get())) {
+            cerr << "Error in creating new pthread at check element!" << endl;
+            exit(0);
+        }
 
-        m_polynomials.push_back((*poly_struct.polynomials)[0]);
+        check_threads.push_back(check_thread);
 
-        delete poly_struct.polynomials;
+        polyStructs.push_back(poly_struct);
+    }
+
+    for (auto &check_thread : check_threads) {
+        //meanwhile generate the hash table
+        //GHashTable* map = otpsi_create_hash_table(ceil_divide(inbitlen,8), masks, neles, maskbytelen, perm);
+        //intersect_size = otpsi_find_intersection(eleptr, result, ceil_divide(inbitlen,8), masks, neles, server_masks,
+        //		neles * NUM_HASH_FUNCTIONS, maskbytelen, perm);
+        //wait for receiving thread
+        if(pthread_join(check_thread, NULL)) {
+            cerr << "Error in joining pthread at check element!" << endl;
+            exit(0);
+        }
+    }
+
+    for (auto &polyStruct : polyStructs) {
+        m_polynomials.insert(m_polynomials.end(), polyStruct->polynomials->begin(), polyStruct->polynomials->end());
+        delete polyStruct->polynomials;
     }
 }
 

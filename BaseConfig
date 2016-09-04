@@ -7,7 +7,7 @@ elementsizeinbits = 64
 leaderid = 1
 debug = False
 profile = False
-remote = True
+remote = False
 
 [server]
 ip = 172.31.10.192
