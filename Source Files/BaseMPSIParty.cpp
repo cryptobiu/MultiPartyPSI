@@ -10,11 +10,11 @@ BaseMPSIParty::BaseMPSIParty(uint32_t partyId, ConfigFile &config, boost::asio::
 
     LoadConfiguration();
 
-    m_elements.reset(new uint8_t[m_setSize*sizeof(uint32_t)]);
+    m_elements.reset(new uint8_t[m_setSize*ceil_divide(m_elementSizeInBits,8)]);
 
     PRINT_PARTY(m_partyId) << "is receiving elements" << std::endl;
 
-    m_serverSocket.Receive(reinterpret_cast<byte *>(m_elements.get()), m_setSize*sizeof(uint32_t));
+    m_serverSocket.Receive(reinterpret_cast<byte *>(m_elements.get()), m_setSize*ceil_divide(m_elementSizeInBits,8));
 
     m_seedBuf.reset(new uint8_t[m_seedSize]);
     m_serverSocket.Receive(m_seedBuf.get(), m_seedSize*sizeof(uint8_t));
