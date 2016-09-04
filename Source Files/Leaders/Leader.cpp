@@ -41,7 +41,7 @@ uint32_t Leader::run() {
 
     receiveServerData();
 
-    uint32_t cores = 1; // num_cores();
+    uint32_t cores = num_cores();
     PRINT() << "number of cores is " << cores << std::endl;
 
     vector<pthread_t> check_threads;

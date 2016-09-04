@@ -12,6 +12,8 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
         Leader(leaderResults, hashInfo, numOfBins, secretShare, maskSizeInBytes, setSize, elements, elementSize, parties,
                numOfHashFunctions, parameters), GarbledBloomFilter(maskSizeInBytes, m_parameters.m_statSecParameter, setSize) {
 
+    uint32_t keySize = m_parameters.m_symSecParameter/8;
+
     for (auto &party : m_parties) {
         m_partiesFilters[party.first] = std::vector<boost::shared_ptr<GarbledBF>>();
         for (uint32_t i = 0; i < m_numOfHashFunctions; i++) {
@@ -20,6 +22,7 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
         m_hashFuncs[party.first] = std::vector<boost::shared_ptr<RangeHash>>();
         for (uint32_t i = 0; i < m_bfParam->k; i++) {
             m_hashFuncs[party.first].push_back(boost::shared_ptr<RangeHash>(new RangeHash()));
+            m_partiesKeys[party.first].push_back(boost::shared_ptr<uint8_t >(new uint8_t[keySize]));
         }
     }
 
@@ -30,7 +33,7 @@ bool GBFLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t t
     for (auto &party : m_parties) {
         XOR(secret, m_leaderResults[party.first].get()+tableIndex*m_maskSizeInBytes, m_maskSizeInBytes);
         auto value = GBF_query(m_partiesFilters[party.first][hashFuncIndex],m_hashFuncs[party.first],
-                  m_elements.get()+index*m_elementSize,m_elementSize);
+                  m_elements.get()+index*m_elementSize,m_elementSize,m_partiesKeys[party.first]);
         XOR(secret, value.get(), m_maskSizeInBytes);
     }
 
@@ -38,7 +41,17 @@ bool GBFLeader::isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t t
 }
 
 boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledBF> &filter, vector<boost::shared_ptr<RangeHash>> hashes,
-                                                uint8_t* element, int32_t eLen) {
+                                                uint8_t* element, int32_t eLen, vector<boost::shared_ptr<uint8_t>> keys) {
+
+    uint32_t keySize = m_parameters.m_symSecParameter/8;
+
+    vector<boost::shared_ptr<RangeHash>> hashFuncs;
+    for (int i = 0; i < hashes.size(); i++) {
+        boost::shared_ptr<RangeHash> hashFunc(new RangeHash());
+        RangeHash_Create(hashFunc.get(), keys[i].get(), keySize, m_bfParam->m);
+        hashFuncs.push_back(hashFunc);
+    }
+
 
     boost::shared_ptr<uint8_t> recovered(new uint8_t[m_maskSizeInBytes]);
     memset(recovered.get(), 0, m_maskSizeInBytes);
@@ -46,8 +59,8 @@ boost::shared_ptr<uint8_t> GBFLeader::GBF_query(const boost::shared_ptr<GarbledB
     int32_t* indexes = (int32_t*)calloc(m_bfParam->k, sizeof(int32_t));
     //memset(indexes,0,hashNum);
 
-    for (int i = 0; i < hashes.size(); i++) {
-        int32_t index=RangeHash_Digest(hashes[i].get(), element, eLen);
+    for (int i = 0; i < hashFuncs.size(); i++) {
+        int32_t index=RangeHash_Digest(hashFuncs[i].get(), element, eLen);
         indexes[i]=index;
 
         if (!exists(index, indexes, i)) {
@@ -65,9 +78,8 @@ void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
 
     uint32_t keySize = ctx->symSecurityParameter/8;
     for (uint32_t i = 0; i < ctx->numHashes; i++) {
-        boost::shared_ptr<uint8_t > key(new uint8_t[keySize]);
-        ctx->sock->Receive(key.get(), keySize);
-        RangeHash_Create(ctx->hashes[i], key.get(), keySize, ctx->filterSize);
+        ctx->sock->Receive(ctx->keys[i], keySize);
+        RangeHash_Create(ctx->hashes[i], ctx->keys[i], keySize, ctx->filterSize);
 
     }
 
@@ -88,8 +100,10 @@ void GBFLeader::receiveServerData() {
         }
 
         (rcv_ctxs.get())[party.first - 1].hashes = new RangeHash *[m_bfParam->k];
+        (rcv_ctxs.get())[party.first - 1].keys = new uint8_t *[m_bfParam->k];
         for (uint32_t i = 0; i < m_bfParam->k; i++) {
             (rcv_ctxs.get())[party.first - 1].hashes[i] = m_hashFuncs[party.first][i].get();
+            (rcv_ctxs.get())[party.first - 1].keys[i] = m_partiesKeys[party.first][i].get();
         }
 
         (rcv_ctxs.get())[party.first - 1].filterSize = m_bfParam->m;

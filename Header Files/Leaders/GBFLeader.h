@@ -18,6 +18,7 @@
 struct filter_rcv_ctx {
     GarbledBF **filters;
     RangeHash **hashes;
+    uint8_t **keys;
     uint32_t filterSize;
     uint32_t numOfHashFunction;
     uint32_t maskbytelen;
@@ -42,7 +43,7 @@ private:
 
     boost::shared_ptr<uint8_t> GBF_query(const boost::shared_ptr<GarbledBF> &filter,
                                          vector<boost::shared_ptr<RangeHash>> hashes,
-                                         uint8_t* element, int32_t eLen);
+                                         uint8_t* element, int32_t eLen, vector<boost::shared_ptr<uint8_t>> keys);
 
     bool isElementInAllSets(uint32_t index, uint32_t binIndex, uint32_t tableIndex, uint32_t hashFuncIndex, uint8_t *secret);
 
@@ -51,6 +52,7 @@ private:
     void receiveServerData();
 
     std::map<uint32_t , vector<boost::shared_ptr<RangeHash>>> m_hashFuncs;
+    std::map<uint32_t , vector<boost::shared_ptr<uint8_t>>> m_partiesKeys;
     std::map<uint32_t , std::vector<boost::shared_ptr<GarbledBF>>> m_partiesFilters;
 };
 
