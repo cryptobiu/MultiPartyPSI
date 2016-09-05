@@ -11,17 +11,3 @@ Bandwidth & Latency & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash
 \end{tabular}
 \caption{Times (in seconds) with symmetric security parameter 80}
 \end{table}
-
-\begin{table}
-\centering
-\begin{tabular}{| l | l | l | l | l | l |}
-\hline
-Bandwidth & Latency & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash \\\hline
-1000mbit & 0.2ms & 281.00 & 264.39 & 547.81 \\\hline
-54mbit & 0.2ms & 281.21 & 264.35 & 549.35 \\\hline
-25mbit & 10ms & 282.84 & 264.41 & 545.88 \\\hline
-10mbit & 50ms & 282.19 & 264.11 & 548.77 \\\hline
-3.6mbit & 500ms \\\hline
-\end{tabular}
-\caption{Communication complexity (in MB) with symmetric security parameter 80}
-\end{table}
