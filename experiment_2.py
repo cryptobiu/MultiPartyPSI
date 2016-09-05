@@ -11,7 +11,7 @@ import experiment_utils
 
 #SET_SIZES = [2**10,2**12,2**14,2**16,2**18,2**20]
 SET_SIZE = 2**16
-KEY_SIZES = [80,128]
+KEY_SIZE = 80
 STRATEGIES = [runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH]
 BANDWIDTH_AND_LATENCY = [('1000mbit','0.2ms'),('54mbit','0.2ms'),('25mbit','10ms'),('10mbit','50ms'),('3.6mbit','500ms')]
 # and ofcourse kissner
@@ -56,10 +56,9 @@ experiment_utils.prepare_results_file('experiment2.csv')
 
 for bandwidth, latency in BANDWIDTH_AND_LATENCY:
     set_machines_network(bandwidth, latency)
-    for key_size in KEY_SIZES:
-        for strategy in STRATEGIES:
-            for i in xrange(10):
-                experiment_utils.run_and_add_to_csv('experiment2.csv',NUM_OF_PARTIES,key_size,SET_SIZE,False,strategy,bandwidth,latency)
+    for strategy in STRATEGIES:
+        for i in xrange(10):
+            experiment_utils.run_and_add_to_csv('experiment2.csv',NUM_OF_PARTIES,KEY_SIZE,SET_SIZE,False,strategy,bandwidth,latency)
     set_machines_network(bandwidth, latency,reset=True)
 
 '''

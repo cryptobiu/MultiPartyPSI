@@ -35,6 +35,7 @@ def prepare_machines(num_of_parties):
 
 def run_and_add_to_csv(results_file_path,num_of_parties,key_size,set_size,old_method,strategy,bandwidth=None,latency=None):
     start_time = time.time()
+    print "Run with bandwidth {0} and latency {1}".format(bandwidth,latency)
     result = runner.main(key_size=key_size,num_parties=num_of_parties,set_size=set_size,old_method=old_method,strategy=strategy)
     if len(result) != num_of_parties:
         return False
