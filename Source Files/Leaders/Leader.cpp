@@ -9,6 +9,7 @@ void *Leader::checkElementsInThread(void *elInfo) {
     vector<uint32_t> intersection;
 
     ElementInfo *elementInfo = reinterpret_cast<ElementInfo*>(elInfo);
+    bf_info *threadSpecificInfo = elementInfo->leader->getSpecificThreadInfo();
 
     PRINT() << "start pos " << elementInfo->startPos << std::endl;
     PRINT() << "end pos " << elementInfo->endPos << std::endl;
@@ -29,10 +30,12 @@ void *Leader::checkElementsInThread(void *elInfo) {
 
         uint8_t* secret = &elementInfo->secretShare[binIndex*elementInfo->maskSizeInBytes];
 
-        if (elementInfo->leader->isElementInAllSets(i, binIndex, tableIndex, hashFuncIndex, secret, elementInfo->threadSpecificInfo)) {
+        if (elementInfo->leader->isElementInAllSets(i, binIndex, tableIndex, hashFuncIndex, secret, threadSpecificInfo)) {
             intersection.push_back(i);
         }
     }
+
+    elementInfo->leader->freeSpecificThreadSpecificInfo(reinterpret_cast<void*>(threadSpecificInfo));
 
     elementInfo->numFound = intersection.size();
 }
@@ -60,8 +63,6 @@ uint32_t Leader::run() {
             elementInfo->endPos = m_setSize;
         }
 
-        elementInfo->threadSpecificInfo = getSpecificThreadInfo();
-
         if(pthread_create(&check_thread, NULL, &Leader::checkElementsInThread, (void*)elementInfo.get())) {
             cerr << "Error in creating new pthread at check element!" << endl;
             exit(0);
@@ -87,10 +88,6 @@ uint32_t Leader::run() {
     for (uint32_t i=0; i < cores; i++) {
         PRINT() << "Found " << elementInfos[i]->numFound << std::endl;
         intersectionSize = intersectionSize + elementInfos[i]->numFound;
-    }
-
-    for (auto &elementInfo : elementInfos) {
-        freeSpecificThreadSpecificInfo(reinterpret_cast<void*>(elementInfo->threadSpecificInfo));
     }
 
     return intersectionSize;

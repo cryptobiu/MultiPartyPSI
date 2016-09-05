@@ -28,7 +28,6 @@ struct ElementInfo {
     uint32_t maskSizeInBytes;
     Leader *leader;
     uint32_t numFound;
-    bf_info *threadSpecificInfo;
 };
 
 class Leader {

@@ -40,21 +40,3 @@ with open("{0}/experiment2_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\\end{tabular}\n')
         f.write('\\caption{Times (in seconds) with symmetric security parameter %d}\n'%KEY_SIZE)
         f.write('\\end{table}\n')
-
-        f.write('\n')
-
-        data = results
-        f.write('\\begin{table}\n')
-        f.write('\\centering\n')
-        f.write('\\begin{tabular}{| l | l | l | l | l | l |}\n')
-        f.write('\\hline\n')
-        f.write('Bandwidth & Latency & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash \\\\\\hline\n')
-        for bandwidth, latency in BANDWIDTH_AND_LATENCY:
-            row = filter(lambda x: x.bandwidth == bandwidth and x.latency == latency, data)
-            row.sort(key=lambda x: place[x.strategy])
-            amounts = map(lambda x: sum(map(lambda y: eval(y)[1],x.result.split('|'))), row)
-            vals = map(lambda x: "%.2f" % (x/1000000.0), amounts)
-            f.write(" & ".join([bandwidth, latency] + vals) + " \\\\\\hline\n")
-        f.write('\\end{tabular}\n')
-        f.write('\\caption{Communication complexity (in MB) with symmetric security parameter %d}\n'%KEY_SIZE)
-        f.write('\\end{table}\n')
