@@ -1,0 +1,27 @@
+\begin{table}
+\centering
+\begin{tabular}{| l | l | l | l | l | l |}
+\hline
+Set Size & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash \\\hline
+$2^{10}$ & 0.35 & 0.55 & 0.58 \\\hline
+$2^{12}$ & 0.55 & 1.41 & 1.90 \\\hline
+$2^{14}$ & 1.25 & 6.75 & 7.68 \\\hline
+$2^{16}$ & 3.96 & 23.58 & 35.61 \\\hline
+$2^{18}$ & 16.55 & 111.01 & 161.36 \\\hline
+\end{tabular}
+\caption{Times (in seconds) with symmetric security parameter 128}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{| l | l | l | l | l | l |}
+\hline
+Set Size & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash \\\hline
+$2^{10}$ & 3.40 & 1.91 & 3.86 \\\hline
+$2^{12}$ & 15.91 & 11.94 & 22.56 \\\hline
+$2^{14}$ & 68.85 & 61.02 & 111.82 \\\hline
+$2^{16}$ & 289.33 & 264.40 & 560.46 \\\hline
+$2^{18}$ & 1170.91 & 1172.08 & 2763.69 \\\hline
+\end{tabular}
+\caption{Communication complexity (in MB) with symmetric security parameter 128}
+\end{table}

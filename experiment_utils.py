@@ -11,7 +11,7 @@ import io
 process = subprocess.Popen(['git','rev-parse','HEAD'],stdout=subprocess.PIPE)
 REV = process.communicate()[0].rstrip('\n')
 
-NUM_OF_RUNS = 3
+NUM_OF_RUNS = 10
 
 def prepare_machines(num_of_parties):
     conf = open("BaseConfig", "rb").read()
