@@ -28,12 +28,5 @@ for set_size in SET_SIZES:
             for i in xrange(10):
                 while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,False,strategy):
                     pass
-'''
-don't run kissner any more !!!!!
-for set_size in SET_SIZES:
-    for key_size in KEY_SIZES:
-        for i in xrange(10):
-            experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,True,None)
-'''
 
-#experiment_utils.avg_experiments('experiment1.csv', 'experiment1_avg.csv', NUM_OF_PARTIES)
+experiment_utils.avg_experiments('experiment1.csv', 'experiment1_avg.csv', NUM_OF_PARTIES)
