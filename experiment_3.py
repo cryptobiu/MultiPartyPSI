@@ -14,7 +14,7 @@ KEY_SIZE = 80
 STRATEGIES = [runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH]
 NUM_OF_PARTIES = [3,5,7,10]
 
-experiment_utils.prepare_machines(NUM_OF_PARTIES)
+experiment_utils.prepare_machines(NUM_OF_PARTIES[-1])
 
 experiment_utils.prepare_results_file('experiment3.csv')
 
