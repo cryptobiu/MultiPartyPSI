@@ -50,18 +50,16 @@ def reset_machines_network(interface='eth0'):
         os.system('sudo tc qdisc del dev lo root')
 
 reset_machines_network()
-import pdb; pdb.set_trace()
+
 experiment_utils.prepare_machines(NUM_OF_PARTIES)
 
 experiment_utils.prepare_results_file('experiment2.csv')
 
 for bandwidth, latency in BANDWIDTH_AND_LATENCY:
     set_machines_network(bandwidth, latency)
-    import pdb; pdb.set_trace()
     for strategy in STRATEGIES:
         for i in xrange(10):
             experiment_utils.run_and_add_to_csv('experiment2.csv',NUM_OF_PARTIES,KEY_SIZE,SET_SIZE,False,strategy,bandwidth,latency)
     set_machines_network(bandwidth, latency,reset=True)
-    import pdb; pdb.set_trace()
 
 experiment_utils.avg_experiments('experiment2.csv', 'experiment2_avg.csv', NUM_OF_PARTIES)
