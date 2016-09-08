@@ -32,9 +32,10 @@ def set_machines_network(rate, latency, interface='eth0', reset=False):
             ip = config.get(str(i), "ip")
             cmd_line = 'ssh -i key.pem {0} "sudo tc qdisc {1} dev {2} root tbf rate {3} burst 10kb latency {4}"'.format(
                 ip,cmd,interface,rate,latency)
+            os.system(cmd_line)
     else:
         cmd_line = 'sudo tc qdisc {0} dev lo root tbf rate {1} burst 10kb latency {2}'.format(cmd,rate,latency)
-    os.system(cmd_line)
+        os.system(cmd_line)
 
 def reset_machines_network(interface='eth0'):
     conf = open("BaseConfig", "rb").read()
