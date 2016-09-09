@@ -829,12 +829,43 @@ uint32_t otpsi_find_intersection(uint32_t** result, uint8_t* my_hashes,
 }
 
 void evaluate_crf(uint8_t* result, uint8_t* masks, uint32_t nelements, uint32_t elebytelen, crypto* crypt) {
-	uint32_t i;
+
+    uint32_t i,j;
 	AES_KEY_CTX aes_key;
 	crypt->init_aes_key(&aes_key, 128, (uint8_t*) const_seed);
-	for(i = 0; i < nelements; i++) {
-		crypt->fixed_key_aes_hash(&aes_key, result+i*elebytelen, elebytelen, masks+i*elebytelen, elebytelen);
-	}
+
+
+    for(i = 0; i < nelements; i++) {
+        for(j = 0; j < elebytelen; j=j+AES_BYTES) {
+            uint32_t bytelen = min(elebytelen-j, static_cast<uint32_t >(AES_BYTES));
+            /*
+            if (j != 0) {
+                XOR(masks+i*elebytelen+j,result+i*elebytelen+j-AES_BYTES,bytelen);
+            }
+            */
+            crypt->fixed_key_aes_hash(&aes_key, result+i*elebytelen+j, bytelen, masks+i*elebytelen+j, bytelen);
+        }
+    }
+
+    /*
+    uint8_t* hash_buf = new uint8_t[SHA512_DIGEST_LENGTH];
+
+    uint32_t i;
+    for(i = 0; i < nelements; i++) {
+        sha512_hash(result+i*elebytelen, elebytelen, masks+i*elebytelen, elebytelen, hash_buf);
+    }
+
+    delete[] hash_buf;
+
+    /*
+    uint32_t i;
+
+    AES_KEY_CTX aes_key;
+    crypt->init_aes_key(&aes_key, 128, (uint8_t*) const_seed);
+    for(i = 0; i < nelements; i++) {
+        crypt->fixed_key_aes_hash(&aes_key, result+i*elebytelen, elebytelen, masks+i*elebytelen, elebytelen);
+    }
+    */
 }
 
 
