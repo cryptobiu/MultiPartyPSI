@@ -59,7 +59,7 @@ def prepare_results_file(config_file_path):
         if answer=='n':
             exit(0)
 
-def avg_experiments(result_file_path, avg_result_file_path, num_of_parties):
+def avg_experiments(result_file_path, avg_result_file_path):
     with open(avg_result_file_path, 'wb') as csvf:
         csvwriter = csv.writer(csvf, delimiter=' ',
                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -70,7 +70,7 @@ def avg_experiments(result_file_path, avg_result_file_path, num_of_parties):
             try:
                 while True:
                     rows = [csvreader.next() for i in xrange(NUM_OF_RUNS)]
-                    results = [(0,0)]*num_of_parties
+                    results = None
                     for i in xrange(NUM_OF_RUNS):
                         assert rows[i][0] == rows[0][0] #rev
                         assert rows[i][1] == rows[0][1] #bandwidth
@@ -82,6 +82,9 @@ def avg_experiments(result_file_path, avg_result_file_path, num_of_parties):
                         assert rows[i][7] == rows[0][7] #old_method
                         assert rows[i][8] == rows[0][8] #strategy
                         times_and_bytes = [eval(x) for x in rows[i][9].split('|')]
+                        num_of_parties = len(times_and_bytes)
+                        if results is None:
+                            results = [(0,0)]*num_of_parties
                         results = [(results[i][0]+times_and_bytes[i][0],results[i][1]+times_and_bytes[i][1]) for i in xrange(num_of_parties)]
                     results = map(lambda x: str((x[0]/NUM_OF_RUNS,x[1]/NUM_OF_RUNS)), results)
                     rows[0][9]='|'.join(results)

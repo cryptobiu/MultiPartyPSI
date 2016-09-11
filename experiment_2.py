@@ -63,4 +63,4 @@ for bandwidth, latency in BANDWIDTH_AND_LATENCY:
                 pass
     set_machines_network(bandwidth, latency,reset=True)
 
-experiment_utils.avg_experiments('experiment2.csv', 'experiment2_avg.csv', NUM_OF_PARTIES)
+experiment_utils.avg_experiments('experiment2.csv', 'experiment2_avg.csv')

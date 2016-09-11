@@ -29,4 +29,4 @@ for set_size in SET_SIZES:
                 while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,False,strategy):
                     pass
 
-experiment_utils.avg_experiments('experiment1.csv', 'experiment1_avg.csv', NUM_OF_PARTIES)
+experiment_utils.avg_experiments('experiment1.csv', 'experiment1_avg.csv')
