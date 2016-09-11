@@ -23,6 +23,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         print("done !")
 
     res = {'BLOOM_FILTER' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}}
+    params = []
 
     for key_size in KEY_SIZES:
         data = filter(lambda x: x.key_size==str(key_size),results)
@@ -38,30 +39,50 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
 
             for strategy in res.keys():
                 res[strategy][(key_size,set_size)] = (time_vals[strategy], byte_vals[strategy])
+                
+            params.append((key_size,set_size))
 
             set_size = set_size * 4
-    import pdb; pdb.set_trace()
+    
+    with open("{0}/experiment1.txt".format(dir_name), 'wb') as f:
 
-    with open("{0}/experiment1_{1}.txt".format(dir_name, KEY_SIZE), 'wb') as f:
-
-        f.write('\\begin{table}\n')
+        f.write('\\begin{table*}[t]\n')
         f.write('\\centering\n')
-        f.write('\\begin{tabular}{| l | l | l | l | l | l |}\n')
+        f.write('\\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}\n')
         f.write('\\hline\n')
-        f.write('Set Size & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash \\\\\\hline\n')
-        #f.write(" & ".join(['$2^{{{0}}}$'.format(int(math.log(set_size,2)))] + vals) + " \\\\\\hline\n")
+        f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
+        
+        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['BLOOM_FILTER'].keys()))))]*2) + " \\\\\n")
+        
+        f.write('\\hline\n')
+        f.write('\\hline\n')
+        
+        for strategy in res.keys():
+            f.write(" & ".join([strategy.replace('_',' ')]+[res[strategy][param][0] for param in params]) + " \\\\\\hline\n")
+        
         f.write('\\end{tabular}\n')
-        f.write('\\caption{Times (in seconds) with symmetric security parameter %d}\n'%KEY_SIZE)
-        f.write('\\end{table}\n')
+        f.write('\\caption{Times (in seconds) for 5 parties}\n')
+        f.write('\\label{tab:results}\n')
+        f.write('\\end{table*}\n')
 
         f.write('\n')
 
-        data = results
-        f.write('\\begin{table}\n')
+        f.write('\\begin{table*}[t]\n')
         f.write('\\centering\n')
-        f.write('\\begin{tabular}{| l | l | l | l | l | l |}\n')
+        f.write('\\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}\n')
         f.write('\\hline\n')
-        f.write('Set Size & Bloom Filter & Polynomials Simple Hash & Gauss Simple Hash \\\\\\hline\n')
+        f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
+        
+        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['BLOOM_FILTER'].keys()))))]*2) + " \\\\\n")
+        
+        f.write('\\hline\n')
+        f.write('\\hline\n')
+        
+        for strategy in res.keys():
+            f.write(" & ".join([strategy.replace('_',' ')]+[res[strategy][param][1] for param in params]) + " \\\\\\hline\n")
+        
         f.write('\\end{tabular}\n')
-        f.write('\\caption{Communication complexity (in MB) with symmetric security parameter %d}\n'%KEY_SIZE)
-        f.write('\\end{table}\n')
+        f.write('\\caption{Communication complexity (in MB) for 5 parties}\n')
+        f.write('\\label{tab:results2}\n')
+        f.write('\\end{table*}\n')
+        
