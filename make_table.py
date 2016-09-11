@@ -47,7 +47,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
     with open("{0}/experiment1.txt".format(dir_name), 'wb') as f:
 
         f.write('\\begin{table*}[t]\n')
-        f.write('\\centering\n')
+        f.write('\\hspace*{-2cm}\n')
         f.write('\\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}\n')
         f.write('\\hline\n')
         f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
@@ -61,14 +61,14 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
             f.write(" & ".join([strategy.replace('_',' ')]+[res[strategy][param][0] for param in params]) + " \\\\\\hline\n")
         
         f.write('\\end{tabular}\n')
-        f.write('\\caption{Times (in seconds) for 5 parties}\n')
+        f.write('\\caption{Runtimes in seconds for PSI protocols over 10Gbit LAN, $\sigma=64$ and 5 parties with different set sizes and security parameters}\n')
         f.write('\\label{tab:results}\n')
         f.write('\\end{table*}\n')
 
         f.write('\n')
 
         f.write('\\begin{table*}[t]\n')
-        f.write('\\centering\n')
+        f.write('\\hspace*{-2cm}\n')
         f.write('\\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}\n')
         f.write('\\hline\n')
         f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
@@ -82,7 +82,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
             f.write(" & ".join([strategy.replace('_',' ')]+[res[strategy][param][1] for param in params]) + " \\\\\\hline\n")
         
         f.write('\\end{tabular}\n')
-        f.write('\\caption{Communication complexity (in MB) for 5 parties}\n')
-        f.write('\\label{tab:results2}\n')
+        f.write('\\caption{Communication complexity (in MB) for PSI protocols over 10Gbit LAN, $\sigma=64$ and 5 parties with different set sizes and security parameters}\n')
+        f.write('\\label{tab:results_mb}\n')
         f.write('\\end{table*}\n')
         

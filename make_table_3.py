@@ -38,7 +38,7 @@ with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
     with open("{0}/experiment3.txt".format(dir_name), 'wb') as f:
 
         f.write('\\begin{table*}[t]\n')
-        f.write('\\centering\n')
+        f.write('\\hspace*{-2cm}\n')
         f.write('\\begin{tabular}{| l | l | l | l | l | l |}\n')
         f.write('\\hline\n')
         f.write('Num of parties & ' + ' & '.join(["{0}".format(num_of_parties) for num_of_parties in NUM_OF_PARTIES]) + " \\\\\n")
@@ -50,6 +50,6 @@ with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
             f.write(" & ".join([strategy.replace('_',' ')]+[res[strategy][num_of_parties] for num_of_parties in NUM_OF_PARTIES]) + " \\\\\\hline\n")
         
         f.write('\\end{tabular}\n')
-        f.write('\\caption{Times (in seconds) for changing number of parties}\n')
+        f.write('\\caption{Runtimes in seconds for PSI protocols over 10GBit LAN, $\sigma=64$ and set size $2^{16}$ with different number of parties}\n')
         f.write('\\label{tab:results3}\n')
         f.write('\\end{table*}\n')

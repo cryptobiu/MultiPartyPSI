@@ -38,7 +38,7 @@ with open("{0}/experiment2_avg.csv".format(dir_name), 'rb') as csvfile:
     with open("{0}/experiment2.txt".format(dir_name), 'wb') as f:
 
         f.write('\\begin{table*}[t]\n')
-        f.write('\\centering\n')
+        f.write('\\hspace*{-2cm}\n')
         f.write('\\begin{tabular}{| l | l | l | l | l | l |}\n')
         f.write('\\hline\n')
         f.write('Bandwidth, Latency & ' + ' & '.join(["{0}, {1}".format(bandwidth, latency) for bandwidth, latency in BANDWIDTH_AND_LATENCY]) + " \\\\\n")
@@ -50,6 +50,6 @@ with open("{0}/experiment2_avg.csv".format(dir_name), 'rb') as csvfile:
             f.write(" & ".join([strategy.replace('_',' ')]+[res[strategy][(bandwidth,latency)] for bandwidth, latency in BANDWIDTH_AND_LATENCY]) + " \\\\\\hline\n")
         
         f.write('\\end{tabular}\n')
-        f.write('\\caption{Times (in seconds) for 5 parties}\n')
+        f.write('\\caption{Runtimes in seconds for PSI protocols for $\sigma=64$, set size $2^{16}$ and 5 parties in different network scenerios}\n')
         f.write('\\label{tab:results2}\n')
         f.write('\\end{table*}\n')
