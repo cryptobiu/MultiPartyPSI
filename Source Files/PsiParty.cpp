@@ -233,7 +233,7 @@ uint32_t PsiParty::runAsLeader() {
 
     auto leader = LeaderFactory::getLeader(m_strategy, leaderResults, hashInfo,
                                              m_numOfBins, m_secretShare, getMaskSizeInBytes(), m_setSize,
-                                           m_eleptr, ceil_divide(m_internal_bitlen, 8), m_parties, NUM_HASH_FUNCTIONS, m_maxBinSize, m_parameters);
+                                           m_eleptr, ceil_divide(m_internal_bitlen, 8), m_parties, NUM_HASH_FUNCTIONS, m_maxBinSize, m_parameters, m_numCores);
 
     return leader->run();
 }

@@ -8,9 +8,9 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
                      const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins,
           const boost::shared_ptr <uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize,
                      boost::shared_ptr<uint8_t> elements, uint32_t elementSize,
-          const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions, const secParameters &parameters) :
+          const std::map <uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions, const secParameters &parameters, uint32_t numCores) :
         Leader(leaderResults, hashInfo, numOfBins, secretShare, maskSizeInBytes, setSize, elements, elementSize, parties,
-               numOfHashFunctions, parameters), GarbledBloomFilter(maskSizeInBytes, m_parameters.m_statSecParameter, setSize) {
+               numOfHashFunctions, parameters, numCores), GarbledBloomFilter(maskSizeInBytes, m_parameters.m_statSecParameter, setSize) {
 
     uint32_t keySize = m_parameters.m_symSecParameter/8;
 

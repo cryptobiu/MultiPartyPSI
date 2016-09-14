@@ -16,29 +16,32 @@ boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, const
                                                    const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins, const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes,
                                                    uint32_t setSize, boost::shared_ptr<uint8_t> elements, uint32_t elementSize,
                                                    const std::map<uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions, uint32_t maxBinSize,
-                                                   const secParameters &parameters) {
+                                                   const secParameters &parameters, uint32_t numCores) {
     switch(strategy) {
         case Strategy::NAIVE_METHOD_SMALL_N:
             return boost::shared_ptr<Leader>(new NaiveLeader(leaderResults, hashInfo, numOfBins,
-                                                             secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters));
+                                                             secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters, numCores));
         case Strategy::NAIVE_METHOD_LARGE_N:
             return boost::shared_ptr<Leader>(new NaiveInverseLeader(leaderResults, hashInfo, numOfBins,
-                                                             secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters));
+                                                             secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters, numCores));
         case Strategy::BLOOM_FILTER:
             return boost::shared_ptr<Leader>(new GBFLeader(leaderResults, hashInfo, numOfBins,
-                                                           secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters));
+                                                           secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters, numCores));
         case Strategy::POLYNOMIALS:
             return boost::shared_ptr<Leader>(new PolynomialLeader(leaderResults, hashInfo, numOfBins,
-                                                           secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters));
+                                                           secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters, numCores));
         case Strategy::POLYNOMIALS_SIMPLE_HASH:
             return boost::shared_ptr<Leader>(new SimpleHashingPolynomialLeader(leaderResults, hashInfo, numOfBins,
-                                                                  secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters, maxBinSize));
+                                                                  secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters,
+                                                                               numCores, maxBinSize));
         case Strategy::SIMPLE_HASH:
             return boost::shared_ptr<Leader>(new SimpleHashingNaiveLeader(leaderResults, hashInfo, numOfBins,
-                                                                          secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters, maxBinSize));
+                                                                   secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters,
+                                                                          numCores, maxBinSize));
         case Strategy::GAUSS_SIMPLE_HASH:
             return boost::shared_ptr<Leader>(new SimpleHashingNaiveInverseLeader(leaderResults, hashInfo, numOfBins,
-                                                                          secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters, maxBinSize));
+                                                                          secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters,
+                                                                                 numCores, maxBinSize));
         default:
             break;
     }

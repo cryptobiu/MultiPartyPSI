@@ -35,11 +35,11 @@ public:
     Leader(const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults, const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins,
            const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes, uint32_t setSize,
            boost::shared_ptr<uint8_t> elements, uint32_t elementSize,
-           const std::map<uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions, const secParameters &parameters):
+           const std::map<uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions, const secParameters &parameters, uint32_t numCores):
             m_leaderResults(leaderResults), m_hashInfo(hashInfo),
             m_numOfBins(numOfBins), m_secretShare(secretShare), m_maskSizeInBytes(maskSizeInBytes), m_setSize(setSize),
             m_parties(parties), m_numOfHashFunctions(numOfHashFunctions), m_elements(elements), m_elementSize(elementSize),
-            m_parameters(parameters) {}
+            m_parameters(parameters), m_numCores(numCores) {}
     virtual ~Leader() {};
 
     virtual uint32_t run();
@@ -69,6 +69,7 @@ protected:
     boost::shared_ptr<uint8_t> m_elements;
     uint32_t m_elementSize;
     secParameters m_parameters;
+    uint32_t m_numCores;
 
 private:
     COPY_CTR(Leader);

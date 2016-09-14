@@ -35,6 +35,8 @@ protected:
     ConfigFile &m_config;
     CSocket m_serverSocket;
     bool m_isLocalHost;
+
+    uint32_t m_numCores;
 private:
     COPY_CTR(MultiPartyPlayer);
     ASSIGN_OP(MultiPartyPlayer);

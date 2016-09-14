@@ -18,6 +18,8 @@ MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile &config,
 
     m_numOfParties = stoi(getValFromConfig(m_config, "General", "numofparties"));
 
+    m_numCores = stoi(getValFromConfig(m_config, "General", "numcores"));
+
     m_isLocalHost = (getValFromConfig(m_config, "General", "remote") == std::string("False"));
 
     m_ipAddress = getValFromConfig(m_config, std::to_string(m_partyId).c_str(), "ip");
