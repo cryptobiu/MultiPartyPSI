@@ -12,7 +12,7 @@ dir_name = sys.argv[1]
 NUM_OF_PARTIES = [3,5,7,10]
 
 with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
-    csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+    csvreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     Result = namedtuple('Result',csvreader.next())
     results = []
     

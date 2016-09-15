@@ -43,7 +43,7 @@ def run_and_add_to_csv(results_file_path,num_of_parties,key_size,set_size,old_me
     row = [REV,str(bandwidth),str(latency),str(start_time),str(key_size),str(num_of_parties),str(set_size),str(old_method),runner.getStrategyName(strategy),result_str]
 
     with open(results_file_path, 'ab') as csvfile:
-        csvwriter = csv.writer(csvfile, delimiter=' ',
+        csvwriter = csv.writer(csvfile, delimiter=',',
                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
         csvwriter.writerow(row)
     return True
@@ -51,7 +51,7 @@ def run_and_add_to_csv(results_file_path,num_of_parties,key_size,set_size,old_me
 def prepare_results_file(config_file_path):
     if not os.path.isfile(config_file_path):
         with open(config_file_path, 'wb') as csvfile:
-            csvwriter = csv.writer(csvfile, delimiter=' ',
+            csvwriter = csv.writer(csvfile, delimiter=',',
                                    quotechar='|', quoting=csv.QUOTE_MINIMAL)
             csvwriter.writerow(['rev', 'bandwidth', 'latency', 'start_time', 'key_size', 'num_parties', 'set_size', 'old_method','strategy', 'result'])
     else:
@@ -61,11 +61,11 @@ def prepare_results_file(config_file_path):
 
 def avg_experiments(result_file_path, avg_result_file_path):
     with open(avg_result_file_path, 'wb') as csvf:
-        csvwriter = csv.writer(csvf, delimiter=' ',
+        csvwriter = csv.writer(csvf, delimiter=',',
                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
         csvwriter.writerow(['rev', 'bandwidth', 'latency', 'start_time', 'key_size', 'num_parties', 'set_size', 'old_method','strategy', 'result'])
         with open(result_file_path, 'rb') as csvfile:
-            csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+            csvreader = csv.reader(csvfile, delimiter=',', quotechar='|')
             csvreader.next() # remove title
             try:
                 while True:

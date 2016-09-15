@@ -12,7 +12,7 @@ KEY_SIZE = 80
 dir_name = sys.argv[1]
 
 with open("{0}/experiment2_avg.csv".format(dir_name), 'rb') as csvfile:
-    csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+    csvreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     Result = namedtuple('Result',csvreader.next())
     results = []
     
