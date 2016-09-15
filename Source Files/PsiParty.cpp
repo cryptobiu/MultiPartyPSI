@@ -80,32 +80,14 @@ void PsiParty::initializeMaskSize() {
         case Strategy::GAUSS_SIMPLE_HASH:
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*m_maxBinSize, 8);
             break;
-        case Strategy::CUCKOO_HASH:
-            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*(m_parameters.m_statSecParameter/ceil_log2(m_setSize)+2), 8);
-            break;
         case Strategy::POLYNOMIALS:
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
             break;
         case Strategy::BLOOM_FILTER:
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
             break;
-        case Strategy::BINARY_HASH:
-            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
-            break;
         case Strategy::POLYNOMIALS_SIMPLE_HASH:
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
-            break;
-        case Strategy::BINARY_HASH_SIMPLE_HASH:
-            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
-            break;
-        case Strategy::CUCKOO_HASH_POLYNOMIALS:
-            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*3, 8);
-            break;
-        case Strategy::CUCKOO_HASH_BLOOM_FILTER:
-            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*3, 8);
-            break;
-        case Strategy::CUCKOO_HASH_BINARY_HASH:
-            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*3, 8);
             break;
         case Strategy::TWO_PARTY:
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);

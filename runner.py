@@ -36,17 +36,11 @@ class Strategy:
     NAIVE_METHOD_SMALL_N = 0 # too slow
     NAIVE_METHOD_LARGE_N = 1 # too slow
     SIMPLE_HASH = 2 # too slow
-    CUCKOO_HASH = 3 # not proven secure
-    POLYNOMIALS = 4
-    BLOOM_FILTER = 5
-    BINARY_HASH = 6 # not proven analysis
-    POLYNOMIALS_SIMPLE_HASH = 7
-    BINARY_HASH_SIMPLE_HASH = 8 # not proven analysis
-    CUCKOO_HASH_POLYNOMIALS = 9 # not proven secure
-    CUCKOO_HASH_BLOOM_FILTER = 10 # not proven secure
-    CUCKOO_HASH_BINARY_HASH = 11 # not proven secure
-    GAUSS_SIMPLE_HASH = 12
-    TWO_PARTY = 13
+    POLYNOMIALS = 3
+    BLOOM_FILTER = 4
+    POLYNOMIALS_SIMPLE_HASH = 5
+    GAUSS_SIMPLE_HASH = 6
+    TWO_PARTY = 7
 
 DEFAULT_STRATEGY = Strategy.POLYNOMIALS_SIMPLE_HASH
 

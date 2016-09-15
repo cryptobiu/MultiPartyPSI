@@ -59,22 +59,16 @@ enum class Strategy : uint8_t {
     NAIVE_METHOD_SMALL_N = 0,
     NAIVE_METHOD_LARGE_N,
     SIMPLE_HASH,
-    CUCKOO_HASH,
     POLYNOMIALS,
     BLOOM_FILTER,
-    BINARY_HASH,
     POLYNOMIALS_SIMPLE_HASH,
-    BINARY_HASH_SIMPLE_HASH,
-    CUCKOO_HASH_POLYNOMIALS,
-    CUCKOO_HASH_BLOOM_FILTER,
-    CUCKOO_HASH_BINARY_HASH,
     GAUSS_SIMPLE_HASH,
     TWO_PARTY,
 };
 
 uint32_t getStrategy(Strategy strategy);
 
-extern Strategy strategies[13];
+extern Strategy strategies[8];
 
 struct CuckooHashInfo {
     int32_t binIndex;

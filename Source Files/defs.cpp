@@ -20,9 +20,8 @@
 #include <stdint.h>
 
 using namespace std;
-Strategy strategies[13] = {Strategy::NAIVE_METHOD_SMALL_N, Strategy::NAIVE_METHOD_LARGE_N, Strategy::SIMPLE_HASH, Strategy::CUCKOO_HASH, Strategy::POLYNOMIALS,
-Strategy::BLOOM_FILTER, Strategy::BINARY_HASH, Strategy::POLYNOMIALS_SIMPLE_HASH, Strategy::BINARY_HASH_SIMPLE_HASH, Strategy::CUCKOO_HASH_POLYNOMIALS,
-Strategy::CUCKOO_HASH_BLOOM_FILTER, Strategy::CUCKOO_HASH_BINARY_HASH, Strategy::GAUSS_SIMPLE_HASH};
+Strategy strategies[8] = {Strategy::NAIVE_METHOD_SMALL_N, Strategy::NAIVE_METHOD_LARGE_N, Strategy::SIMPLE_HASH, Strategy::POLYNOMIALS,
+Strategy::BLOOM_FILTER, Strategy::POLYNOMIALS_SIMPLE_HASH, Strategy::GAUSS_SIMPLE_HASH, Strategy::TWO_PARTY};
 
 #ifndef DEBUG
 null_out_stream cnul;
@@ -67,26 +66,16 @@ uint32_t getStrategy(Strategy strategy) {
             return 1;
         case Strategy::SIMPLE_HASH:
             return 2;
-        case Strategy::CUCKOO_HASH:
-            return 3;
         case Strategy::POLYNOMIALS:
-            return 4;
+            return 3;
         case Strategy::BLOOM_FILTER:
-            return 5;
-        case Strategy::BINARY_HASH:
-            return 6;
+            return 4;
         case Strategy::POLYNOMIALS_SIMPLE_HASH:
-            return 7;
-        case Strategy::BINARY_HASH_SIMPLE_HASH:
-            return 8;
-        case Strategy::CUCKOO_HASH_POLYNOMIALS:
-            return 9;
-        case Strategy::CUCKOO_HASH_BLOOM_FILTER:
-            return 10;
-        case Strategy::CUCKOO_HASH_BINARY_HASH:
-            return 11;
+            return 5;
         case Strategy::GAUSS_SIMPLE_HASH:
-            return 12;
+            return 6;
+        case Strategy::TWO_PARTY:
+            return 7;
         default:
             return 20;
     }
