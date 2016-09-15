@@ -28,6 +28,8 @@ void TwoPartyLeader::receiveServerData() {
 }
 
 uint32_t TwoPartyLeader::run() {
+    receiveServerData();
+
     //compute intersection
     uint32_t *res_pos;
     return otpsi_find_intersection(&res_pos, m_leaderResults[2].get(), m_setSize, m_partiesResults[2].get(),

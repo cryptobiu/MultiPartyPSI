@@ -107,6 +107,9 @@ void PsiParty::initializeMaskSize() {
         case Strategy::CUCKOO_HASH_BINARY_HASH:
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*3, 8);
             break;
+        case Strategy::TWO_PARTY:
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);
+            break;
         default:
             throw system_error();
     }
