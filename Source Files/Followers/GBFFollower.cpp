@@ -6,8 +6,8 @@
 #include "Followers/GBFFollower.h"
 #include "ot-psi.h"
 
-GBFFollower::GBFFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters) :
-        Follower(followerSet, secretShare, leader, parameters),
+GBFFollower::GBFFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters, uint32_t numCores) :
+        Follower(followerSet, secretShare, leader, parameters, numCores),
         GarbledBloomFilter(m_followerSet.m_maskSizeInBytes, m_parameters.m_statSecParameter, m_followerSet.m_numOfElements) {
 
     generateHashKeys();

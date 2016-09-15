@@ -16,7 +16,7 @@
 
 class GBFFollower : public Follower, public GarbledBloomFilter {
 public:
-    GBFFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters);
+    GBFFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters, uint32_t numCores);
     virtual ~GBFFollower() {};
 
     virtual void run();

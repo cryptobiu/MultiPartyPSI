@@ -10,8 +10,8 @@
 
 class NaiveInverseFollower : public NaiveFollower {
 public:
-    NaiveInverseFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters) :
-            NaiveFollower(followerSet, secretShare, leader, parameters) {};
+    NaiveInverseFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters, uint32_t numCores) :
+            NaiveFollower(followerSet, secretShare, leader, parameters, numCores) {};
     virtual ~NaiveInverseFollower() {};
 
 private:

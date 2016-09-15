@@ -6,8 +6,9 @@
 #include "PolynomialUtils.h"
 #include "ot-psi.h"
 
-PolynomialFollower::PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters) :
-        Follower(followerSet, secretShare, leader, parameters) {
+PolynomialFollower::PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader,
+                                       const secParameters &parameters, uint32_t numCores) :
+        Follower(followerSet, secretShare, leader, parameters, numCores) {
 
     generateIrreduciblePolynomial();
 

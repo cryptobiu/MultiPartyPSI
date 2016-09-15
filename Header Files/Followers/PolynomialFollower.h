@@ -25,7 +25,7 @@ struct polynomial_struct {
 
 class PolynomialFollower : public Follower {
 public:
-    PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters);
+    PolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters, uint32_t numCores);
     virtual ~PolynomialFollower() {};
 
     virtual void run();

@@ -9,8 +9,8 @@
 
 class NaiveFollower : public Follower {
 public:
-    NaiveFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters) :
-            Follower(followerSet, secretShare, leader, parameters) {};
+    NaiveFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader, const secParameters &parameters, uint32_t numCores) :
+            Follower(followerSet, secretShare, leader, parameters, numCores) {};
     virtual ~NaiveFollower() {};
 
     virtual void run();

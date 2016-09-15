@@ -44,7 +44,7 @@ uint32_t Leader::run() {
 
     receiveServerData();
 
-    uint32_t cores = num_cores();
+    uint32_t cores = min(m_numCores, static_cast<uint32_t>(num_cores()));
     PRINT() << "number of cores is " << cores << std::endl;
 
     vector<boost::shared_ptr<ElementInfo>> elementInfos;

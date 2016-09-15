@@ -20,8 +20,8 @@ struct hash_polynomial_struct {
 class SimpleHashingPolynomialFollower : public PolynomialFollower {
 public:
     SimpleHashingPolynomialFollower(const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare, CSocket &leader,
-                                    const secParameters &parameters) :
-    PolynomialFollower(followerSet,secretShare,leader, parameters) {}
+                                    const secParameters &parameters, uint32_t numCores) :
+    PolynomialFollower(followerSet,secretShare,leader, parameters, numCores) {}
 private:
     static void *buildPolynomialsInThread(void *poly_struct);
 
