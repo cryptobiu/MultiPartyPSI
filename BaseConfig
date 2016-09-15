@@ -8,7 +8,7 @@ leaderid = 1
 debug = False
 profile = False
 remote = True
-numcores = 1
+numcores = 1000
 
 [server]
 ip = 172.31.10.192
