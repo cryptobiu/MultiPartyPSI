@@ -151,7 +151,7 @@ void PsiParty::runLeaderAgainstFollower(const std::pair<uint32_t, boost::shared_
     //cout << "otpsi client running ots" << endl;
     boost::shared_ptr<crypto> crypt(initializeCrypto());
     oprg_client(hash_table.get(), m_numOfBins, m_setSize, nelesinbin.get(), outbitlen, m_maskbitlen,
-                crypt.get(), party.second.get(), max(m_numCores, MAX_OT_THREADS), leaderResults.get());
+                crypt.get(), party.second.get(), min(m_numCores, MAX_OT_THREADS), leaderResults.get());
 
     PRINT_PARTY(m_partyId) << "done running leader against party " << party.first << std::endl;
 }
@@ -271,7 +271,7 @@ void PsiParty::runAsFollower(CSocket &leader) {
     masks.reset(new uint8_t[NUM_HASH_FUNCTIONS * m_setSize * getMaskSizeInBytes()]);
 
     oprg_server(hash_table.get(), m_numOfBins, m_setSize * NUM_HASH_FUNCTIONS, nelesinbin.get(), outbitlen, m_maskbitlen, m_crypt.get(), &leader,
-                max(m_numCores, MAX_OT_THREADS), masks.get());
+                min(m_numCores, MAX_OT_THREADS), masks.get());
 
     struct FollowerSet set{hashed_elements, m_setSize, ceil_divide(m_internal_bitlen, 8), elements_to_hash_table, nelesinbin, m_numOfBins,
         NUM_HASH_FUNCTIONS, masks, getMaskSizeInBytes(), m_eleptr, bin_to_elements_to_hash_table, m_maxBinSize};
