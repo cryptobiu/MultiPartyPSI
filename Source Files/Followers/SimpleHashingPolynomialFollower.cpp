@@ -57,8 +57,7 @@ void *SimpleHashingPolynomialFollower::buildPolynomialsInThread(void *poly_struc
 
 void SimpleHashingPolynomialFollower::buildPolynomials(){
 
-    uint32_t numCores = min(static_cast<uint32_t>(num_cores()),m_numCores);
-    uint32_t numThreads = min(numCores,m_followerSet.m_numOfBins);
+    uint32_t numThreads = min(m_numCores,m_followerSet.m_numOfBins);
 
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
         uint32_t elementIndex = 0;
