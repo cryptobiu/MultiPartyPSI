@@ -97,6 +97,15 @@ extern const std::string LOOPBACK_ADDRESS;
 
 std::string getValFromConfig(ConfigFile &config, const char* section, const char* valueName);
 
+template< typename T >
+struct array_deleter
+{
+    void operator ()( T const * p)
+    {
+        delete[] p;
+    }
+};
+
 #endif //MULTIPARTYPSI_DEFS_H
 
 

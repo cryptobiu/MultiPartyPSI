@@ -11,6 +11,8 @@
 #include <Util.h>
 #include "connection.h"
 
+#define MAX_COMM_THREADS 4U
+
 using boost::asio::io_service;
 
 MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile &config,
@@ -21,6 +23,7 @@ MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile &config,
 
     m_numCores = stoi(getValFromConfig(m_config, "General", "numcores"));
     m_numCores = min(static_cast<uint32_t>(num_cores()),m_numCores);
+    m_commThreads = min(m_numCores, MAX_COMM_THREADS);
 
     m_isLocalHost = (getValFromConfig(m_config, "General", "remote") == std::string("False"));
 
@@ -56,7 +59,7 @@ void MultiPartyPlayer::connectToAllParties() {
         m_myAddresses[i].reset(new SocketPartyData(IpAdress::from_string(m_ipAddress), m_basePortNumber + i));
         m_otherAddresses[i].reset(new SocketPartyData(IpAdress::from_string(ipAddress), portNumber+m_partyId));
         //m_otherParties[i] = boost::make_shared<CommPartyTCPSynced>(m_ioService, *m_myAddresses[i], *m_otherAddresses[i]);
-        m_parties[i] = boost::shared_ptr<CSocket>(new CSocket());
+        m_parties[i] = boost::shared_ptr<CSocket>(new CSocket[m_commThreads], array_deleter<CSocket>());
     }
 
     /*
@@ -73,11 +76,13 @@ void MultiPartyPlayer::connectToAllParties() {
      */
 
     for (uint32_t i = 1; i <= m_partyId-1; i++) {
-        listen(m_myAddresses[i]->getIpAddress().to_string().c_str(), m_myAddresses[i]->getPort(), m_parties[i].get(), 1);
+        listen(m_myAddresses[i]->getIpAddress().to_string().c_str(), m_myAddresses[i]->getPort(), m_parties[i].get(), m_commThreads);
     }
 
     for (uint32_t i=m_partyId+1; i <= m_numOfParties; i++) {
-        connect(m_otherAddresses[i]->getIpAddress().to_string().c_str(), m_otherAddresses[i]->getPort(), *m_parties[i]);
+        for(uint32_t j = 0; j < m_commThreads; j++) {
+            connect(m_otherAddresses[i]->getIpAddress().to_string().c_str(), m_otherAddresses[i]->getPort(), m_parties[i].get()[j]);
+        }
     }
 }
 

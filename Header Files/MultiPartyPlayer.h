@@ -37,6 +37,7 @@ protected:
     bool m_isLocalHost;
 
     uint32_t m_numCores;
+    uint32_t m_commThreads;
 private:
     COPY_CTR(MultiPartyPlayer);
     ASSIGN_OP(MultiPartyPlayer);

@@ -35,9 +35,9 @@ struct simple_hash_output simple_hashing(uint8_t* elements, uint32_t neles, uint
 	//tmpbuf = (uint8_t*) malloc(table->outbytelen);
 
 	for(i = 0; i < ntasks; i++) {
-		ctx[i].elements = elements;
 		ctx[i].table = table + i;
 		ctx[i].startpos = i * ceil_divide(neles, ntasks);
+		ctx[i].elements = elements + hs.inbytelen*ctx[i].startpos;
 		ctx[i].endpos = min(ctx[i].startpos + ceil_divide(neles, ntasks), neles);
 		ctx[i].hs = &hs;
 
