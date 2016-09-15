@@ -741,19 +741,13 @@ void *otpsi_query_hash_table(void* ctx_tmp) {//GHashTable *map, uint8_t* element
 
 //TODO if this works correctly, combine with other find intersection methods and outsource to hashing_util.h
 uint32_t otpsi_find_intersection(uint32_t** result, uint8_t* my_hashes,
-		uint32_t my_neles, uint8_t* pa_hashes, uint32_t pa_neles, uint32_t hashbytelen, uint32_t* perm) {
+		uint32_t my_neles, uint8_t* pa_hashes, uint32_t pa_neles, uint32_t hashbytelen, CuckooHashInfo* hashInfo) {
 
 	uint32_t keys_stored;
 	uint32_t* matches = (uint32_t*) malloc(sizeof(uint32_t) * my_neles);
 	uint32_t* tmpval;
 	uint64_t tmpbuf;
 	uint32_t* tmpkeys;
-	uint32_t* invperm = (uint32_t*) malloc(sizeof(uint32_t) * my_neles);
-
-	for(uint32_t i = 0; i < my_neles; i++) {
-		assert(perm[i] < my_neles);
-		invperm[perm[i]] = i;
-	}
 
 	uint32_t size_intersect, i, intersect_ctr, tmp_hashbytelen;
 
@@ -763,20 +757,23 @@ uint32_t otpsi_find_intersection(uint32_t** result, uint8_t* my_hashes,
 		tmp_hashbytelen = sizeof(uint64_t);
 		tmpkeys = (uint32_t*) calloc(my_neles * keys_stored, sizeof(uint32_t));
 		for(i = 0; i < my_neles; i++) {
-			memcpy(tmpkeys + 2*i,  my_hashes + i*hashbytelen + tmp_hashbytelen, hashbytelen-sizeof(uint64_t));
-			memcpy(tmpkeys + 2*i + 1, perm + i, sizeof(uint32_t));
+			memcpy(tmpkeys + 2*i,  my_hashes+hashInfo[i].tableIndex*hashbytelen + tmp_hashbytelen, hashbytelen-sizeof(uint64_t));
+			memcpy(tmpkeys + 2*i + 1, &i, sizeof(uint32_t));
 		}
 	} else {
 		keys_stored = 1;
 		tmp_hashbytelen = hashbytelen;
 		tmpkeys = (uint32_t*) malloc(my_neles * sizeof(uint32_t));
-		memcpy(tmpkeys, perm, my_neles * sizeof(uint32_t));
+		for(i = 0; i < my_neles; i++) {
+			tmpkeys[i] = i;
+		}
+		//memcpy(tmpkeys, perm, my_neles * sizeof(uint32_t));
 	}
 
 	GHashTable *map= g_hash_table_new_full(g_int64_hash, g_int64_equal, NULL, NULL);
 	for(i = 0; i < my_neles; i++) {
 		tmpbuf=0;
-		memcpy((uint8_t*) &tmpbuf, my_hashes + i*hashbytelen, tmp_hashbytelen);
+		memcpy((uint8_t*) &tmpbuf, my_hashes+hashInfo[i].tableIndex*hashbytelen, tmp_hashbytelen);
 		//cout << "Insertion, " << i << " = " <<(hex) << tmpbuf << endl;
 		//for(uint32_t j = 0; j < tmp_hashbytelen; j++)
 
@@ -823,7 +820,6 @@ uint32_t otpsi_find_intersection(uint32_t** result, uint8_t* my_hashes,
 	//cout << "I found " << size_intersect << " intersecting elements" << endl;
 
 	free(matches);
-	free(invperm);
 	free(tmpkeys);
 	return size_intersect;
 }

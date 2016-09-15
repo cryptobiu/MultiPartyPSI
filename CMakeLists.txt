@@ -40,7 +40,7 @@ AUX_SOURCE_DIRECTORY("$ENV{HOME}/MultiPartyPSI/Source Files/Leaders" LEADERS_SOU
 AUX_SOURCE_DIRECTORY("$ENV{HOME}/MultiPartyPSI/Source Files/Followers" FOLLOWERS_SOURCES)
 
 set(SOURCE_FILES ${SOURCES} ${LEADERS_SOURCES} ${FOLLOWERS_SOURCES} $ENV{HOME}/MultiPartyPSI/PSI/src/ot-based/ot-psi.cpp
-        ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES})
+        ${CRYPTO_SOURCES} ${OT_SOURCES} ${HASHING_SOURCES} ${UTIL_SOURCES} ${BF_SOURCES} ${BF_OT_SOURCES} ${BF_THREADS_SOURCES} "Source Files/Leaders/TwoPartyLeader.cpp" "Header Files/Leaders/TwoPartyLeader.h" "Source Files/Followers/TwoPartyFollower.cpp" "Header Files/Followers/TwoPartyFollower.h")
 add_executable(MultiPartyPSI ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(MultiPartyPSI

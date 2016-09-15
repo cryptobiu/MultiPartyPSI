@@ -20,6 +20,7 @@
 #include "../util/ot/opemasking.h"
 #include <algorithm>
 #include <glib.h>
+#include <defs.h>
 #include "../util/helpers.h"
 
 static bool DETAILED_TIMINGS=0;
@@ -87,7 +88,7 @@ GHashTable* otpsi_create_hash_table(uint32_t elebytelen, uint8_t* hashes, uint32
 void *otpsi_query_hash_table(void* ctx_tmp);
 
 uint32_t otpsi_find_intersection(uint32_t** result, uint8_t* my_hashes,
-		uint32_t my_neles, uint8_t* pa_hashes, uint32_t pa_neles, uint32_t hashbytelen, uint32_t* perm);
+		uint32_t my_neles, uint8_t* pa_hashes, uint32_t pa_neles, uint32_t hashbytelen, CuckooHashInfo* hashInfo);
 
 void print_bin_content(uint8_t* hash_table, uint32_t nbins, uint32_t elebytelen, uint32_t* nelesinbin, bool multi_values);
 

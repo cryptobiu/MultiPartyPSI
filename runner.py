@@ -46,6 +46,7 @@ class Strategy:
     CUCKOO_HASH_BLOOM_FILTER = 10 # not proven secure
     CUCKOO_HASH_BINARY_HASH = 11 # not proven secure
     GAUSS_SIMPLE_HASH = 12
+    TWO_PARTY = 13
 
 DEFAULT_STRATEGY = Strategy.POLYNOMIALS_SIMPLE_HASH
 
@@ -196,7 +197,7 @@ def getStrategyName(strategy):
         if getattr(Strategy,attr) == strategy:
             return attr
 
-def main(config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None):
+def main(config_filepath = "Config",set_size = None,num_parties=None,key_size = None,old_method = False,strategy = None, num_threads = None):
 
     if num_parties is not None:
         config.set("General", "numofparties", num_parties)
@@ -204,6 +205,8 @@ def main(config_filepath = "Config",set_size = None,num_parties=None,key_size = 
         config.set("General", "setsize", set_size)
     if key_size is not None:
         config.set("General", "symsecurityparameter", key_size)
+    if num_threads is not None:
+        config.set("General", "numcores", num_threads)
     config.write(open(config_filepath, "wb"))
 
     if strategy is None:
@@ -252,6 +255,10 @@ if __name__ == "__main__":
                       dest="strategy",
                       type="int",
                       )
+    parser.add_option('-t',
+                      dest="num_threads",
+                      type="int",
+                      )
     options, remainder = parser.parse_args()
 
-    main(options.config_filepath,options.set_size,options.num_parties,options.key_size,options.old_method,options.strategy)
+    main(options.config_filepath,options.set_size,options.num_parties,options.key_size,options.old_method,options.strategy, options.num_threads)

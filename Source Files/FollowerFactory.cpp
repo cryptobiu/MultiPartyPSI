@@ -11,6 +11,7 @@
 #include "Followers/SimpleHashingNaiveFollower.h"
 #include "Followers/SimpleHashingNaiveInverseFollower.h"
 #include <system_error>
+#include <Followers/TwoPartyFollower.h>
 
 boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy, const FollowerSet& followerSet, const boost::shared_ptr<uint8_t> &secretShare,
                                                          CSocket &leader, const secParameters &parameters, uint32_t numCores) {
@@ -29,6 +30,8 @@ boost::shared_ptr<Follower> FollowerFactory::getFollower(enum Strategy strategy,
             return boost::shared_ptr<Follower>(new SimpleHashingNaiveFollower(followerSet, secretShare, leader, parameters, numCores));
         case Strategy::GAUSS_SIMPLE_HASH:
             return boost::shared_ptr<Follower>(new SimpleHashingNaiveInverseFollower(followerSet, secretShare, leader, parameters, numCores));
+        case Strategy::TWO_PARTY:
+            return boost::shared_ptr<Follower>(new TwoPartyFollower(followerSet, secretShare, leader, parameters, numCores));
         default:
             break;
     }

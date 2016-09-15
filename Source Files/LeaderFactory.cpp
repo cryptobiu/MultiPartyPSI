@@ -11,6 +11,7 @@
 #include "Leaders/SimpleHashingNaiveLeader.h"
 #include "Leaders/SimpleHashingNaiveInverseLeader.h"
 #include <system_error>
+#include <Leaders/TwoPartyLeader.h>
 
 boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, const map<uint32_t , boost::shared_ptr<uint8_t>>& leaderResults,
                                                    const boost::shared_ptr<CuckooHashInfo> &hashInfo, uint32_t numOfBins, const boost::shared_ptr<uint8_t> &secretShare, uint32_t maskSizeInBytes,
@@ -42,6 +43,9 @@ boost::shared_ptr<Leader> LeaderFactory::getLeader(enum Strategy strategy, const
             return boost::shared_ptr<Leader>(new SimpleHashingNaiveInverseLeader(leaderResults, hashInfo, numOfBins,
                                                                           secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters,
                                                                                  numCores, maxBinSize));
+        case Strategy::TWO_PARTY:
+            return boost::shared_ptr<Leader>(new TwoPartyLeader(leaderResults, hashInfo, numOfBins,
+                                                             secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters, numCores));
         default:
             break;
     }

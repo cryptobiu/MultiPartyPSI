@@ -69,6 +69,7 @@ enum class Strategy : uint8_t {
     CUCKOO_HASH_BLOOM_FILTER,
     CUCKOO_HASH_BINARY_HASH,
     GAUSS_SIMPLE_HASH,
+    TWO_PARTY,
 };
 
 uint32_t getStrategy(Strategy strategy);
