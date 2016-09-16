@@ -5,24 +5,27 @@ from collections import namedtuple
 import sys
 import math
 
-place = {'BLOOM_FILTER' : 1, 'POLYNOMIALS_SIMPLE_HASH' : 2, 'GAUSS_SIMPLE_HASH' : 3}
+place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
 
 dir_name = sys.argv[1]
 KEY_SIZES = (80, 128)
 
 with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    Result = namedtuple('Result',csvreader.next())
+    params = csvreader.next()
+    num_params = len(params)
+    Result = namedtuple('Result',params)
     results = []
     
     try:
         while True:
             row = csvreader.next()
+            row = row + [None]*(num_params-len(row))
             results.append(Result(*row))
     except StopIteration:
         print("done !")
 
-    res = {'BLOOM_FILTER' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}}
+    res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
     params = []
 
     for key_size in KEY_SIZES:
@@ -34,8 +37,10 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
             data = data[len(row):]
             row.sort(key=lambda x: place[x.strategy])
 
-            time_vals = dict(map(lambda x: (x.strategy, "%.2f" % eval(x.result.split('|')[0])[0]), row))
-            byte_vals = dict(map(lambda x: (x.strategy, "%.2f"% (sum(map(lambda y: eval(y)[1],x.result.split('|')))/1000000.0)), row))
+            time_vals = dict(map(lambda x: (x.strategy, "%.2f" % eval(x.result1.split('|')[0])), row))
+
+            byte_vals = dict(map(lambda x: (x.strategy, "%.2f"% (sum([eval(y.split('|')[1]) for y in
+                                                                     [getattr(x, 'result{0}'.format(id)) for id in xrange(1, 10+1)] if y is not None])/1000000.0)),row))
 
             for strategy in res.keys():
                 res[strategy][(key_size,set_size)] = (time_vals[strategy], byte_vals[strategy])
@@ -52,7 +57,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\\hline\n')
         f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
         
-        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['BLOOM_FILTER'].keys()))))]*2) + " \\\\\n")
+        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['TWO_PARTY'].keys()))))]*2) + " \\\\\n")
         
         f.write('\\hline\n')
         f.write('\\hline\n')
@@ -73,7 +78,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\\hline\n')
         f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
         
-        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['BLOOM_FILTER'].keys()))))]*2) + " \\\\\n")
+        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['TWO_PARTY'].keys()))))]*2) + " \\\\\n")
         
         f.write('\\hline\n')
         f.write('\\hline\n')

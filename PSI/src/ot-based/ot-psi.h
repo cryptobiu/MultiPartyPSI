@@ -54,6 +54,13 @@ struct query_ctx {
 	uint32_t hashbytelen;
 };
 
+struct SendingInfo {
+	double timeOnSending;
+	uint32_t amountSent;
+};
+
+extern struct SendingInfo sInfo;
+
 /*
 uint32_t otpsi(role_type role, uint32_t neles, uint32_t pneles, uint32_t* elebytelens, uint8_t** elements,
 			   uint8_t** server_masks, uint8_t** masks, uint32_t** res_bytelen, crypto* crypt_env, CSocket* sock, uint32_t ntasks, uint32_t maskbitlen, uint8_t *secretShare);

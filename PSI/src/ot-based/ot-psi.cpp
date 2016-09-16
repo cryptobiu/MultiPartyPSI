@@ -674,9 +674,18 @@ void InitOTReceiver(uint8_t* keyMtx, CSocket sock, crypto* crypt)
 #endif
 }
 
+struct SendingInfo sInfo = {0, 0};
 
 void send_masks(uint8_t* masks, uint32_t nmasks, uint32_t maskbytelen, CSocket& sock) {
+
+	timeval t_start, t_end;
+	gettimeofday(&t_start, NULL);
+
 	sock.Send(masks, nmasks*maskbytelen);
+
+	gettimeofday(&t_end, NULL);
+	sInfo.timeOnSending += getMillies(t_start,t_end);
+	sInfo.amountSent += nmasks*maskbytelen;
 }
 
 

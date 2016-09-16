@@ -3,6 +3,7 @@
 //
 
 #include <crypto/crypto.h>
+#include <ot-psi.h>
 #include "BaseMPSIParty.h"
 
 BaseMPSIParty::BaseMPSIParty(uint32_t partyId, ConfigFile &config, boost::asio::io_service &ioService) :
@@ -49,6 +50,9 @@ void BaseMPSIParty::runAndLog() {
 
     PRINT_PARTY(m_partyId) << "Send the following values: " << result.finalTime << ", " << result.txFinal << ", " << result.intersectionSize << std::endl;
     m_serverSocket.Send(reinterpret_cast<byte *>(&result), sizeof(BaseMPSIResult));
+
+    m_serverSocket.Send(reinterpret_cast<byte *>(&sInfo), sizeof(SendingInfo));
+
 }
 
 uint32_t BaseMPSIParty::getBytes(const std::string &type, const std::string &iface) {
