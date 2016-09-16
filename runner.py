@@ -35,7 +35,7 @@ LOOPBACK_ADDRESS = "127.0.0.1"
 class Strategy:
     NAIVE_METHOD_SMALL_N = 0 # too slow
     NAIVE_METHOD_LARGE_N = 1 # too slow
-    SIMPLE_HASH = 2 # too slow
+    SIMPLE_HASH = 2
     POLYNOMIALS = 3
     BLOOM_FILTER = 4
     POLYNOMIALS_SIMPLE_HASH = 5
