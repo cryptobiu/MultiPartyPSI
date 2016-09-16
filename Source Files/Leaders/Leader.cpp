@@ -47,16 +47,17 @@ uint32_t Leader::run() {
     vector<boost::shared_ptr<ElementInfo>> elementInfos;
     vector<pthread_t> check_threads;
 
-    for (uint32_t i=0; i < m_numCores; i++) {
+    uint32_t numCores = min(m_numCores, m_setSize);
+    for (uint32_t i=0; i < numCores; i++) {
         pthread_t check_thread;
         boost::shared_ptr<ElementInfo> elementInfo(new ElementInfo);
         elementInfo->hash = m_hashInfo.get();
         elementInfo->maskSizeInBytes = m_maskSizeInBytes;
         elementInfo->secretShare = m_secretShare.get();
         elementInfo->leader = this;
-        elementInfo->startPos = i*m_setSize/m_numCores;
-        elementInfo->endPos = (i+1)*m_setSize/m_numCores;
-        if (i == (m_numCores-1)) {
+        elementInfo->startPos = i*m_setSize/numCores;
+        elementInfo->endPos = (i+1)*m_setSize/numCores;
+        if (i == (numCores-1)) {
             elementInfo->endPos = m_setSize;
         }
 
@@ -82,7 +83,7 @@ uint32_t Leader::run() {
     }
 
     uint32_t intersectionSize = 0;
-    for (uint32_t i=0; i < m_numCores; i++) {
+    for (uint32_t i=0; i < numCores; i++) {
         PRINT() << "Found " << elementInfos[i]->numFound << std::endl;
         intersectionSize = intersectionSize + elementInfos[i]->numFound;
     }
