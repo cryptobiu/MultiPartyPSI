@@ -82,7 +82,8 @@ public:
 		uint32_t hashinbytes = m_nCodeWordBytes + sizeof(uint64_t);
 		uint8_t *Mptr = matrix.GetArr();
 		CBitVector mask(m_nCodeWordBits * m_nExpansionFactor);
-		uint8_t* hash_buf = (uint8_t*) malloc(m_nCodeWordBytes * m_nExpansionFactor);
+        uint32_t maskbytelen = ceil_divide(m_nMaskBitLen, 8);
+        uint8_t* hash_buf = (uint8_t*) malloc(maskbytelen * m_nExpansionFactor);
 		uint8_t* mask_ptr;
 		uint8_t* hash_ptr;
 		uint8_t* tmpbuf = (uint8_t*) calloc(hashinbytes, sizeof(uint8_t));
@@ -132,14 +133,14 @@ public:
 	#else
 					memcpy(tmpbuf, (uint8_t*) &ot_id, sizeof(uint64_t));
 					memcpy(tmpbuf+sizeof(uint64_t), mask_ptr, m_nCodeWordBytes);
-					m_cCrypto->hash(hash_buf, AES_BYTES, tmpbuf, hashinbytes);
+					m_cCrypto->hash(hash_buf, maskbytelen, tmpbuf, hashinbytes);
 					//m_cCrypto->hash_ctr(hash_buf, AES_BYTES, mask_ptr, m_nCodeWordBytes, ot_id);
 	#endif
 				//	cout << "MaskBitLen: " << m_nMaskBitLen << ", results size = " << m_vResults[bin_id].GetSize() <<  endl;
 					//cout << "(" << (hex) << ((uint64_t*) hash_buf)[0] << ") " << (dec);
 	#ifdef DEBUG_HASH_OUTPUT
 					cout  << "hash output for ot_id = " << ot_id << " and element_id = " << u << ": ";
-					for(uint32_t j = 0; j < AES_BYTES; j++)
+					for(uint32_t j = 0; j < maskbytelen; j++)
 						cout << (hex) << (unsigned int) hash_buf[j];
 					cout << (dec) << endl;
 	#endif
@@ -154,7 +155,7 @@ public:
 					mask.XORBytes(Mptr, (uint64_t) u*m_nCodeWordBytes, (uint64_t) m_nCodeWordBytes);
 				}
 
-				for(u = 0, hash_ptr=hash_buf, mask_ptr=mask.GetArr(); u < m_nCodeWordBits; u++, mask_ptr+=m_nCodeWordBytes, hash_ptr+=AES_BYTES) {
+				for(u = 0, hash_ptr=hash_buf, mask_ptr=mask.GetArr(); u < m_nCodeWordBits; u++, mask_ptr+=m_nCodeWordBytes, hash_ptr+=maskbytelen) {
 #ifdef AES256_HASH
 					//((uint32_t*) mask_ptr)[0] ^= ot_id;
 					//m_cCrypto->aes_compression_hash(m_kCRFKey, hash_ptr, mask_ptr, m_nCodeWordBytes);
@@ -165,12 +166,12 @@ public:
 #else
 					memcpy(tmpbuf, (uint8_t*) &ot_id, sizeof(uint64_t));
 					memcpy(tmpbuf+sizeof(uint64_t), mask_ptr, m_nCodeWordBytes);
-					m_cCrypto->hash(hash_ptr, AES_BYTES, tmpbuf, hashinbytes);
+					m_cCrypto->hash(hash_ptr, maskbytelen, tmpbuf, hashinbytes);
 					//m_cCrypto->hash_ctr(hash_ptr, AES_BYTES, mask_ptr, m_nCodeWordBytes, ot_id);
 #endif
 #ifdef DEBUG_HASH_OUTPUT
 					cout  << "hash output for ot_id = " << ot_id << " and element_id = " << u << ": ";
-					for(uint32_t j = 0; j < AES_BYTES; j++)
+					for(uint32_t j = 0; j < maskbytelen; j++)
 						cout << (hex) << (unsigned int) hash_buf[j];
 					cout << (dec) << endl;
 #endif
@@ -178,7 +179,7 @@ public:
 				uint64_t mask_id;
 				for(u = 0; u < m_vNumEleInBin[bin_id]; u++) 	{
 					mask_id = m_vServerChoices.Get<uint32_t>((binoffset + bit_id + u* m_nOTsPerElement) * 8, 8);
-					m_vResults.XORBits(hash_buf+mask_id*AES_BYTES, ((uint64_t) m_vStartingPosForBin[bin_id] + u) * m_nMaskBitLen, (uint64_t) m_nMaskBitLen);
+					m_vResults.XORBits(hash_buf+mask_id*maskbytelen, ((uint64_t) m_vStartingPosForBin[bin_id] + u) * m_nMaskBitLen, (uint64_t) m_nMaskBitLen);
 				}
 			}
 
@@ -194,8 +195,9 @@ public:
 		//uint8_t hash_buf[m_cCrypto->get_hash_bytes()];
 		uint64_t ot_id, bin_id;
 		uint32_t hashinbytes = m_nCodeWordBytes + sizeof(uint64_t);
+        uint32_t maskbytelen = ceil_divide(m_nMaskBitLen, 8);
 		uint8_t *Mptr = matrix.GetArr();
-		uint8_t* hash_buf = (uint8_t*) malloc(m_nCodeWordBytes);
+		uint8_t* hash_buf = (uint8_t*) malloc(maskbytelen);
 		uint8_t* tmpbuf = (uint8_t*) calloc(hashinbytes, sizeof(uint8_t));
 
 #ifdef AES256_HASH
@@ -230,7 +232,7 @@ public:
 #else
 				memcpy(tmpbuf, (uint8_t*) &ot_id, sizeof(uint64_t));
 				memcpy(tmpbuf+sizeof(uint64_t), Mptr, m_nCodeWordBytes);
-				m_cCrypto->hash(hash_buf, AES_BYTES, tmpbuf, hashinbytes);
+				m_cCrypto->hash(hash_buf, maskbytelen, tmpbuf, hashinbytes);
 				//m_cCrypto->hash_ctr(hash_buf, AES_BYTES, Mptr, m_nCodeWordBytes, ot_id);
 #endif
 
@@ -241,7 +243,7 @@ public:
 				//cout << "otid = " << ot_id << ": " << (hex) << ((uint64_t*) hash_buf)[0] << (dec) << endl;
 #ifdef DEBUG_HASH_OUTPUT
 				cout << "hash output for ot_id = " << ot_id << ": ";
-				for(uint32_t j = 0; j < AES_BYTES; j++)
+				for(uint32_t j = 0; j < maskbytelen; j++)
 					cout << (hex) << (uint32_t) hash_buf[j];
 				cout << (dec) << ", " << (ot_begin_id) << ", " << processedOTs << ", " << m_nCodeWordBytes << ", " << (uint64_t) Mptr << endl;
 #endif

@@ -47,24 +47,34 @@ void crypto::init(uint32_t symsecbits, uint8_t* seed) {
 	aes_hash_buf_y1 = (uint8_t*) malloc(AES_BYTES);
 	aes_hash_buf_y2 = (uint8_t*) malloc(AES_BYTES);
 
+    sha1_hash_buf = (uint8_t*) malloc(SHA1_OUT_BYTES);
+    sha256_hash_buf = (uint8_t*) malloc(SHA256_OUT_BYTES);
+    sha512_hash_buf = (uint8_t*) malloc(SHA512_OUT_BYTES);
+
 	if (secparam.symbits == ST.symbits) {
 		hash_routine = &sha1_hash;
-		sha_hash_buf = (uint8_t*) malloc(SHA1_OUT_BYTES);
+		sha_hash_buf = sha1_hash_buf;
+        num_hash_bytes = SHA1_OUT_BYTES;
 	} else if (secparam.symbits == MT.symbits) {
 		hash_routine = &sha256_hash;
-		sha_hash_buf = (uint8_t*) malloc(SHA256_OUT_BYTES);
+		sha_hash_buf = sha256_hash_buf;
+        num_hash_bytes = SHA256_OUT_BYTES;
 	} else if (secparam.symbits == LT.symbits) {
 		hash_routine = &sha256_hash;
-		sha_hash_buf = (uint8_t*) malloc(SHA256_OUT_BYTES);
+		sha_hash_buf = sha256_hash_buf;
+        num_hash_bytes = SHA256_OUT_BYTES;
 	} else if (secparam.symbits == XLT.symbits) {
 		hash_routine = &sha512_hash;
-		sha_hash_buf = (uint8_t*) malloc(SHA512_OUT_BYTES);
+		sha_hash_buf = sha512_hash_buf;
+        num_hash_bytes = SHA512_OUT_BYTES;
 	} else if (secparam.symbits == XXLT.symbits) {
 		hash_routine = &sha512_hash;
-		sha_hash_buf = (uint8_t*) malloc(SHA512_OUT_BYTES);
+		sha_hash_buf = sha512_hash_buf;
+        num_hash_bytes = SHA512_OUT_BYTES;
 	} else {
 		hash_routine = &sha256_hash;
-		sha_hash_buf = (uint8_t*) malloc(SHA256_OUT_BYTES);
+		sha_hash_buf = sha256_hash_buf;
+        num_hash_bytes = SHA256_OUT_BYTES;
 	}
 }
 
@@ -227,11 +237,24 @@ void crypto::hash_ctr(uint8_t* resbuf, uint32_t noutbytes, uint8_t* inbuf, uint3
 
 
 void crypto::hash(uint8_t* resbuf, uint32_t noutbytes, uint8_t* inbuf, uint32_t ninbytes) {
-	hash_routine(resbuf, noutbytes, inbuf, ninbytes, sha_hash_buf);
+    if (noutbytes <= num_hash_bytes) {
+        hash_routine(resbuf, noutbytes, inbuf, ninbytes, sha_hash_buf);
+    }
+    else {
+        if (noutbytes <= SHA1_OUT_BYTES) {
+            sha1_hash(resbuf, noutbytes, inbuf, ninbytes, sha1_hash_buf);
+        }
+        else if (noutbytes <= SHA256_OUT_BYTES) {
+            sha256_hash(resbuf, noutbytes, inbuf, ninbytes, sha256_hash_buf);
+        }
+        else if (noutbytes <= SHA512_OUT_BYTES) {
+            sha512_hash(resbuf, noutbytes, inbuf, ninbytes, sha512_hash_buf);
+        }
+    }
 }
 
 void crypto::hash(uint8_t* resbuf, uint32_t noutbytes, uint8_t* inbuf, uint32_t ninbytes, uint8_t* tmpbuf) {
-	hash_routine(resbuf, noutbytes, inbuf, ninbytes, tmpbuf);
+    hash_routine(resbuf, noutbytes, inbuf, ninbytes, tmpbuf);
 }
 
 

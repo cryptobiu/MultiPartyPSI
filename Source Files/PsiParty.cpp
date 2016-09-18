@@ -95,6 +95,8 @@ void PsiParty::initializeMaskSize() {
         default:
             throw system_error();
     }
+
+    m_maskbitlen = min(m_maskbitlen, static_cast<uint32_t>(64*8));
 }
 
 uint32_t PsiParty::run() {

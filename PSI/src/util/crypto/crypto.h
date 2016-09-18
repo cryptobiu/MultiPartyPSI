@@ -116,8 +116,13 @@ private:
 	uint8_t* aes_hash_buf_y2;
 
 	uint8_t* sha_hash_buf;
+	uint8_t* sha1_hash_buf;
+	uint8_t* sha256_hash_buf;
+	uint8_t* sha512_hash_buf;
+	uint32_t num_hash_bytes;
 
 	void (*hash_routine)(uint8_t*, uint32_t, uint8_t*, uint32_t, uint8_t*);
+
 };
 
 
