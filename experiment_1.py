@@ -38,6 +38,7 @@ for num_threads in NUM_THREADS:
                 for i in xrange(10):
                     print "num_threads: {0}, set_size: {1}, key_size: {2}, strategy: {3}".format(
                         num_threads, set_size, key_size, strategy)
+                    print "start time: " + time.asctime()
                     while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,False,strategy,num_threads=num_threads):
                         pass
 
