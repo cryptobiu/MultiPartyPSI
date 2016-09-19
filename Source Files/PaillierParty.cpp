@@ -17,10 +17,10 @@ void PaillierParty::initPaiilier() {
     uint32_t bitSize;
     switch(symSecurityParameter) {
         case 80:
-            bitSize = 2048; // some suggest 1024
+            bitSize = 1024; // some suggest 2048
             break;
         case 128:
-            bitSize = 2560; // some suggest 2048(ANSSI) or 3072(NIST)
+            bitSize = 3072; // some suggest 2048(ANSSI) or 2560
             break;
         default:
             throw(system_error());

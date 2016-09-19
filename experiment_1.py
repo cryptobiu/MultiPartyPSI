@@ -55,9 +55,15 @@ for set_size in SET_SIZES:
     for key_size in KEY_SIZES:
             if set_size > KISSNER_LIMIT:
                 continue
+            print "set_size: {0}, key_size: {1}, kissner_method".format(
+                set_size, key_size)
+            if not Flow:
+                result = raw_input("skip (s), continue (c)")
+                if result == 's':
+                    continue
+                elif result == 'c':
+                    FLOW = True
             for i in xrange(10):
-                print "set_size: {0}, key_size: {1}, kissner_method".format(
-                    set_size, key_size)
                 while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,True,None):
                     pass
 
