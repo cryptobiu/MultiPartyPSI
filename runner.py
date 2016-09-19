@@ -170,12 +170,14 @@ def runMPPSI(strategy):
             buffer = parties[partyId].recv(16)
             finalTimeInMilli,bytesSent,intersectionSize = struct.unpack("<dii", buffer)
             finalTime = finalTimeInMilli / 1000
-            print "party %d with time %f seconds and %d bytes sent" % (partyId,finalTime, bytesSent)
 
             buffer = parties[partyId].recv(12)
             sendTimeInMilli,bytesSentOnSend = struct.unpack("<di", buffer)
+            sendTime = sendTimeInMilli / 1000
 
-            finalResults[partyId]=(finalTime,bytesSent, sendTimeInMilli, bytesSentOnSend)
+            print "party %d with time %f seconds and %d bytes sent" % (partyId,finalTime, bytesSent)
+
+            finalResults[partyId]=(finalTime, bytesSent, sendTime, bytesSentOnSend)
             if partyId == leaderId:
                 if intersectionSize != intersectSize:
                     print "Error ! leader published false intersection size (real!=published):(%d!=%d)" % (intersectSize, intersectionSize)

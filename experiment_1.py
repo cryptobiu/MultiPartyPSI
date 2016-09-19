@@ -18,6 +18,8 @@ STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
 NUM_THREADS = [1,2,3,4,None]
 
+LIMITS = {runner.Strategy.SIMPLE_HASH : 2**14,}
+
 # and ofcourse kissner
 NUM_OF_PARTIES = 5
 
@@ -29,7 +31,11 @@ for num_threads in NUM_THREADS:
     for set_size in SET_SIZES:
         for key_size in KEY_SIZES:
             for strategy in STRATEGIES:
+                if LIMITS.has_key(strategy) and LIMITS[strategy] > set_size:
+                    continue
                 for i in xrange(10):
+                    print "num_threads: {0}, set_size: {1}, key_size: {2}, strategy: {3}".format(
+                        num_threads, set_size, key_size, strategy)
                     while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,False,strategy,num_threads=num_threads):
                         pass
 
