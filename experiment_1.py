@@ -39,7 +39,7 @@ for num_threads in NUM_THREADS:
                     continue
                 print "num_threads: {0}, set_size: {1}, key_size: {2}, strategy: {3}".format(
                     num_threads, set_size, key_size, strategy)
-                if not Flow:
+                if not FLOW:
                     result = raw_input("skip (s), continue (c)")
                     if result == 's':
                         continue
