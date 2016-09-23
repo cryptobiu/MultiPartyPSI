@@ -30,7 +30,7 @@ experiment_utils.prepare_machines(NUM_OF_PARTIES)
 experiment_utils.prepare_results_file('experiment1.csv')
 
 FLOW = False
-
+'''
 for num_threads in NUM_THREADS:
     for set_size in SET_SIZES:
         for key_size in KEY_SIZES:
@@ -50,6 +50,7 @@ for num_threads in NUM_THREADS:
                     print "start time: " + time.asctime()
                     while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,False,strategy,num_threads=num_threads):
                         pass
+'''
 
 for set_size in SET_SIZES:
     for key_size in KEY_SIZES:
@@ -57,12 +58,6 @@ for set_size in SET_SIZES:
                 continue
             print "set_size: {0}, key_size: {1}, kissner_method".format(
                 set_size, key_size)
-            if not Flow:
-                result = raw_input("skip (s), continue (c)")
-                if result == 's':
-                    continue
-                elif result == 'c':
-                    FLOW = True
             for i in xrange(10):
                 while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,True,None):
                     pass
