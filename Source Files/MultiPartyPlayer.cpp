@@ -23,6 +23,9 @@ MultiPartyPlayer::MultiPartyPlayer(uint32_t partyId, ConfigFile &config,
 
     m_numCores = stoi(getValFromConfig(m_config, "General", "numcores"));
     m_numCores = min(static_cast<uint32_t>(num_cores()),m_numCores);
+
+    std::cout << "Num cores is " << m_numCores << std::endl;
+
     m_commThreads = min(m_numCores, MAX_COMM_THREADS);
 
     m_isLocalHost = (getValFromConfig(m_config, "General", "remote") == std::string("False"));
