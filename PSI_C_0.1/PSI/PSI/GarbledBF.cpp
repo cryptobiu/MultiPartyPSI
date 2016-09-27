@@ -60,12 +60,12 @@ void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &
                 if (emptySlot == -1) {
                     emptySlot = index;
                 } else {
-                    uint8_t* bytes;
-                    bytes=(uint8_t*)calloc(filter->m_GBFSigmaByteLen,sizeof(uint8_t));
-                    AESRandom_NextBytes(rnd, bytes, filter->m_GBFSigmaByteLen);
-                    memcpy(&filter->data[index*filter->m_GBFSigmaByteLen] ,bytes, filter->m_GBFSigmaByteLen);
-                    xorByteArray(finalShare, bytes, filter->m_GBFSigmaByteLen);
-                    free(bytes);
+                    //uint8_t* bytes;
+                    //bytes=(uint8_t*)calloc(filter->m_GBFSigmaByteLen,sizeof(uint8_t));
+                    //AESRandom_NextBytes(rnd, bytes, filter->m_GBFSigmaByteLen);
+                    //memcpy(&filter->data[index*filter->m_GBFSigmaByteLen] ,bytes, filter->m_GBFSigmaByteLen);
+                    xorByteArray(finalShare, &filter->data[index*filter->m_GBFSigmaByteLen], filter->m_GBFSigmaByteLen);
+                    //free(bytes);
                     filter->bf[index] = 1;
                 }
             } else {
