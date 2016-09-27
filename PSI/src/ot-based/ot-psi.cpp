@@ -678,7 +678,6 @@ struct SendingInfo sInfo = {0, 0};
 
 void send_masks(uint8_t* masks, uint32_t nmasks, uint32_t maskbytelen, CSocket& sock) {
 
-	std::cout << "Sending " << nmasks*maskbytelen << std::endl;
 	timeval t_start, t_end;
 	gettimeofday(&t_start, NULL);
 
@@ -686,9 +685,6 @@ void send_masks(uint8_t* masks, uint32_t nmasks, uint32_t maskbytelen, CSocket& 
 
 	gettimeofday(&t_end, NULL);
 	sInfo.timeOnSending += getMillies(t_start,t_end);
-
-	std::cout << "Sending Time " << sInfo.timeOnSending << std::endl;
-
 	sInfo.amountSent += nmasks*maskbytelen;
 }
 
