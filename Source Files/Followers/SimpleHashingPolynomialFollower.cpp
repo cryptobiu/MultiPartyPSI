@@ -121,7 +121,7 @@ void SimpleHashingPolynomialFollower::sendPolynomials() {
 
     //send the masks to the receiver
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfBins; i++) {
-        getPolynomialCoffBytes(m_polynomials[i], masks+m_followerSet.m_maskSizeInBytes*i*m_followerSet.m_maxBinSize);
+        getPolynomialCoffBytes(m_polynomials[i], m_followerSet.m_maxBinSize, masks+m_followerSet.m_maskSizeInBytes*i*m_followerSet.m_maxBinSize);
     }
     m_polynomials.clear();
 

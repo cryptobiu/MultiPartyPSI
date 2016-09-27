@@ -34,7 +34,7 @@ protected:
     virtual void buildPolynomials();
     void generateIrreduciblePolynomial();
 
-    void getPolynomialCoffBytes(NTL::GF2EX & polynomial, uint8_t *arr);
+    void getPolynomialCoffBytes(NTL::GF2EX & polynomial, uint32_t polyDeg, uint8_t *arr);
     virtual void sendPolynomials();
     static void *buildPolynomialsInThread(void *poly_struct);
 

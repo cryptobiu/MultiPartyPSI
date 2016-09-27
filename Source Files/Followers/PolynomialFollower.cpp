@@ -93,13 +93,11 @@ void PolynomialFollower::generateIrreduciblePolynomial() {
     // std::cout << "Follower irreducible Polynomial is " << m_irreduciblePolynomial << std::endl;
 }
 
-void PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & polynomial, uint8_t *arr) {
+void PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & polynomial, uint32_t polyDeg, uint8_t *arr) {
     vector<vector<uint8_t>> polynomBytes;
 
-    uint32_t polyDeg = deg(polynomial);
-
     //convert each coefficient polynomial to byte array and put it in the output array.
-    for (int i = 0; i <= polyDeg; i++) {
+    for (int i = 0; i < polyDeg; i++) {
         //get the coefficient polynomial
         NTL::GF2E coefficient = coeff(polynomial, i);
 
@@ -116,18 +114,20 @@ void PolynomialFollower::getPolynomialCoffBytes(NTL::GF2EX & polynomial, uint8_t
 }
 
 void PolynomialFollower::sendPolynomials() {
+
     uint8_t *masks;
     posix_memalign((void**)&masks, 16, m_followerSet.m_maskSizeInBytes*m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfElements);
 
     //send the masks to the receiver
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
-        getPolynomialCoffBytes(m_polynomials[i], masks+m_followerSet.m_maskSizeInBytes*i*m_followerSet.m_numOfElements);
+        getPolynomialCoffBytes(m_polynomials[i], m_followerSet.m_numOfElements, masks+m_followerSet.m_maskSizeInBytes*i*m_followerSet.m_numOfElements);
     }
 
     send_masks(masks, m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfElements,
                m_followerSet.m_maskSizeInBytes, m_leader);
 
     free(masks);
+
 }
 
 void PolynomialFollower::run() {
