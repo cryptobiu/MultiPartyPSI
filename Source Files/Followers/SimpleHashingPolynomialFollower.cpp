@@ -115,7 +115,9 @@ void SimpleHashingPolynomialFollower::buildPolynomials(){
 
 void SimpleHashingPolynomialFollower::sendPolynomials() {
     uint8_t *masks;
-    posix_memalign((void**)&masks, 16, m_followerSet.m_maskSizeInBytes*m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize);
+    //posix_memalign((void**)&masks, 16, m_followerSet.m_maskSizeInBytes*m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize);
+
+    masks= (uint8_t* )calloc(m_followerSet.m_maskSizeInBytes*m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize,sizeof(uint8_t));
 
     //send the masks to the receiver
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfBins; i++) {
