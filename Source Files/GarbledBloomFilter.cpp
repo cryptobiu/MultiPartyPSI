@@ -42,13 +42,13 @@ boost::shared_ptr<GarbledBF> GarbledBloomFilter::GBF_Create(){
     vector<uint8_t> random;
     prg.getPRGBytes(random, 0, filter->m*filter->m_GBFSigmaByteLen);
 
-    if(!(filter->data= (uint8_t* )calloc(m_bfParam->m*filter->m_GBFSigmaByteLen,sizeof(uint8_t*)))){
+    if(!(filter->data= (uint8_t* )calloc(m_bfParam->m*filter->m_GBFSigmaByteLen,sizeof(uint8_t)))){
         return 0;
     }
 
     memcpy(filter->data,random.data(),m_bfParam->m*filter->m_GBFSigmaByteLen);
 
-    if(!(filter->bf= (uint8_t* )calloc(m_bfParam->m,sizeof(uint8_t*)))){
+    if(!(filter->bf= (uint8_t* )calloc(m_bfParam->m,sizeof(uint8_t)))){
         return 0;
     }
 
