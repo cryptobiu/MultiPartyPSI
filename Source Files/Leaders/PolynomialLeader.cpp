@@ -75,16 +75,22 @@ void *PolynomialLeader::receivePolynomials(void *ctx_tmp) {
 
     uint32_t coefficientSize = ctx->maskbytelen;
 
+    uint8_t *masks = (uint8_t* )calloc(ctx->maskbytelen*ctx->numOfHashFunction*ctx->numPolynomPerHashFunc*ctx->polynomSize,sizeof(uint8_t));
+
+    ctx->sock->Receive(masks, ctx->maskbytelen*ctx->numOfHashFunction*ctx->numPolynomPerHashFunc*ctx->polynomSize);
+
     for (uint32_t i = 0; i < ctx->numOfHashFunction; i++) {
         PRINT() << "receive polynomial " << i << std::endl;
         for (uint32_t k =0; k < ctx->numPolynomPerHashFunc; k++) {
             ctx->polynoms[i*ctx->numPolynomPerHashFunc+k] = new NTL::GF2EX();
             for (uint32_t j=0; j < ctx->polynomSize; j++) {
-                vector<uint8_t> coefficient(coefficientSize);
-                ctx->sock->Receive(coefficient.data(), coefficientSize);
-                NTL::GF2E coeffElement = PolynomialUtils::convertBytesToGF2E(coefficient.data(), coefficientSize);
+
+                NTL::GF2E coeffElement = PolynomialUtils::convertBytesToGF2E(
+                        masks+((i*ctx->numPolynomPerHashFunc+k)*ctx->polynomSize+j)*coefficientSize, coefficientSize);
                 SetCoeff(*ctx->polynoms[i*ctx->numPolynomPerHashFunc+k], j, coeffElement);
             }
         }
     }
+
+    free(masks);
 }

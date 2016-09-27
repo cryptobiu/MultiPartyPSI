@@ -38,6 +38,7 @@ bool SimpleHashingPolynomialLeader::isElementInAllSets(uint32_t index, uint32_t 
 
     GF2E::init(m_irreduciblePolynomial);
 
+
     for (auto &party : m_parties) {
         XOR(secret, m_leaderResults[party.first].get()+tableIndex*m_maskSizeInBytes, m_maskSizeInBytes);
 

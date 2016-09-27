@@ -124,15 +124,15 @@ void SimpleHashingPolynomialFollower::sendPolynomials() {
         getPolynomialCoffBytes(m_polynomials[i], m_followerSet.m_maxBinSize, masks+m_followerSet.m_maskSizeInBytes*i*m_followerSet.m_maxBinSize);
     }
     m_polynomials.clear();
-
+    /*
     for (uint32_t i = 0; i < m_followerSet.m_numOfHashFunctions; i++) {
         send_masks(masks+i*m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize, m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize,
                    m_followerSet.m_maskSizeInBytes, m_leader);
     }
-    /*
+    */
     send_masks(masks, m_followerSet.m_numOfHashFunctions*m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize,
                m_followerSet.m_maskSizeInBytes, m_leader);
-    */
+
 
     free(masks);
 }
