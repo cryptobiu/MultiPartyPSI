@@ -18,14 +18,17 @@ public:
                        const std::map<uint32_t, boost::shared_ptr<CSocket>> &parties, uint32_t numOfHashFunctions, const secParameters &parameters, uint32_t numCores, uint32_t maxBinSize) :
             NaiveLeader(leaderResults, hashInfo, numOfBins, secretShare, maskSizeInBytes, setSize, elements, elementSize, parties, numOfHashFunctions, parameters, numCores),
             m_maxBinSize(maxBinSize) {
+        m_matPerBin = new map<uint32_t , mat_GF2>[m_numOfHashFunctions];
     };
-    virtual ~SimpleHashingNaiveInverseLeader() {};
+    virtual ~SimpleHashingNaiveInverseLeader() {
+        delete[] m_matPerBin;
+    };
 protected:
     virtual void receiveServerData() override;
 
     virtual bool isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex) override;
 
-    map<uint32_t , mat_GF2> m_matPerBin;
+    map<uint32_t , mat_GF2> *m_matPerBin;
 
     uint32_t m_maxBinSize;
 private:

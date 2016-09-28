@@ -23,16 +23,19 @@ void SimpleHashingNaiveInverseLeader::receiveServerData() {
 
     receiveServerDataInThreads<mask_rcv_ctx>(rcv_ctxs, &NaiveLeader::receiveMasks);
 
-    for (uint32_t i=0; i < m_numOfBins; i++) {
-        vec_vec_GF2 fullVector;
+    for (uint32_t k=0; k < m_numOfHashFunctions; k++) {
+        for (uint32_t i=0; i < m_numOfBins; i++) {
+            vec_vec_GF2 fullVector;
 
-        for (auto &result : m_partiesResults) {
-            uint8_t *ptr = result.second.get()+i*m_numOfHashFunctions*m_maxBinSize*m_maskSizeInBytes;
-            for (uint32_t j=0; j < m_numOfHashFunctions*m_maxBinSize; j++) {
-                fullVector.append(GF2MatrixUtils::vec_GF2FromBytes(ptr+j*m_maskSizeInBytes, m_maskSizeInBytes));
+            for (auto &result : m_partiesResults) {
+
+                uint8_t *ptr = result.second.get()+(k*m_numOfBins+i)*m_maxBinSize*m_maskSizeInBytes;
+                for (uint32_t j=0; j < m_maxBinSize; j++) {
+                    fullVector.append(GF2MatrixUtils::vec_GF2FromBytes(ptr+j*m_maskSizeInBytes, m_maskSizeInBytes));
+                }
             }
+            m_matPerBin[k][i] = transpose(to_mat_GF2(fullVector));
         }
-        m_matPerBin[i] = transpose(to_mat_GF2(fullVector));
     }
 }
 
@@ -40,10 +43,10 @@ bool SimpleHashingNaiveInverseLeader::isZeroXOR(uint8_t *formerShare, uint32_t p
     vec_GF2 b = GF2MatrixUtils::vec_GF2FromBytes(formerShare, m_maskSizeInBytes);
 
     try {
-        vec_GF2 res = GF2MatrixUtils::solve(m_matPerBin[binIndex], b);
-        for (uint32_t i =0; i < m_parties.size()*m_numOfHashFunctions*m_maxBinSize; i+=m_numOfHashFunctions*m_maxBinSize) {
+        vec_GF2 res = GF2MatrixUtils::solve(m_matPerBin[hashIndex][binIndex], b);
+        for (uint32_t i =0; i < m_parties.size()*m_maxBinSize; i+=m_maxBinSize) {
             uint32_t numOnes = 0;
-            for (uint32_t j = 0; j < m_numOfHashFunctions*m_maxBinSize; j++) {
+            for (uint32_t j = 0; j < m_maxBinSize; j++) {
                 if (res[i+j]==1) {
                     numOnes++;
                 }

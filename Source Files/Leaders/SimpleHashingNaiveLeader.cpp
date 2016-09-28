@@ -26,8 +26,8 @@ void SimpleHashingNaiveLeader::receiveServerData() {
 bool SimpleHashingNaiveLeader::isZeroXOR(uint8_t *formerShare, uint32_t partyNum, uint32_t hashIndex, uint32_t binIndex) {
     if (partyNum <= m_parties.size()+1) {
         uint8_t *partyResult = m_partiesResults[partyNum].get();
-        uint32_t minIndex = binIndex*m_numOfHashFunctions*m_maxBinSize;
-        uint32_t maxIndex = (binIndex+1)*m_numOfHashFunctions*m_maxBinSize;
+        uint32_t minIndex = hashIndex*m_numOfBins*m_maxBinSize+binIndex*m_maxBinSize;
+        uint32_t maxIndex = hashIndex*m_numOfBins*m_maxBinSize+(binIndex+1)*m_maxBinSize;
         for (uint32_t i = minIndex; i < maxIndex; i++) {
             XOR(formerShare,partyResult+i*m_maskSizeInBytes, m_maskSizeInBytes);
             if (isZeroXOR(formerShare,partyNum+1,hashIndex,binIndex)) {

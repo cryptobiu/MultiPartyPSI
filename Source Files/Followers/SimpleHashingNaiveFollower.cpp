@@ -18,8 +18,12 @@ void SimpleHashingNaiveFollower::run() {
     PrgFromOpenSSLAES prg(ceil_divide(m_followerSet.m_numOfBins*m_followerSet.m_numOfHashFunctions*m_followerSet.m_maxBinSize*m_followerSet.m_maskSizeInBytes,16));
     prg.setKey(key);
 
-    vector<uint8_t> random;
-    prg.getPRGBytes(random, 0, m_followerSet.m_numOfBins*m_followerSet.m_numOfHashFunctions*m_followerSet.m_maxBinSize*m_followerSet.m_maskSizeInBytes);
+    vector<uint8_t> *random = new vector<uint8_t>[m_followerSet.m_numOfHashFunctions];
+    uint32_t *counter = new uint32_t[m_followerSet.m_numOfHashFunctions];
+    for (uint i=0; i < m_followerSet.m_numOfHashFunctions; i++) {
+        prg.getPRGBytes(random[i], 0, m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize*m_followerSet.m_maskSizeInBytes);
+    }
+
 
     uint32_t progress = 0;
     for (uint32_t k=0; k < m_followerSet.m_numOfBins; k++) {
@@ -27,13 +31,26 @@ void SimpleHashingNaiveFollower::run() {
         if (numOfElementsInBin > m_followerSet.m_numOfHashFunctions*m_followerSet.m_maxBinSize) {
             PRINT() << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!";
         }
-        //send the masks to the receiver
-        memcpy(random.data()+ k*m_followerSet.m_numOfHashFunctions*m_followerSet.m_maxBinSize*m_followerSet.m_maskSizeInBytes,
-               m_followerSet.m_masks.get()+progress*m_followerSet.m_maskSizeInBytes, numOfElementsInBin*m_followerSet.m_maskSizeInBytes);
+
+        for (uint i=0; i < m_followerSet.m_numOfHashFunctions; i++) {
+            counter[i]=0;
+        }
+
+        for (uint32_t i = 0; i < numOfElementsInBin; i++) {
+            uint32_t hashIndex = m_followerSet.m_binToElementsToHashTable.get()[progress+i] % m_followerSet.m_numOfHashFunctions;
+            //send the masks to the receiver
+            memcpy(random[hashIndex].data()+ (k*m_followerSet.m_maxBinSize+counter[hashIndex])*m_followerSet.m_maskSizeInBytes,
+                   m_followerSet.m_masks.get()+(progress+i)*m_followerSet.m_maskSizeInBytes, m_followerSet.m_maskSizeInBytes);
+            counter[hashIndex]++;
+        }
 
         progress = progress + numOfElementsInBin;
     }
 
-    send_masks(random.data(), m_followerSet.m_numOfBins*m_followerSet.m_numOfHashFunctions*m_followerSet.m_maxBinSize, m_followerSet.m_maskSizeInBytes, m_leader);
+    for (uint i=0; i < m_followerSet.m_numOfHashFunctions; i++) {
+        send_masks(random[i].data(), m_followerSet.m_numOfBins*m_followerSet.m_maxBinSize, m_followerSet.m_maskSizeInBytes, m_leader);
+    }
 
+    delete[] random;
+    delete[] counter;
 }
