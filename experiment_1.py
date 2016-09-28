@@ -38,7 +38,7 @@ for num_threads in NUM_THREADS:
                 print "num_threads: {0}, set_size: {1}, key_size: {2}, strategy: {3}".format(
                     num_threads, set_size, key_size, strategy)
                 if not FLOW:
-                    if (num_threads == 2) and (set_size == 2**18) and (key_size==80) and (strategy==runner.Strategy.GAUSS_SIMPLE_HASH):
+                    if (num_threads == 3) and (set_size == 2**4) and (key_size==80) and (strategy==runner.Strategy.POLYNOMIALS_SIMPLE_HASH):
                         FLOW = True
                     else:
                         continue
