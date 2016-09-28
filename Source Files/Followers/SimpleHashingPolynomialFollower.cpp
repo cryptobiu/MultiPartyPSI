@@ -38,7 +38,8 @@ void *SimpleHashingPolynomialFollower::buildPolynomialsInThread(void *poly_struc
         }
 
         if (numOfElementsOfHashInBin > pol_struct->followerSet->m_maxBinSize) {
-            std::cout << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!" << numOfElementsOfHashInBin << ":" << pol_struct->followerSet->m_maxBinSize << std::endl;
+            std::cout << "ERROR MAX SIZE IN BIN IS NOT BIG ENOUGH !!!!" << numOfElementsOfHashInBin << ":" <<
+                      pol_struct->followerSet->m_maxBinSize << ":" << numOfElementsInBin << std::endl;
         }
 
         uint32_t numOfRandomElements = pol_struct->followerSet->m_maxBinSize-numOfElementsOfHashInBin;
