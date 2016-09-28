@@ -61,7 +61,7 @@ void PsiParty::setBinsParameters() {
     m_numOfBins = ceil(EPSILON * m_setSize);
 
     if(ceil_divide(m_setSize, m_numOfBins) < 3)
-        m_maxBinSize = max(ceil_log2(m_setSize),3);
+        m_maxBinSize = max(ceil_log2(m_setSize),3)+4;
     else
         m_maxBinSize = 6*max((int) ceil_divide(m_setSize, m_numOfBins), 3);
 }
