@@ -75,10 +75,10 @@ void PsiParty::initializeMaskSize() {
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*m_setSize, 8);
             break;
         case Strategy::SIMPLE_HASH:
-            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*ceil_log2(NUM_HASH_FUNCTIONS*m_maxBinSize), 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*ceil_log2(m_maxBinSize), 8);
             break;
         case Strategy::GAUSS_SIMPLE_HASH:
-            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*NUM_HASH_FUNCTIONS*m_maxBinSize, 8);
+            m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter + (m_numOfParties-1)*m_maxBinSize, 8);
             break;
         case Strategy::POLYNOMIALS:
             m_maskbitlen = pad_to_multiple(m_parameters.m_statSecParameter, 8);

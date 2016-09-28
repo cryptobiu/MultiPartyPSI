@@ -14,7 +14,7 @@ KEY_SIZES = [80, 128]
 STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
-NUM_THREADS = [1,2,3,4,None]
+NUM_THREADS = [1,2,4,None]
 
 LIMITS = {runner.Strategy.SIMPLE_HASH : 2**14,runner.Strategy.POLYNOMIALS : 2**14}
 
@@ -54,16 +54,5 @@ for num_threads in NUM_THREADS:
                     print "start time: " + time.asctime()
                     while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,False,strategy,num_threads=num_threads):
                         pass
-
-
-for set_size in SET_SIZES:
-    for key_size in KEY_SIZES:
-            if set_size > KISSNER_LIMIT:
-                continue
-            print "set_size: {0}, key_size: {1}, kissner_method".format(
-                set_size, key_size)
-            for i in xrange(10):
-                while not experiment_utils.run_and_add_to_csv('experiment1.csv',NUM_OF_PARTIES,key_size,set_size,True,None):
-                    pass
 
 experiment_utils.avg_experiments('experiment1.csv', 'experiment1_avg.csv')
