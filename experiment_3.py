@@ -23,7 +23,7 @@ experiment_utils.prepare_results_file('experiment3.csv')
 for num_of_parties in NUM_OF_PARTIES:
     for strategy in STRATEGIES:
         for i in xrange(10):
-            while not experiment_utils.run_and_add_to_csv('experiment3.csv',num_of_parties,KEY_SIZE,SET_SIZE,False,strategy):
+            while not experiment_utils.run_and_add_to_csv('experiment3.csv',num_of_parties,KEY_SIZE,SET_SIZE,False,strategy,num_threads=4):
                 pass
 
 experiment_utils.avg_experiments('experiment3.csv', 'experiment3_avg.csv')

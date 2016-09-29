@@ -61,7 +61,7 @@ for bandwidth, latency in BANDWIDTH_AND_LATENCY:
     set_machines_network(bandwidth, latency)
     for strategy in STRATEGIES:
         for i in xrange(10):
-            while not experiment_utils.run_and_add_to_csv('experiment2.csv',NUM_OF_PARTIES,KEY_SIZE,SET_SIZE,False,strategy,bandwidth,latency):
+            while not experiment_utils.run_and_add_to_csv('experiment2.csv',NUM_OF_PARTIES,KEY_SIZE,SET_SIZE,False,strategy,bandwidth,latency,num_threads=4):
                 pass
     set_machines_network(bandwidth, latency,reset=True)
 

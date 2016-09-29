@@ -14,7 +14,7 @@ KEY_SIZES = [80, 128]
 STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
-NUM_THREADS = [1,2,4,None]
+NUM_THREADS = [1,2,4]
 
 LIMITS = {runner.Strategy.SIMPLE_HASH : 2**14,runner.Strategy.POLYNOMIALS : 2**14}
 
