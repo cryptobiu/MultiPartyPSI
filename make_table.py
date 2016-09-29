@@ -32,7 +32,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         data = filter(lambda x: x.key_size==str(key_size),results)
         data.sort(key=lambda x: int(x.set_size))
         set_size = 2**10
-        while len(data) != 0:
+        while set_size < 2**20:
             row = filter(lambda x: x.set_size == str(set_size), data)
             data = data[len(row):]
             row.sort(key=lambda x: place[x.strategy])
@@ -43,7 +43,10 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
                                                                      [getattr(x, 'result{0}'.format(id)) for id in xrange(1, 10+1)] if y is not None])/1000000.0)),row))
 
             for strategy in res.keys():
-                res[strategy][(key_size,set_size)] = (time_vals[strategy], byte_vals[strategy])
+                if time_vals.has_key(strategy):
+                    res[strategy][(key_size,set_size)] = (time_vals[strategy], byte_vals[strategy])
+                else:
+                    res[strategy][(key_size,set_size)] = (' ', ' ')
                 
             params.append((key_size,set_size))
 
