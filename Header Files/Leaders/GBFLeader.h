@@ -18,7 +18,7 @@
 struct filter_rcv_ctx {
     GarbledBF **filters;
     RangeHash **hashes;
-    uint8_t **keys;
+    uint8_t *keys;
     uint32_t filterSize;
     uint32_t numOfHashFunction;
     uint32_t maskbytelen;
@@ -54,7 +54,7 @@ private:
 
     void receiveServerData();
 
-    std::map<uint32_t , vector<boost::shared_ptr<uint8_t>>> m_partiesKeys;
+    std::map<uint32_t , boost::shared_ptr<uint8_t>> m_partiesKeys;
     std::map<uint32_t , std::vector<boost::shared_ptr<GarbledBF>>> m_partiesFilters;
 };
 

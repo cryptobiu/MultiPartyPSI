@@ -35,7 +35,6 @@ void BaseMPSIParty::runAndLog() {
     timeval t_start, t_end;
 
     gettimeofday(&t_start, NULL);
-    PRINT_PARTY(m_partyId) << "After Clock" << std::endl;
     std::string iface = "eth0";
     if (m_isLocalHost) {
         iface = "lo";

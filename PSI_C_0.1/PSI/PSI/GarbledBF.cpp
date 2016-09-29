@@ -28,7 +28,7 @@ void GBF_Destroy(GarbledBF* filter){
     free(filter);
 }
 
-void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &hashes, int32_t hashNum, uint8_t* element,int32_t eLen, uint8_t* ehash,AESRandom* rnd){
+void GBF_add(GarbledBF*filter, RangeHash **hashes, int32_t hashNum, uint8_t* element,int32_t eLen, uint8_t* ehash){
     
     assert(filter->k == hashNum);
     
@@ -44,7 +44,7 @@ void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &
     for (int i = 0; i < hashNum; i++) {
         // hash to range [0,m-1], convert to index of array
         //int index = hashes[i].digest(element);
-        int index = RangeHash_Digest(hashes[i].get(), element, eLen);
+        int index = RangeHash_Digest(hashes[i], element, eLen);
         indHis[i] = index;
         if (!exists(index, indHis, i)) {
             // if the slot is empty, further check whether this is the first

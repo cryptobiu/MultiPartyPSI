@@ -14,10 +14,11 @@
 #include "GarbledBloomFilter.h"
 
 class GarbledBloomFilter {
+public:
+    static GarbledBF *GBF_Create(BFParameters *bfParam, uint8_t *random);
 protected:
     GarbledBloomFilter(uint32_t maskSizeInBytes, uint32_t statSecurityParameter, uint32_t setSize);
 
-    boost::shared_ptr<GarbledBF> GBF_Create();
     void BF_GenerateParameters();
 
     uint32_t m_setSizeE;

@@ -70,7 +70,7 @@ inline void GBF_set(GarbledBF* filter,uint32_t i, uint8_t* entry){
  ehash: the hash valu of the element it is sigma byte
  rnd: a random generator
  */
-void GBF_add(GarbledBF*filter, const std::vector<boost::shared_ptr<RangeHash>> &hashes, int32_t hashNum, uint8_t* element,int32_t eLen, uint8_t* ehash,AESRandom* rnd);
+void GBF_add(GarbledBF*filter, RangeHash **hashes, int32_t hashNum, uint8_t* element,int32_t eLen, uint8_t* ehash);
 
 
 

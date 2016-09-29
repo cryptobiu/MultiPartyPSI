@@ -45,6 +45,7 @@ typedef struct BFParameters{
     int32_t m;
     int32_t n;
     int32_t k;
+    uint32_t maskSize;
 } BFParameters;
 
 //generate bloom filter parameters given the max number of items and the upper bound of the false positive rate

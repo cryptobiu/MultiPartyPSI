@@ -17,11 +17,10 @@ GBFLeader::GBFLeader(const map <uint32_t, boost::shared_ptr<uint8_t>> &leaderRes
     for (auto &party : m_parties) {
         m_partiesFilters[party.first] = std::vector<boost::shared_ptr<GarbledBF>>();
         for (uint32_t i = 0; i < m_numOfHashFunctions; i++) {
-            m_partiesFilters[party.first].push_back(GBF_Create());
+            m_partiesFilters[party.first].push_back(boost::shared_ptr<GarbledBF>(GBF_Create(m_bfParam.get(), NULL)));
         }
-        for (uint32_t i = 0; i < m_bfParam->k; i++) {
-            m_partiesKeys[party.first].push_back(boost::shared_ptr<uint8_t >(new uint8_t[keySize]));
-        }
+
+        m_partiesKeys[party.first] = boost::shared_ptr<uint8_t >(new uint8_t[m_bfParam->k*keySize]);
     }
 
 };
@@ -47,7 +46,7 @@ bf_info *GBFLeader::getSpecificThreadInfo() {
     for (auto &party : m_parties) {
         bf->hashes[party.first-1] = new RangeHash[m_bfParam->k];
         for (int i = 0; i < m_bfParam->k; i++) {
-            RangeHash_Create(&(bf->hashes[party.first-1][i]), m_partiesKeys[party.first][i].get(), keySize, m_bfParam->m);
+            RangeHash_Create(&(bf->hashes[party.first-1][i]), m_partiesKeys[party.first].get()+i*keySize, keySize, m_bfParam->m);
         }
     }
 
@@ -92,9 +91,7 @@ void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
     filter_rcv_ctx* ctx = (filter_rcv_ctx*) ctx_tmp;
 
     uint32_t keySize = ctx->symSecurityParameter/8;
-    for (uint32_t i = 0; i < ctx->numHashes; i++) {
-        ctx->sock->Receive(ctx->keys[i], keySize);
-    }
+    ctx->sock->Receive(ctx->keys, ctx->numHashes*keySize);
 
     for (uint32_t i = 0; i < ctx->numOfHashFunction; i++) {
         ctx->sock->Receive(ctx->filters[i]->data, ctx->filterSize*ctx->maskbytelen);
@@ -102,6 +99,8 @@ void *GBFLeader::receiveKeysAndFilters(void *ctx_tmp) {
 }
 
 void GBFLeader::receiveServerData() {
+
+    uint32_t keySize = m_parameters.m_symSecParameter/8;
 
     boost::shared_ptr<filter_rcv_ctx> rcv_ctxs(new filter_rcv_ctx[m_parties.size()+1]);
     for (auto &party : m_parties) {
@@ -112,10 +111,7 @@ void GBFLeader::receiveServerData() {
             (rcv_ctxs.get())[party.first - 1].filters[i] = m_partiesFilters[party.first][i].get();
         }
 
-        (rcv_ctxs.get())[party.first - 1].keys = new uint8_t *[m_bfParam->k];
-        for (uint32_t i = 0; i < m_bfParam->k; i++) {
-            (rcv_ctxs.get())[party.first - 1].keys[i] = m_partiesKeys[party.first][i].get();
-        }
+        (rcv_ctxs.get())[party.first - 1].keys = m_partiesKeys[party.first].get();
 
         (rcv_ctxs.get())[party.first - 1].filterSize = m_bfParam->m;
         (rcv_ctxs.get())[party.first - 1].numOfHashFunction = m_numOfHashFunctions;
