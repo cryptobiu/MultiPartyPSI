@@ -44,6 +44,6 @@ with open("{0}/experiment2_avg.csv".format(dir_name), 'rb') as csvfile:
             f.write(" & ".join([strategy.replace('_',' ')]+[res[strategy][(bandwidth,latency)] for bandwidth, latency in BANDWIDTH_AND_LATENCY]) + " \\\\\\hline\n")
         
         f.write('\\end{tabular}\n')
-        f.write('\\caption{Runtimes in seconds for PSI protocols for $\sigma=64$, set size $2^{16}$ and 5 parties in different network scenerios}\n')
+        f.write('\\caption{Runtimes in seconds for PSI protocols for $\sigma=64$, set size $2^{16}$ and 5 parties in different network scenarios}\n')
         f.write('\\label{tab:results2}\n')
         f.write('\\end{table*}\n')
