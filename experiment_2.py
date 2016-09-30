@@ -12,10 +12,9 @@ import experiment_utils
 #SET_SIZES = [2**10,2**12,2**14,2**16,2**18,2**20]
 SET_SIZE = 2**16
 KEY_SIZE = 80
-STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
-              runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS,
+STRATEGIES = [runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
-BANDWIDTH_AND_LATENCY = [('1000mbit','0.2ms'),('54mbit','0.2ms'),('25mbit','10ms'),('10mbit','50ms'),('3.6mbit','500ms')]
+BANDWIDTH_AND_LATENCY = [('3.6mbit','500ms')]
 # and ofcourse kissner
 NUM_OF_PARTIES = 5
 
