@@ -1,0 +1,17 @@
+\begin{table*}[t]
+\hspace*{-2cm}
+\begin{tabular}{| l | l | l | l | l | l |}
+\hline
+Bandwidth, Latency & 1000mbit, 0.2ms & 54mbit, 0.2ms & 25mbit, 10ms & 10mbit, 50ms & 3.6mbit, 500ms \\
+\hline
+\hline
+GAUSS SIMPLE HASH & 25.26 & 57.70 & 58.66 & 111.46 & 268.26 \\\hline
+POLYNOMIALS SIMPLE HASH & 8.42 & 22.34 & 22.88 & 46.66 & 118.54 \\\hline
+POLYNOMIALS & 1102.63 & 1113.37 & 1090.47 & 1105.77 & 1557.85 \\\hline
+TWO PARTY & 2.42 & 9.45 & 11.59 & 26.64 & 70.44 \\\hline
+BLOOM FILTER & 5.86 & 34.25 & 32.16 & 74.08 & 197.10 \\\hline
+SIMPLE HASH & 6.38 & 27.64 & 28.30 & 65.32 & 175.52 \\\hline
+\end{tabular}
+\caption{Runtimes in seconds for PSI protocols for $\sigma=64$, set size $2^{16}$ and 5 parties in different network scenerios}
+\label{tab:results2}
+\end{table*}

@@ -4,6 +4,7 @@ import csv
 from collections import namedtuple
 import sys
 import math
+import table_utils
 
 place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
 
@@ -11,19 +12,7 @@ dir_name = sys.argv[1]
 KEY_SIZES = (80, 128)
 
 with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
-    csvreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    params = csvreader.next()
-    num_params = len(params)
-    Result = namedtuple('Result',params)
-    results = []
-    
-    try:
-        while True:
-            row = csvreader.next()
-            row = row + [None]*(num_params-len(row))
-            results.append(Result(*row))
-    except StopIteration:
-        print("done !")
+    results = table_utils.readRows(csvfile)
 
     res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
     params = []

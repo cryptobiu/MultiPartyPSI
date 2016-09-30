@@ -4,33 +4,27 @@ import csv
 from collections import namedtuple
 import sys
 import math
+import table_utils
 
-place = {'BLOOM_FILTER' : 1, 'POLYNOMIALS_SIMPLE_HASH' : 2, 'GAUSS_SIMPLE_HASH' : 3}
+place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
+
 BANDWIDTH_AND_LATENCY = [('1000mbit','0.2ms'),('54mbit','0.2ms'),('25mbit','10ms'),('10mbit','50ms'),('3.6mbit','500ms')]
 
 KEY_SIZE = 80
 dir_name = sys.argv[1]
 
 with open("{0}/experiment2_avg.csv".format(dir_name), 'rb') as csvfile:
-    csvreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    Result = namedtuple('Result',csvreader.next())
-    results = []
-    
-    try:
-        while True:
-            row = csvreader.next()
-            results.append(Result(*row))
-    except StopIteration:
-        print("done !")
+    results = table_utils.readRows(csvfile)
+
     results = filter(lambda x: x.key_size==str(KEY_SIZE),results)
-    
-    res = {'BLOOM_FILTER' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}}
+
+    res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
     params = []
 
     for bandwidth, latency in BANDWIDTH_AND_LATENCY:
         row = filter(lambda x: x.bandwidth == bandwidth and x.latency == latency,results)
-        
-        time_vals = dict(map(lambda x: (x.strategy, "%.2f" % eval(x.result.split('|')[0])[0]), row))
+
+        time_vals = dict(map(lambda x: (x.strategy, "%.2f" % eval(x.result1.split('|')[0])), row))
 
         for strategy in res.keys():
             res[strategy][(bandwidth,latency)] = time_vals[strategy]
