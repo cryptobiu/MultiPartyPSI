@@ -18,7 +18,7 @@ STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
 BANDWIDTH_AND_LATENCY = [('1000mbit','0.2ms'),('54mbit','0.2ms'),('25mbit','10ms'),('10mbit','50ms'),('3.6mbit','500ms')]
 # and ofcourse kissner
 NUM_OF_PARTIES = 5
-'''
+
 def set_machines_network(rate, latency, interface='eth0', reset=False):
     conf = open("BaseConfig", "rb").read()
     config = ConfigParser.RawConfigParser(allow_no_value=True)
@@ -64,5 +64,5 @@ for bandwidth, latency in BANDWIDTH_AND_LATENCY:
             while not experiment_utils.run_and_add_to_csv('experiment2.csv',NUM_OF_PARTIES,KEY_SIZE,SET_SIZE,False,strategy,bandwidth,latency,num_threads=4):
                 pass
     set_machines_network(bandwidth, latency,reset=True)
-'''
+
 experiment_utils.avg_experiments('experiment2.csv', 'experiment2_avg.csv')
