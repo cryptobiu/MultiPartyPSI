@@ -11,10 +11,18 @@ import experiment_utils
 
 SET_SIZE = 2**16
 KEY_SIZE = 80
+'''
 STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
-NUM_OF_PARTIES = [2,3,5,7,9,10]
+'''
+
+STRATEGIES = [runner.Strategy.GAUSS_SIMPLE_HASH,
+              runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS,
+              runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
+
+#NUM_OF_PARTIES = [2,3,5,7,9,10]
+NUM_OF_PARTIES = [7,9,10]
 
 experiment_utils.prepare_machines(NUM_OF_PARTIES[-1])
 
