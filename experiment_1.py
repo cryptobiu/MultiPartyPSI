@@ -16,7 +16,7 @@ STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
 NUM_THREADS = [1,2,4]
 
-LIMITS = {runner.Strategy.SIMPLE_HASH : 2**14,runner.Strategy.POLYNOMIALS : 2**14}
+LIMITS = {runner.Strategy.SIMPLE_HASH : 2**16,runner.Strategy.POLYNOMIALS : 2**16}
 
 KISSNER_LIMIT=2**8
 
