@@ -26,7 +26,10 @@ with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
         time_vals = dict(map(lambda x: (x.strategy, "%.2f" % eval(x.result1.split('|')[0])), row))
 
         for strategy in res.keys():
-            res[strategy][num_of_parties] = time_vals[strategy]
+            if time_vals.has_key(strategy):
+                res[strategy][num_of_parties] = time_vals[strategy]
+            else:
+                res[strategy][num_of_parties] = ' '
     
     with open("{0}/experiment3.txt".format(dir_name), 'wb') as f:
 
