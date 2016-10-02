@@ -10,8 +10,8 @@ GAUSS SIMPLE HASH & 0.36 & 1.22 & 5.45 & 24.56 & 112.20 & 0.51 & 1.37 & 5.69 & 2
 POLYNOMIALS SIMPLE HASH & 0.26 & 0.59 & 2.11 & 9.04 & 44.77 & 0.40 & 0.73 & 2.25 & 9.34 & 45.24 \\\hline
 POLYNOMIALS & 0.53 & 6.00 & 92.48 &   &   & 0.77 & 6.45 & 91.61 &   &   \\\hline
 TWO PARTY & 0.13 & 0.15 & 0.23 & 0.48 & 1.47 & 0.27 & 0.31 & 0.43 & 0.67 & 1.85 \\\hline
-BLOOM FILTER & 0.19 & 0.35 & 1.02 & 3.82 & 17.22 & 0.33 & 0.51 & 1.19 & 4.02 & 17.48 \\\hline
-SIMPLE HASH & 0.19 & 0.48 & 2.38 &   &   & 0.34 & 0.67 & 3.19 &   &   \\\hline
+BLOOM FILTER & 0.18 & 0.28 & 0.72 & 2.47 & 10.16 & 0.32 & 0.45 & 0.90 & 2.61 & 10.47 \\\hline
+SIMPLE HASH & 0.19 & 0.48 & 2.38 & 14.97 &   & 0.34 & 0.67 & 3.19 & 18.58 &   \\\hline
 \end{tabular}
 \caption{Runtimes in seconds for PSI protocols over 10Gbit LAN, $\sigma=64$ and 5 parties with different set sizes and security parameters}
 \label{tab:results}
@@ -29,8 +29,8 @@ GAUSS SIMPLE HASH & 2.13 & 11.06 & 59.40 & 289.73 & 1360.89 & 1.97 & 11.26 & 59.
 POLYNOMIALS SIMPLE HASH & 0.79 & 4.92 & 26.32 & 113.27 & 526.49 & 0.96 & 5.01 & 26.45 & 113.15 & 526.68 \\\hline
 POLYNOMIALS & 0.75 & 2.81 & 10.91 &   &   & 0.76 & 2.95 & 11.07 &   &   \\\hline
 TWO PARTY & 0.73 & 2.74 & 10.85 & 37.01 & 154.85 & 0.75 & 2.86 & 10.93 & 36.75 & 155.06 \\\hline
-BLOOM FILTER & 3.05 & 15.81 & 67.87 & 290.00 & 1174.51 & 3.22 & 15.87 & 68.27 & 289.91 & 1175.56 \\\hline
-SIMPLE HASH & 1.25 & 7.68 & 39.05 &   &   & 1.38 & 7.56 & 39.12 &   &   \\\hline
+BLOOM FILTER & 2.91 & 15.83 & 68.01 & 291.20 & 1175.93 & 3.09 & 15.65 & 67.84 & 290.12 & 1175.32 \\\hline
+SIMPLE HASH & 1.25 & 7.68 & 39.05 & 170.77 &   & 1.38 & 7.56 & 39.12 & 170.68 &   \\\hline
 \end{tabular}
 \caption{Communication complexity (in MB) for PSI protocols over 10Gbit LAN, $\sigma=64$ and 5 parties with different set sizes and security parameters}
 \label{tab:results_mb}

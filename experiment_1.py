@@ -9,17 +9,18 @@ import ConfigParser
 import io
 import experiment_utils
 
-SET_SIZES = [2**8,2**10,2**12,2**14,2**16,2**18]
+#SET_SIZES = [2**8,2**10,2**12,2**14,2**16,2**18]
+SET_SIZES = [2**18]
 KEY_SIZES = [80, 128]
 '''
 STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
 '''
-STRATEGIES = [runner.Strategy.BLOOM_FILTER]
+STRATEGIES = [runner.Strategy.SIMPLE_HASH]
 NUM_THREADS = [1,2,4,None]
 
-LIMITS = {runner.Strategy.SIMPLE_HASH : 2**16,runner.Strategy.POLYNOMIALS : 2**16}
+LIMITS = {runner.Strategy.POLYNOMIALS : 2**16}
 
 KISSNER_LIMIT=2**8
 
@@ -42,13 +43,13 @@ for num_threads in NUM_THREADS:
                     num_threads, set_size, key_size, strategy)
                 if not FLOW:
                     FLOW=True
-                    '''
+
                     result = raw_input("skip (s), continue (c)")
                     if result == 's':
                         continue
                     elif result == 'c':
                         FLOW = True
-                    '''
+
                 for i in xrange(10):
 
                     print "start time: " + time.asctime()
