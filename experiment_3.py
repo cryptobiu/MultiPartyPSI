@@ -17,10 +17,10 @@ STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
 '''
 
-STRATEGIES = [runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
+STRATEGIES = [runner.Strategy.SIMPLE_HASH]
 
 #NUM_OF_PARTIES = [2,3,5,7,9,10]
-NUM_OF_PARTIES = [9]
+NUM_OF_PARTIES = [7,9]
 
 experiment_utils.prepare_machines(NUM_OF_PARTIES[-1])
 
