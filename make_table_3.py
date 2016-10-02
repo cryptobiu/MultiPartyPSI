@@ -6,18 +6,18 @@ import sys
 import math
 import table_utils
 
-place = {'BLOOM_FILTER' : 1, 'POLYNOMIALS_SIMPLE_HASH' : 2, 'GAUSS_SIMPLE_HASH' : 3}
+place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
 
 KEY_SIZE = 80
 dir_name = sys.argv[1]
-NUM_OF_PARTIES = [3,5,7,10]
+NUM_OF_PARTIES = [2,3,5,7,9]
 
 with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
     results = table_utils.readRows(csvfile)
 
     results = filter(lambda x: x.key_size==str(KEY_SIZE),results)
-    
-    res = {'BLOOM_FILTER' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}}
+
+    res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
     params = []
 
     for num_of_parties in NUM_OF_PARTIES:
