@@ -57,9 +57,8 @@ with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
 
         f.write('\\begin{table*}[t]\n')
         f.write('\\hspace*{-2cm}\n')
-        f.write('\\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}\n')
+        f.write('\\begin{tabular}{| l | l | l | l | l | l | l |}\n')
         f.write('\\hline\n')
-        f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
 
         f.write('Num of parties & ' + ' & '.join(["{0}".format(num_of_parties) for num_of_parties in NUM_OF_PARTIES]) + " \\\\\n")
 
