@@ -9,12 +9,16 @@ import ConfigParser
 import io
 import experiment_utils
 
-SET_SIZES = [2**8,2**10,2**12,2**14,2**16,2**18]
+#SET_SIZES = [2**8,2**10,2**12,2**14,2**16,2**18]
+SET_SIZES = [2**16]
 KEY_SIZES = [80, 128]
+'''
 STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
-NUM_THREADS = [1,2,4]
+'''
+STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.POLYNOMIALS]
+NUM_THREADS = [1,2,4,None]
 
 LIMITS = {runner.Strategy.SIMPLE_HASH : 2**16,runner.Strategy.POLYNOMIALS : 2**16}
 
