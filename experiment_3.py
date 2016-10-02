@@ -23,7 +23,7 @@ STRATEGIES = [runner.Strategy.GAUSS_SIMPLE_HASH,
 
 #NUM_OF_PARTIES = [2,3,5,7,9,10]
 NUM_OF_PARTIES = [6]
-'''
+
 experiment_utils.prepare_machines(NUM_OF_PARTIES[-1])
 
 experiment_utils.prepare_results_file('experiment3.csv')
@@ -34,5 +34,5 @@ for num_of_parties in NUM_OF_PARTIES:
             print "start time: " + time.asctime()
             while not experiment_utils.run_and_add_to_csv('experiment3.csv',num_of_parties,KEY_SIZE,SET_SIZE,False,strategy,num_threads=4):
                 pass
-'''
+
 experiment_utils.avg_experiments('experiment3.csv', 'experiment3_avg.csv')
