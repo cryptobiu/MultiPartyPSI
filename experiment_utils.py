@@ -76,6 +76,7 @@ def avg_experiments(result_file_path, avg_result_file_path):
                     rows = [csvreader.next() for i in xrange(NUM_OF_RUNS)]
                     results = None
                     for i in xrange(NUM_OF_RUNS):
+                        print rows[i][0]
                         assert rows[i][0] == rows[0][0] #rev
                         assert rows[i][1] == rows[0][1] #bandwidth
                         assert rows[i][2] == rows[0][2] #latency

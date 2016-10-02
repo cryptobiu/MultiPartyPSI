@@ -10,7 +10,7 @@ place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNO
 
 KEY_SIZE = 80
 dir_name = sys.argv[1]
-NUM_OF_PARTIES = [2,3,5,7,9]
+NUM_OF_PARTIES = [2,3,5,6,7,9]
 
 with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
     results = table_utils.readRows(csvfile)
