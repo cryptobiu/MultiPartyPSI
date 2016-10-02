@@ -49,7 +49,7 @@ with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
             f.write(" & ".join([strategy.replace('_',' ')]+[res[strategy][num_of_parties][0] for num_of_parties in NUM_OF_PARTIES]) + " \\\\\\hline\n")
         
         f.write('\\end{tabular}\n')
-        f.write('\\caption{Runtimes in seconds for PSI protocols over 10GBit LAN, $\sigma=64$ and set size $2^{16}$ with different number of parties}\n')
+        f.write('\\caption{Runtimes in seconds for PSI protocols over 10GBit LAN, $\sigma=64$, $\symsec=80$, up to $4$ threads and set size $2^{16}$ with different number of parties}\n')
         f.write('\\label{tab:results3}\n')
         f.write('\\end{table*}\n')
 
@@ -70,6 +70,6 @@ with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
             f.write(" & ".join([strategy.replace('_',' ')]+[res[strategy][num_of_parties][1] for num_of_parties in NUM_OF_PARTIES]) + " \\\\\\hline\n")
 
         f.write('\\end{tabular}\n')
-        f.write('\\caption{Communication complexity (in MB) for PSI protocols over 10Gbit LAN, $\sigma=64$ and set size $2^{16}$ with different number of parties}\n')
+        f.write('\\caption{Communication complexity (in MB) for PSI protocols over 10Gbit LAN, $\sigma=64$, $\symsec=80$, up to $4$ threads and set size $2^{16}$ with different number of parties}\n')
         f.write('\\label{tab:results3_mb}\n')
         f.write('\\end{table*}\n')

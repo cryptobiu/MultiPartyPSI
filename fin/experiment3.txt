@@ -12,7 +12,7 @@ TWO PARTY & 0.42 & 0.45 & 0.47 & 0.48 & 0.50 & 0.53 \\\hline
 BLOOM FILTER & 1.56 & 1.84 & 2.45 & 2.76 & 3.10 & 3.75 \\\hline
 SIMPLE HASH & 0.51 & 0.57 & 12.41 & 241.66 &   &   \\\hline
 \end{tabular}
-\caption{Runtimes in seconds for PSI protocols over 10GBit LAN, $\sigma=64$ and set size $2^{16}$ with different number of parties}
+\caption{Runtimes in seconds for PSI protocols over 10GBit LAN, $\sigma=64$, $\symsec=80$, up to $4$ threads and set size $2^{16}$ with different number of parties}
 \label{tab:results3}
 \end{table*}
 
@@ -31,6 +31,6 @@ TWO PARTY & 9.17 & 18.44 & 36.85 & 46.17 & 55.49 & 74.18 \\\hline
 BLOOM FILTER & 72.28 & 145.28 & 290.61 & 361.62 & 433.23 & 574.23 \\\hline
 SIMPLE HASH & 35.02 & 70.38 & 170.65 & 250.70 &   &   \\\hline
 \end{tabular}
-\caption{Communication complexity (in MB) for PSI protocols over 10Gbit LAN, $\sigma=64$ and set size $2^{16}$ with different number of parties}
+\caption{Communication complexity (in MB) for PSI protocols over 10Gbit LAN, $\sigma=64$, $\symsec=80$, up to $4$ threads and set size $2^{16}$ with different number of parties}
 \label{tab:results3_mb}
 \end{table*}
