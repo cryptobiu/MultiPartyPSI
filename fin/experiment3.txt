@@ -6,9 +6,9 @@ Num of parties & 2 & 3 & 5 & 6 & 7 & 9 \\
 \hline
 \hline
 GAUSS SIMPLE HASH & 7.44 & 12.40 & 25.00 & 32.57 & 41.25 & 61.02 \\\hline
-POLYNOMIALS SIMPLE HASH & 7.77 & 8.06 & 9.33 &   & 10.64 & 12.59 \\\hline
+POLYNOMIALS SIMPLE HASH & 7.77 & 8.06 & 9.33 & 9.72 & 10.64 & 12.59 \\\hline
 POLYNOMIALS & 1090.87 & 1210.74 & 1464.58 & 1594.93 & 1717.30 &   \\\hline
-TWO PARTY & 0.42 & 0.45 & 0.47 &   & 0.50 & 0.53 \\\hline
+TWO PARTY & 0.42 & 0.45 & 0.47 & 0.48 & 0.50 & 0.53 \\\hline
 BLOOM FILTER & 1.56 & 1.84 & 2.45 & 2.76 & 3.10 & 3.75 \\\hline
 SIMPLE HASH & 0.51 & 0.57 & 12.41 & 241.66 &   &   \\\hline
 \end{tabular}
