@@ -8,7 +8,7 @@ import table_utils
 
 place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
 
-NUM_THREADS = [2,4,None]
+NUM_THREADS = [1,2,4,None]
 
 KEY_SIZE = 80
 SET_SIZE = 2**16
