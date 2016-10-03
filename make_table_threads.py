@@ -20,7 +20,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
     results = filter(lambda x: x.key_size==str(KEY_SIZE) and x.set_size==str(SET_SIZE),results)
 
     #res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
-    res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
+    res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
     params = []
 
     for num_threads in NUM_THREADS:
@@ -37,7 +37,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\\centering\n')
         f.write('\\begin{tabular}{| l | l | l | l | l | l |}\n')
         f.write('\\hline\n')
-        f.write('Num threads & ' + ' & '.join(["{0}".format(num_threads) for num_threads in NUM_THREADS]) + " \\\\\n")
+        f.write('Number of threads & ' + ' & '.join(["{0}".format(num_threads) for num_threads in NUM_THREADS]) + " \\\\\n")
         
         f.write('\\hline\n')
         f.write('\\hline\n')

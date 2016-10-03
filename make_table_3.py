@@ -40,7 +40,7 @@ with open("{0}/experiment3_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\\hspace*{-2cm}\n')
         f.write('\\begin{tabular}{| l | l | l | l | l | l | l |}\n')
         f.write('\\hline\n')
-        f.write('Num of parties & ' + ' & '.join(["{0}".format(num_of_parties) for num_of_parties in NUM_OF_PARTIES]) + " \\\\\n")
+        f.write('Number of parties & ' + ' & '.join(["{0}".format(num_of_parties) for num_of_parties in NUM_OF_PARTIES]) + " \\\\\n")
         
         f.write('\\hline\n')
         f.write('\\hline\n')

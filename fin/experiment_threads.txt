@@ -2,14 +2,15 @@
 \centering
 \begin{tabular}{| l | l | l | l | l | l |}
 \hline
-Num threads & 1 & 2 & 4 & None \\
+Number of threads & 1 & 2 & 4 & None \\
 \hline
 \hline
 GAUSS SIMPLE HASH & 37.64 & 28.91 & 24.72 & 24.56 \\\hline
+POLYNOMIALS SIMPLE HASH & 23.78 & 14.52 & 9.25 & 9.04 \\\hline
+POLYNOMIALS & 3013.24 & 1930.12 & 1455.47 & 1077.52 \\\hline
 TWO PARTY & 0.61 & 0.53 & 0.47 & 0.48 \\\hline
 BLOOM FILTER & 5.25 & 3.43 & 2.43 & 2.47 \\\hline
 SIMPLE HASH & 49.12 & 22.36 & 16.06 & 14.97 \\\hline
-POLYNOMIALS SIMPLE HASH & 23.78 & 14.52 & 9.25 & 9.04 \\\hline
 \end{tabular}
 \caption{Runtimes in seconds for PSI protocols for $\sigma=64$, $\symsec=80$, set size $2^{16}$ and 5 parties with different number of threads}
 \label{tab:results_threads}
