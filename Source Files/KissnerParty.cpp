@@ -157,11 +157,16 @@ vector<ZZ> KissnerParty::addEncPolys(const vector<ZZ> poly1, const vector<ZZ> po
 
 vector<ZZ> KissnerParty::mulEncPolyByPoly(const vector<ZZ> encPoly, const vector<ZZ> poly) {
     vector<ZZ> coefficients;
+    timeval t_start, t_end;
     for (uint32_t i = 0; i <= 2*m_setSize; i++) {
         ZZ prod(1);
         for (uint32_t j=0; j<=i; j++) {
             if ((j<=m_setSize) && ((i-j)<=m_setSize)) {
-                prod=MulMod(prod,PowerMod(encPoly[j],poly[i-j],m_field),m_field);
+                gettimeofday(&t_start, NULL);
+                ZZ el = PowerMod(encPoly[j],poly[i-j],m_field);
+                gettimeofday(&t_end, NULL);
+                std::cout << getMillies(t_start,t_end) << std::endl;
+                prod=MulMod(prod,el,m_field);
             }
         }
         coefficients.push_back(prod);
