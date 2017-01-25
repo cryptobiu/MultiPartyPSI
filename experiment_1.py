@@ -20,7 +20,7 @@ STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
 '''
 STRATEGIES = [runner.Strategy.POLYNOMIALS_SIMPLE_HASH]
 #NUM_THREADS = [1,2,4,None]
-NUM_THREADS = [2,4,None]
+NUM_THREADS = [1,2,4,None]
 
 LIMITS = {runner.Strategy.POLYNOMIALS : 2**16}
 
