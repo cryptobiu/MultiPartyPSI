@@ -16,11 +16,11 @@ KEY_SIZE = 80
 STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.BLOOM_FILTER, runner.Strategy.POLYNOMIALS,
               runner.Strategy.POLYNOMIALS_SIMPLE_HASH, runner.Strategy.TWO_PARTY]
-'''
 STRATEGIES = [runner.Strategy.SIMPLE_HASH, runner.Strategy.GAUSS_SIMPLE_HASH,
               runner.Strategy.BLOOM_FILTER]
-#BANDWIDTH_AND_LATENCY = [('1000mbit','0.2ms'),('54mbit','0.2ms'),('25mbit','10ms'),('10mbit','50ms'),('3.6mbit','500ms')]
-BANDWIDTH_AND_LATENCY = [('3.6mbit','500ms')]
+'''
+STRATEGIES = [runner.Strategy.POLYNOMIALS_SIMPLE_HASH]
+BANDWIDTH_AND_LATENCY = [('1000mbit','0.2ms'),('54mbit','0.2ms'),('25mbit','10ms'),('10mbit','50ms'),('3.6mbit','500ms')]
 # and ofcourse kissner
 NUM_OF_PARTIES = 5
 

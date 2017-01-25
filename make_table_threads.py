@@ -6,7 +6,8 @@ import sys
 import math
 import table_utils
 
-place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
+#place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
+place = {'POLYNOMIALS_SIMPLE_HASH' : 1}
 
 NUM_THREADS = [1,2,4,None]
 
@@ -20,7 +21,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
     results = filter(lambda x: x.key_size==str(KEY_SIZE) and x.set_size==str(SET_SIZE),results)
 
     #res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
-    res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
+    res = {'POLYNOMIALS_SIMPLE_HASH' : {}}
     params = []
 
     for num_threads in NUM_THREADS:

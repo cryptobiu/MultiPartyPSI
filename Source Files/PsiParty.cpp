@@ -2,12 +2,12 @@
 // Created by root on 6/20/16.
 //
 
-
 #include <boost/thread/thread.hpp>
 #include "defs.h"
 #include <immintrin.h>
 #include "ot-psi.h"
 #include "hashing_util.h"
+#include "primitives/Prg.hpp"
 #include "PsiParty.h"
 #include "Followers/Follower.h"
 #include "Followers/NaiveFollower.h"
@@ -15,7 +15,6 @@
 #include "LeaderFactory.h"
 #include "Leaders/NaiveLeader.h"
 #include <iomanip>
-#include "primitives/Prg.hpp"
 
 #define KEY_SIZE 16
 

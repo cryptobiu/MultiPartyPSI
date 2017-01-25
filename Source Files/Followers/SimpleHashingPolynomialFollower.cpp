@@ -43,12 +43,11 @@ void *SimpleHashingPolynomialFollower::buildPolynomialsInThread(void *poly_struc
         }
 
         uint32_t numOfRandomElements = pol_struct->followerSet->m_maxBinSize-numOfElementsOfHashInBin;
-        for (uint32_t j=0; j < numOfRandomElements; j++) {
-            inputs.append(random_GF2E());
-            masks.append(random_GF2E());
-        }
 
-        GF2EX polynomial = interpolate(inputs, masks);
+        GF2EX polynomial = random_GF2EX(numOfRandomElements);
+        polynomial = polynomial*BuildFromRoots(inputs);
+        polynomial = polynomial + interpolate(inputs, masks);
+
         pol_struct->polynomials->push_back(polynomial);
 
         pol_struct->elementIndex = pol_struct->elementIndex + numOfElementsInBin;

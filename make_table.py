@@ -6,7 +6,8 @@ import sys
 import math
 import table_utils
 
-place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
+#place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
+place = {'POLYNOMIALS_SIMPLE_HASH' : 1}
 
 dir_name = sys.argv[1]
 KEY_SIZES = (80, 128)
@@ -17,7 +18,8 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
 
     results = filter(lambda x: x.num_threads==str(NUM_OF_THREADS),results)
 
-    res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
+    #res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
+    res = {'POLYNOMIALS_SIMPLE_HASH' : {}}
     params = []
 
     for key_size in KEY_SIZES:
@@ -51,7 +53,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\\hline\n')
         f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
         
-        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['TWO_PARTY'].keys()))))]*2) + " \\\\\n")
+        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['POLYNOMIALS_SIMPLE_HASH'].keys()))))]*2) + " \\\\\n")
         
         f.write('\\hline\n')
         f.write('\\hline\n')
@@ -72,7 +74,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\\hline\n')
         f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
         
-        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['TWO_PARTY'].keys()))))]*2) + " \\\\\n")
+        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['POLYNOMIALS_SIMPLE_HASH'].keys()))))]*2) + " \\\\\n")
         
         f.write('\\hline\n')
         f.write('\\hline\n')
