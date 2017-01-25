@@ -53,7 +53,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\\hline\n')
         f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
         
-        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['TWO_PARTY'].keys()))))]*2) + " \\\\\n")
+        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['POLYNOMIALS_SIMPLE_HASH'].keys()))))]*2) + " \\\\\n")
         
         f.write('\\hline\n')
         f.write('\\hline\n')
@@ -74,7 +74,7 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\\hline\n')
         f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
         
-        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['TWO_PARTY'].keys()))))]*2) + " \\\\\n")
+        f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['POLYNOMIALS_SIMPLE_HASH'].keys()))))]*2) + " \\\\\n")
         
         f.write('\\hline\n')
         f.write('\\hline\n')

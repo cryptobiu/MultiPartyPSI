@@ -1,0 +1,12 @@
+\begin{table*}[t]
+\hspace*{-2cm}
+\begin{tabular}{| l | l | l | l | l | l |}
+\hline
+\pbox{10cm}{Network \\ Bandwidth, Latency} & \pbox{10cm}{Gigabit LAN \\ 1000mbit, 0.2ms} & \pbox{10cm}{802.11g WiFi \\ 54mbit, 0.2ms} & \pbox{10cm}{Intra-country \\ WAN \\ 25mbit, 10ms} & \pbox{10cm}{Inter-country \\ WAN \\ 10mbit, 50ms} & \pbox{10cm}{HSDPA \\ 3.6mbit, 500ms} \\
+\hline
+\hline
+POLYNOMIALS SIMPLE HASH & 5.68 & 19.84 & 20.17 & 43.86 & 114.16 \\\hline
+\end{tabular}
+\caption{Runtimes in seconds for PSI protocols for $\sigma=64$, set size $2^{16}$, $\symsec=80$, up to 4 threads and 5 parties in different network scenarios}
+\label{tab:results2}
+\end{table*}
