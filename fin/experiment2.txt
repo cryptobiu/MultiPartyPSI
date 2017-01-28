@@ -6,7 +6,7 @@
 \hline
 \hline
 GAUSS SIMPLE HASH & 26.50 & 58.93 & 60.01 & 112.86 & 269.96 \\\hline
-POLYNOMIALS SIMPLE HASH & 10.07 & 24.31 & 24.76 & 48.41 & 118.54 \\\hline
+POLYNOMIALS SIMPLE HASH & 5.68 & 19.84 & 20.17 & 43.86 & 114.16 \\\hline
 POLYNOMIALS & 1462.63 & 1471.96 & 1478.51 & 1566.69 & 1557.85 \\\hline
 TWO PARTY & 1.62 & 8.84 & 10.60 & 25.62 & 70.44 \\\hline
 BLOOM FILTER & 4.27 & 32.74 & 30.46 & 72.38 & 197.10 \\\hline

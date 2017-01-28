@@ -6,8 +6,7 @@ import sys
 import math
 import table_utils
 
-#place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
-place = {'POLYNOMIALS_SIMPLE_HASH' : 1}
+place = {'SIMPLE_HASH' : 1, 'GAUSS_SIMPLE_HASH' : 2, 'BLOOM_FILTER' : 3, 'POLYNOMIALS' : 4, 'POLYNOMIALS_SIMPLE_HASH' : 5, 'TWO_PARTY' : 6}
 
 BANDWIDTH_AND_LATENCY = [('1000mbit','0.2ms', 'Gigabit LAN'),('54mbit','0.2ms', '802.11g WiFi'),('25mbit','10ms', 'Intra-country \\\\ WAN'),('10mbit','50ms','Inter-country \\\\ WAN'),('3.6mbit','500ms','HSDPA')]
 
@@ -19,8 +18,7 @@ with open("{0}/experiment2_avg.csv".format(dir_name), 'rb') as csvfile:
 
     results = filter(lambda x: x.key_size==str(KEY_SIZE),results)
 
-    #res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
-    res = {'POLYNOMIALS_SIMPLE_HASH' : {}}
+    res = {'SIMPLE_HASH' : {}, 'GAUSS_SIMPLE_HASH' : {}, 'BLOOM_FILTER' : {}, 'POLYNOMIALS' : {}, 'POLYNOMIALS_SIMPLE_HASH' : {}, 'TWO_PARTY' : {}}
     params = []
 
     for bandwidth, latency, _ in BANDWIDTH_AND_LATENCY:

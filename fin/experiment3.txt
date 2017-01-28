@@ -2,11 +2,11 @@
 \hspace*{-2cm}
 \begin{tabular}{| l | l | l | l | l | l | l |}
 \hline
-Num of parties & 2 & 3 & 5 & 6 & 7 & 9 \\
+Number of parties & 2 & 3 & 5 & 6 & 7 & 9 \\
 \hline
 \hline
 GAUSS SIMPLE HASH & 7.44 & 12.40 & 25.00 & 32.57 & 41.25 & 61.02 \\\hline
-POLYNOMIALS SIMPLE HASH & 7.77 & 8.06 & 9.33 & 9.72 & 10.64 & 12.59 \\\hline
+POLYNOMIALS SIMPLE HASH & 3.36 & 3.64 & 4.52 & 5.47 & 6.24 & 8.31 \\\hline
 POLYNOMIALS & 1090.87 & 1210.74 & 1464.58 & 1594.93 & 1717.30 &   \\\hline
 TWO PARTY & 0.42 & 0.45 & 0.47 & 0.48 & 0.50 & 0.53 \\\hline
 BLOOM FILTER & 1.56 & 1.84 & 2.45 & 2.76 & 3.10 & 3.75 \\\hline
@@ -24,7 +24,7 @@ Num of parties & 2 & 3 & 5 & 6 & 7 & 9 \\
 \hline
 \hline
 GAUSS SIMPLE HASH & 42.45 & 108.83 & 289.71 & 405.32 & 535.30 & 851.50 \\\hline
-POLYNOMIALS SIMPLE HASH & 28.24 & 56.59 & 113.10 & 141.62 & 170.05 & 226.59 \\\hline
+POLYNOMIALS SIMPLE HASH & 28.12 & 56.17 & 113.69 & 140.77 & 169.35 & 225.43 \\\hline
 POLYNOMIALS & 9.30 & 18.63 & 37.51 & 46.80 & 56.31 &   \\\hline
 TWO PARTY & 9.17 & 18.44 & 36.85 & 46.17 & 55.49 & 74.18 \\\hline
 BLOOM FILTER & 72.28 & 145.28 & 290.61 & 361.62 & 433.23 & 574.23 \\\hline
