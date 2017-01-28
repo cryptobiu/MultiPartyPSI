@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import csv
 import sys
 import time
@@ -6,9 +8,11 @@ import os
 import ConfigParser
 import io
 
+MAX_NUM_PARTIES = 10
+
 result_file_path = sys.argv[1]
 new_result_file_path = result_file_path + "_new"
-
+print new_result_file_path
 with open(new_result_file_path, 'wb') as csvf:
     csvwriter = csv.writer(csvf, delimiter=',',
                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
