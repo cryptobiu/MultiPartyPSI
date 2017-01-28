@@ -3,15 +3,15 @@
 \begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}
 \hline
 \textbf{Security} & \multicolumn{5}{c||}{\textbf{80-bit}} &  \multicolumn{5}{c|}{\textbf{128-bit}} \\\hline
-\textbf{Set Size} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} \\
+\textbf{Set Size} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{20}$} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{20}$} \\
 \hline
 \hline
-GAUSS SIMPLE HASH & 0.37 & 1.22 & 5.44 & 24.72 & 112.39 & 0.53 & 1.38 & 5.71 & 24.80 & 112.50 \\\hline
-POLYNOMIALS SIMPLE HASH & 0.27 & 0.61 & 2.14 & 9.25 & 43.52 & 0.40 & 0.74 & 2.33 & 9.13 & 44.71 \\\hline
-POLYNOMIALS & 0.53 & 6.64 & 91.44 & 1455.47 &   & 0.69 & 6.77 & 94.46 & 1459.81 &   \\\hline
-TWO PARTY & 0.13 & 0.15 & 0.23 & 0.47 & 1.49 & 0.28 & 0.30 & 0.45 & 0.66 & 1.91 \\\hline
-BLOOM FILTER & 0.18 & 0.28 & 0.71 & 2.43 & 10.33 & 0.32 & 0.43 & 0.87 & 2.61 & 10.53 \\\hline
-SIMPLE HASH & 0.20 & 0.46 & 2.68 & 16.06 & 99.58 & 0.33 & 0.63 & 1.65 & 14.01 & 77.56 \\\hline
+GAUSS SIMPLE HASH & 0.37 & 1.22 & 5.44 & 24.72 & 112.39 &   & 0.53 & 1.38 & 5.71 & 24.80 & 112.50 &   \\\hline
+POLYNOMIALS SIMPLE HASH & 0.27 & 0.61 & 2.14 & 9.25 & 43.52 & 105.64 & 0.40 & 0.74 & 2.33 & 9.13 & 44.71 & 103.92 \\\hline
+POLYNOMIALS & 0.53 & 6.64 & 91.44 & 1455.47 &   &   & 0.69 & 6.77 & 94.46 & 1459.81 &   &   \\\hline
+TWO PARTY & 0.13 & 0.15 & 0.23 & 0.47 & 1.49 &   & 0.28 & 0.30 & 0.45 & 0.66 & 1.91 &   \\\hline
+BLOOM FILTER & 0.18 & 0.28 & 0.71 & 2.43 & 10.33 & 44.00 & 0.32 & 0.43 & 0.87 & 2.61 & 10.53 & 45.47 \\\hline
+SIMPLE HASH & 0.20 & 0.46 & 2.68 & 16.06 & 99.58 &   & 0.33 & 0.63 & 1.65 & 14.01 & 77.56 &   \\\hline
 \end{tabular}
 \caption{Runtimes in seconds for PSI protocols over 10Gbit LAN, $\sigma=64$, up to 4 threads and 5 parties with different set sizes and security parameters}
 \label{tab:results}
@@ -22,15 +22,15 @@ SIMPLE HASH & 0.20 & 0.46 & 2.68 & 16.06 & 99.58 & 0.33 & 0.63 & 1.65 & 14.01 & 
 \begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}
 \hline
 \textbf{Security} & \multicolumn{5}{c||}{\textbf{80-bit}} &  \multicolumn{5}{c|}{\textbf{128-bit}} \\\hline
-\textbf{Set Size} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} \\
+\textbf{Set Size} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{20}$} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{20}$} \\
 \hline
 \hline
-GAUSS SIMPLE HASH & 2.09 & 11.05 & 59.63 & 288.78 & 1360.47 & 1.91 & 11.30 & 59.33 & 288.99 & 1362.70 \\\hline
-POLYNOMIALS SIMPLE HASH & 0.79 & 4.87 & 26.24 & 112.39 & 526.33 & 0.96 & 4.96 & 26.30 & 112.88 & 526.75 \\\hline
-POLYNOMIALS & 0.74 & 2.81 & 10.89 & 37.08 &   & 0.76 & 2.95 & 11.04 & 37.28 &   \\\hline
-TWO PARTY & 0.74 & 2.75 & 10.87 & 36.98 & 154.74 & 0.75 & 2.85 & 10.95 & 36.86 & 154.69 \\\hline
-BLOOM FILTER & 2.82 & 15.69 & 67.89 & 290.01 & 1175.41 & 2.98 & 15.86 & 68.38 & 291.41 & 1175.79 \\\hline
-SIMPLE HASH & 1.25 & 7.46 & 38.97 & 170.22 & 896.37 & 1.38 & 7.44 & 39.06 & 170.23 & 896.57 \\\hline
+GAUSS SIMPLE HASH & 2.09 & 11.05 & 59.63 & 288.78 & 1360.47 &   & 1.91 & 11.30 & 59.33 & 288.99 & 1362.70 &   \\\hline
+POLYNOMIALS SIMPLE HASH & 0.79 & 4.87 & 26.24 & 112.39 & 526.33 & 2280.72 & 0.96 & 4.96 & 26.30 & 112.88 & 526.75 & 2278.52 \\\hline
+POLYNOMIALS & 0.74 & 2.81 & 10.89 & 37.08 &   &   & 0.76 & 2.95 & 11.04 & 37.28 &   &   \\\hline
+TWO PARTY & 0.74 & 2.75 & 10.87 & 36.98 & 154.74 &   & 0.75 & 2.85 & 10.95 & 36.86 & 154.69 &   \\\hline
+BLOOM FILTER & 2.82 & 15.69 & 67.89 & 290.01 & 1175.41 & 4709.08 & 2.98 & 15.86 & 68.38 & 291.41 & 1175.79 & 4706.63 \\\hline
+SIMPLE HASH & 1.25 & 7.46 & 38.97 & 170.22 & 896.37 &   & 1.38 & 7.44 & 39.06 & 170.23 & 896.57 &   \\\hline
 \end{tabular}
 \caption{Communication complexity (in MB) for PSI protocols over 10Gbit LAN, $\sigma=64$, up to 4 threads and 5 parties with different set sizes and security parameters}
 \label{tab:results_mb}
