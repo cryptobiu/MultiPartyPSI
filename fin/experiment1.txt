@@ -1,8 +1,8 @@
 \begin{table*}[t]
-\hspace*{-2cm}
-\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}
+\hspace*{-2.5cm}
+\begin{tabular}{|l||c|c|c|c|c|c||c|c|c|c|c|c|}
 \hline
-\textbf{Security} & \multicolumn{5}{c||}{\textbf{80-bit}} &  \multicolumn{5}{c|}{\textbf{128-bit}} \\\hline
+\textbf{Security} & \multicolumn{6}{c||}{\textbf{80-bit}} &  \multicolumn{6}{c|}{\textbf{128-bit}} \\\hline
 \textbf{Set Size} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{20}$} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{20}$} \\
 \hline
 \hline
@@ -18,10 +18,10 @@ SIMPLE HASH & 0.20 & 0.46 & 2.68 & 16.06 & 99.58 &   & 0.33 & 0.63 & 1.65 & 14.0
 \end{table*}
 
 \begin{table*}[t]
-\hspace*{-2cm}
-\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}
+\hspace*{-2.5cm}
+\begin{tabular}{|l||c|c|c|c|c|c||c|c|c|c|c|c|}
 \hline
-\textbf{Security} & \multicolumn{5}{c||}{\textbf{80-bit}} &  \multicolumn{5}{c|}{\textbf{128-bit}} \\\hline
+\textbf{Security} & \multicolumn{6}{c||}{\textbf{80-bit}} &  \multicolumn{6}{c|}{\textbf{128-bit}} \\\hline
 \textbf{Set Size} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{20}$} & \textbf{$2^{10}$} & \textbf{$2^{12}$} & \textbf{$2^{14}$} & \textbf{$2^{16}$} & \textbf{$2^{18}$} & \textbf{$2^{20}$} \\
 \hline
 \hline

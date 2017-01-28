@@ -46,10 +46,10 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
     with open("{0}/experiment1.txt".format(dir_name), 'wb') as f:
 
         f.write('\\begin{table*}[t]\n')
-        f.write('\\hspace*{-2cm}\n')
-        f.write('\\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}\n')
+        f.write('\\hspace*{-2.5cm}\n')
+        f.write('\\begin{tabular}{|l||c|c|c|c|c|c||c|c|c|c|c|c|}\n')
         f.write('\\hline\n')
-        f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
+        f.write('\\textbf{Security} & \\multicolumn{6}{c||}{\\textbf{80-bit}} &  \\multicolumn{6}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
         
         f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['POLYNOMIALS_SIMPLE_HASH'].keys()))))]*2) + " \\\\\n")
         
@@ -67,10 +67,10 @@ with open("{0}/experiment1_avg.csv".format(dir_name), 'rb') as csvfile:
         f.write('\n')
 
         f.write('\\begin{table*}[t]\n')
-        f.write('\\hspace*{-2cm}\n')
-        f.write('\\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c|}\n')
+        f.write('\\hspace*{-2.5cm}\n')
+        f.write('\\begin{tabular}{|l||c|c|c|c|c|c||c|c|c|c|c|c|}\n')
         f.write('\\hline\n')
-        f.write('\\textbf{Security} & \\multicolumn{5}{c||}{\\textbf{80-bit}} &  \\multicolumn{5}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
+        f.write('\\textbf{Security} & \\multicolumn{6}{c||}{\\textbf{80-bit}} &  \\multicolumn{6}{c|}{\\textbf{128-bit}} \\\\\\hline\n')
         
         f.write('\\textbf{Set Size} & ' + ' & '.join(['\\textbf{{$2^{{{0}}}$}}'.format(int(math.log(set_size,2))) for set_size in sorted(list(set(map(lambda x: x[1], res['POLYNOMIALS_SIMPLE_HASH'].keys()))))]*2) + " \\\\\n")
         
